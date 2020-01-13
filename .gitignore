@@ -1,3 +1,8 @@
+demosaurus-webapp/demosaurus/static/covers/*
+data/
+
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
