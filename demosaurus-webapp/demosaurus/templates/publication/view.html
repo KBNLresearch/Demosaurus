@@ -1,44 +1,31 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}{{publication['hoofdTitel_title']}}{% endblock %}</h1>
+<h1>{% block title %}{{publication['hoofdTitel_title']}}{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
- 
- <div class="column">
-     <img src={{'/static/'+publication['cover_front']}} alt="Front cover" width="200">
-  </div>
 
-  <div class="column">
-  	<table style="width:100%">
-  <tr>
-  	<td>ISBN</td>
-  	<td>{{ publication['isbn']}} </td>
-  	</tr>
+<div style="width:15%;float:left">
+  {% include "publication/partials/cover-block.html"%}     
 
-  <tr>
-  	<td>First contributor</td>
-  	<td>{{ publication['contributor_1_displayname']}} </td>
-  	</tr>
-  	
-  	{% for contributor in contributors %}
-	<tr>
-  	<td>Contributor</td>
-  	
-  	<td><a class="action" href="{{ url_for('publication.view', id=publication['isbn']) }}"> {{ publication['contributor_1_displayname']}} </a></td>
-  	  	<td>{{ publication['contributor_1_role']}} </td>
-  	</tr>
-  		
-  	{% endfor %}
+</div>
+<div style="width:25%;float:left">
+  {% include "publication/partials/onix-block.html"%}
+</div>
 
-</table>
-  	  </div>
 
-  	  <div class="column"> 
+<div style="width:60%;float:left">
 
-  	  	<h1>{{publication['hoofdTitel_title']}}</h1>
-  	  </div>
+  <h1> Contributors:</h1>
+  {% include "publication/partials/status-block.html"%}
 
+</div>
+
+<iframe name= "thesaureerframe" src="" width="100%" height="500" scrolling="yes">
+	
+Hier staat een iframe
+
+</iframe>
 
 {% endblock %}

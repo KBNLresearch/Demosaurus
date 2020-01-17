@@ -37,4 +37,10 @@ def create_app(test_config=None):
     app.register_blueprint(publication.bp)
     app.add_url_rule('/', endpoint='overview')
 
+    from . import link_thesaurus
+    app.register_blueprint(link_thesaurus.bp)
+
+    from . import contributor
+    app.register_blueprint(contributor.bp)
+
     return app

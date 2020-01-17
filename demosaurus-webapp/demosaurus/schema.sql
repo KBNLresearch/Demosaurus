@@ -6,7 +6,6 @@ DROP TABLE IF EXISTS author_roles;
 
 
 CREATE TABLE "onix" ( 
-  "index" INTEGER, 
   "isbn" TEXT PRIMARY KEY, 
   "cover_front" TEXT, 
   "cover_back" TEXT, 
@@ -18,16 +17,18 @@ CREATE TABLE "onix" (
 CREATE TABLE "publication" (
   "ppn" TEXT PRIMARY KEY,
   "title" TEXT,
-  "isbn" TEXT
+  "isbn" TEXT,
+
 );
 
-CREATE TABLE "author" (
+CREATE TABLE "contributor" (
   "ppn" TEXT PRIMARY KEY,
-  "foaf_name" TEXT
+  "foaf_name" TEXT,
+  "editorial" TEXT
 );
 
 CREATE TABLE "authorship" (
-  "index" INTEGER PRIMARY KEY AUTOINCREMENT, 
+  "authorshipID" INTEGER PRIMARY KEY AUTOINCREMENT, 
   "publication_ppn" TEXT,
   "publication_isbn" TEXT,
   "seq_nr" INTEGER,
@@ -42,7 +43,7 @@ CREATE TABLE "authorship" (
 );
 
 CREATE TABLE "author_roles" (
-  "index" INTEGER PRIMARY KEY, 
+  "author_rolesID" INTEGER PRIMARY KEY, 
   "ggc_code" TEXT,
   "onix_code" TEXT,
   "legible" TEXT

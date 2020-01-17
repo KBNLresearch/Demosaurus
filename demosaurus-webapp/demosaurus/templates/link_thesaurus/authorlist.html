@@ -1,0 +1,20 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+<h1>NTA-records voor {{author_name}} </h1>
+
+{% if author_options|length <1 %}
+<div>No matches</div>
+{% else %}
+<table class="TFtable">
+	<tr> <td> PPN </td><td> Name </td> <td> Leefjaren </td><td> Score </td></tr>
+	{% for author_option in author_options %}
+    <tr> <td><a class="action"  target="_blank" href="{{ url_for('contributor.authorpage', id=author_option['ppn'])}}">{{author_option['ppn']}} </a> </td>
+	<td> {{author_option['foaf_name']}} </td>
+    <td>{{author_option['birthyear']}}-{{author_option['deathyear']}}</td>
+
+	</tr>
+	{% endfor %}
+
+</table>
+{% endif %}
+

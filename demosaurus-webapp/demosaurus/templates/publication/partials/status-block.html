@@ -1,0 +1,19 @@
+<table>
+  <tr>
+    <td> Name </td>
+    <td> Role </td>
+    <td> PPN </td>
+
+  </tr>	
+
+  	{% for contributor in contributors %}
+	<tr>
+  	<td class='tdinput'><input name='aut_name' type="text" value="{{contributor['display_name']}}"></td>
+  	<td>{{contributor['legible']}} [{{contributor['ggc_code']}}]</td>
+  	<td><a class="action" href="{{ url_for('link_thesaurus.thesaureer', authorshipID=contributor['authorshipID'])}}" target="thesaureerframe"> Thesaureer </a></td>
+  	
+  	</tr>
+  		
+  	{% endfor %}
+
+</table>

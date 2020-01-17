@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}{{author['foaf_name']}}{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+ <table width="60%">
+<tr> <td>PPN: </td><td>{{author['ppn']}}</td></tr>
+<!--<tr> <td>VIAF: </td><td>{{author['ppn']}}</td></tr>-->
+<tr> <td>Leefjaren: </td><td>{{author['birthyear']}}-{{author['deathyear']}}</td></tr>
+<tr> <td>Editorial Note(s):</td><td> {{author['editorial']}} {{author['editorial_nl']}}</td></tr>
+</table>
+
+ <h1>Relevante publicaties:</h1>
+
+
+ 
+{% endblock %}
