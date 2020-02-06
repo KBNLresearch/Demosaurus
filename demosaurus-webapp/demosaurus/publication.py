@@ -8,6 +8,17 @@ from demosaurus.db import get_db
 
 bp = Blueprint('publication', __name__)
 
+@bp.context_processor
+def utility_processor():    
+    def list_of_roles():
+        db = get_db()
+        roles = db.execute(
+            ' SELECT author_rolesID, legible, ggc_code'
+            ' FROM author_roles'
+        ).fetchall()
+        print(roles)
+        return roles
+    return dict(list_of_roles=list_of_roles)
 
 @bp.route('/<id>/view')
 def view(id):
@@ -27,10 +38,15 @@ def view(id):
         (id,)
     ).fetchall()
 
+    roles = db.execute(
+            ' SELECT author_rolesID, legible, ggc_code'
+            ' FROM author_roles'
+        ).fetchall()
+
     print(len(contributors),  'contributor records')
     print(contributors[0].keys())  
 
-    return render_template('publication/view.html', publication = publication, contributors=contributors)
+    return render_template('publication/view.html', publication = publication, contributors=contributors, role_list=roles)
 
 
 

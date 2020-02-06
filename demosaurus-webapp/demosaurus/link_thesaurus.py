@@ -31,7 +31,7 @@ def thesaureer(authorshipID):
         ' SELECT *'
         ' FROM contributor'
         ' WHERE contributor.foaf_name LIKE ?',
-        ('%'+author_name+'%',)
+        ('%'+author_name+'%',) #mogelijk gevoelig voor opzoeken hoe wild cards in queries (escapen?)
         ).fetchall()
 
     return render_template('link_thesaurus/authorlist.html', author_name = author_name, author_options=author_options)

@@ -1,16 +1,23 @@
 <!doctype html>
-<title>{% block title %}{% endblock %} - Demosaurus</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script type=text/javascript src="{{url_for('static', filename='js/jquery-3.4.1.js') }}"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
+<title>{% block title %}{% endblock %} - Demosaurus</title>
 <nav>
   <h1>Demosaurus</h1>
 </nav>
 <section class="content">
-  <header>
+  <header>  
     {% block header %}{% endblock %}
   </header>
   {% for message in get_flashed_messages() %}
     <div class="flash">{{ message }}</div>
   {% endfor %}
   {% block content %}{% endblock %}
-</section>
 
+</section>
+<section >
+  {% block optional %}{% endblock %}
+</section>  

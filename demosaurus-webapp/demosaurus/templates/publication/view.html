@@ -1,31 +1,21 @@
 {% extends 'base.html' %}
 
-{% block header %}
-<h1>{% block title %}{{publication['hoofdTitel_title']}}{% endblock %}</h1>
-{% endblock %}
-
 {% block content %}
 
 <div style="width:15%;float:left">
   {% include "publication/partials/cover-block.html"%}     
-
 </div>
+
 <div style="width:25%;float:left">
   {% include "publication/partials/onix-block.html"%}
 </div>
 
-
-<div style="width:60%;float:left">
-
-  <h1> Contributors:</h1>
+<div style="width:59%;float:left;border-left: 1px solid lightgray;padding: 5px;height: 250px; overflow: scroll;">
   {% include "publication/partials/status-block.html"%}
-
 </div>
 
-<iframe name= "thesaureerframe" src="" width="100%" height="500" scrolling="yes">
-	
-Hier staat een iframe
+{% endblock %}
 
-</iframe>
-
+{% block optional %}
+<iframe id="thesaureerframe" name= "thesaureerframe" src="" width="100%" height="500" scrolling="yes"/>
 {% endblock %}
