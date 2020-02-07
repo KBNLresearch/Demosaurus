@@ -1,22 +1,65 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 
+
+
 <h1>NTA-records voor {{author_name}} </h1>
 
 {% if author_options|length <1 %}
 <div>No matches</div>
 {% else %}
-<table class="TFtable">
-	<tr> <td> PPN </td><td> Name </td> <td> Leefjaren </td><td> Score </td></tr>
+<table >
+    <thead >
+        <tr><td/><td/><td/><td>Scores</td></tr>
+	   <tr> <td> PPN </td><td> Name </td> <td> Leefjaren </td><td> Name </td></tr>
+    </thead>
+    <tbody class="TFtable">
 	{% for author_option in author_options %}
     <tr> <td><a class="action"  href="#"
 
         onClick="MyWindow=window.open('{{ url_for('contributor.authorpage', id=author_option['ppn'])}}','MyWindow','width=600,height=300'); return false;">{{author_option['ppn']}} </a> </td>
 	<td> {{author_option['foaf_name']}} </td>
     <td>{{author_option['birthyear']}}-{{author_option['deathyear']}}</td>
-
+    <td class="score" value="{{author_option['name_score']}}"> {{author_option['name_score']|round|int}}</td>
 	</tr>
 	{% endfor %}
-
+</tbody>
 </table>
 {% endif %}
 
+<script type="text/javascript">
+    
+
+
+var getColorForPercentage = function(this_perc, low=0.5) {
+    var percentColors = [
+        { pct: 0.0, color: { r: 0xff, g: 0x00, b: 0 } },
+        { pct: low, color: { r: 0xff, g: 0xff, b: 0 } },
+        { pct: 1.0, color: { r: 0x00, g: 0xff, b: 0 } } ];
+
+    this_perc = Number(this_perc) / 100;
+    for (var i = 1; i < percentColors.length - 1; i++) {
+        if (this_perc < percentColors[i].pct) {
+            break;
+        }
+    }
+    var lower = percentColors[i - 1];
+    var upper = percentColors[i];
+    var range = upper.pct - lower.pct;
+    var rangePct = (this_perc - lower.pct) / range;
+    var pctLower = 1 - rangePct;
+    var pctUpper = rangePct;
+    var color = {
+        r: Math.floor(lower.color.r * pctLower + upper.color.r * pctUpper),
+        g: Math.floor(lower.color.g * pctLower + upper.color.g * pctUpper),
+        b: Math.floor(lower.color.b * pctLower + upper.color.b * pctUpper)
+    };
+    return 'rgb(' + [color.r, color.g, color.b].join(',') + ')';
+};
+
+var scoretds = document.getElementsByClassName("score");
+for (var i=0; i<scoretds.length; i++){
+    scoretds[i].style.backgroundColor=getColorForPercentage(scoretds[i].attributes.value.value);
+}
+
+
+</script>

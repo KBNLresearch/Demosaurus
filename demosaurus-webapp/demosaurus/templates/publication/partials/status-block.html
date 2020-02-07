@@ -20,8 +20,8 @@
       <input value="{{contributor['legible']}} [{{contributor['ggc_code']}}]" class="role" id="role_{{loop.index}}">
     </td>
   	<td>
-      <input type="button" value="Klik!" id="thesaureerButton_{{loop.index}}" onclick="thesaureer(this)"/>;
-      <a class="action" href="{{ url_for('link_thesaurus.thesaureer', authorshipID=contributor['authorshipID'])}}" target="thesaureerframe"> Thesaureer </a></td>
+      <input type="button" value="Zoek" id="thesaureerButton_{{loop.index}}" onclick="thesaureer({{loop.index}})"/>
+</td>
   	
   	</tr>
   		<script>maxIndex = {{loop.index}}; // keep track of the number of contributors: more may be added
@@ -29,10 +29,12 @@
   	{% endfor %}
     </tbody>
     <tfoot>  
-      <tr><td/><td/><td><input type="button" value="Voeg naam toe+" onclick="add_row()" /></td></tr></tfoot>
+      <tr><td/><td/><td><input type="button" value="Voeg naam toe" onclick="add_row()" /></td></tr></tfoot>
 </table>
 
 <script type=text/javascript> 
+
+  console.log('Ik besta')
 
   //      var role_list = {{list_of_roles()}};
       var role_options = [];
@@ -55,12 +57,17 @@
     }
 
     function thesaureer(item){
-      var id = item.id;
-      var index = id.substring(id.lastIndexOf("_")+1)
+      if (typeof(item) === 'number'){
+        var index = item
+      }
+      else {
+        var id = item.id;
+        var index = id.substring(id.lastIndexOf("_")+1)
+      }
       var inputId = "aut_name_" + index;
       var authorname = $("#"+ inputId).val();
-       var url = "{{ url_for('link_thesaurus.thesaureer')}}";
-      $('#thesaureerframe').attr('src', url + authorname);
+      var url = "{{ url_for('link_thesaurus.thesaureer_alt', author_name='placeholder')}}".replace('placeholder', authorname);
+      $('#thesaureerframe').attr('src', url);
      
       var a = 0;
     }
@@ -72,8 +79,7 @@
         .append($('<td>').append('<input onclick="move_row(this,0);" type="button" value="&#8681;">')) 
         .append($('<td>').append('<input id="aut_name_' + maxIndex + '" type="text" value="Voornaam @Achternaam">'))
         .append($('<td>').append('<input class="role" id="role_' + maxIndex + '">'))
-        .append($('<td>').append("Klik"))
-        .append($('<td>').append("PPN"))
+        .append($('<td>').append('<input onclick="thesaureer('+maxIndex+');" type="button" value="Zoek" id="thesaureerButton_'+maxIndex+'">'))
         )
       $('input[id="role_' + maxIndex + '"]').autocomplete({
       source: role_options

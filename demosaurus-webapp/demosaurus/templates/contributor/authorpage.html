@@ -16,6 +16,15 @@
 
  <h1>Relevante publicaties:</h1>
 
+ <table>
+     {% for publication in publications %}
+        <tr>
+            <td> {{publication['title']}} </td>
+        </tr>   
+     {% endfor %}
+
+ </table>
+
 
  
 {% endblock %}

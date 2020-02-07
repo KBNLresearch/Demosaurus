@@ -20,13 +20,14 @@ def authorpage(id):
     ).fetchone()
 
     # publications = db.execute(
-    #     ' SELECT *'
-    #     ' FROM publication'
-    #     ' JOIN authorship'
-    #     ' WHERE authorship.contributor_ppn = ?',
-    #     (id,)
-    # ).fetchall() 
+    #      ' SELECT *'
+    #      ' FROM publication'
+    #      ' JOIN authorship'
+    #      ' ON authorship.publication_isbn == publication.isbn'
+    #      ' WHERE authorship.contributor_ppn = ?',
+    #      (id,)
+    #  ).fetchall() 
     
-    return render_template('contributor/authorpage.html', author=author)
+    return render_template('contributor/authorpage.html', author=author, publications = [])
 
 
