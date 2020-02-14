@@ -2,20 +2,12 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script type=text/javascript src="{{url_for('static', filename='js/jquery-3.4.1.js') }}"></script>
+<script type=text/javascript> $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};</script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 
 <title>{% block title %}{% endblock %} - Demosaurus</title>
 
 <section class="content">
-  <header>  
-    {% block header %}{% endblock %}
-  </header>
-  {% for message in get_flashed_messages() %}
-    <div class="flash">{{ message }}</div>
-  {% endfor %}
+  <header>  {% block header %}{% endblock %} </header>
   {% block content %}{% endblock %}
-
 </section>
-<section >
-  {% block optional %}{% endblock %}
-</section>  

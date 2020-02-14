@@ -1,5 +1,5 @@
 from flask import (
-    Blueprint, flash, g, redirect, render_template, get_template_attribute, request, url_for, json
+    Blueprint, flash, g, redirect, render_template, get_template_attribute, request, url_for, jsonify
 )
 from werkzeug.exceptions import abort
 
@@ -44,10 +44,11 @@ def view(id):
             ' FROM author_roles'
         ).fetchall()
 
-    print(len(contributors),  'contributor records')
-    print(contributors[0].keys())  
+    #print(len(contributors),  'contributor records')
+    #print(contributors[0].keys())  
 
     return render_template('publication/view.html', publication = publication, contributors=contributors, role_list=roles_options)
+
 
 
 

@@ -1,5 +1,5 @@
 from flask import (
-    Blueprint, flash, g, redirect, render_template, get_template_attribute, request, url_for
+    Blueprint, flash, g, redirect, render_template, get_template_attribute, request, url_for, jsonify
 )
 from werkzeug.exceptions import abort
 
@@ -12,18 +12,32 @@ import re
 
 bp = Blueprint('link_thesaurus', __name__)
 
-@bp.route('/thesaureer_alt/', defaults={'author_name': 'Pietje @Puk'})
-@bp.route('/<author_name>/thesaureer_alt/')
-def thesaureer_alt(author_name):
-    print('In thesaureer_alt')
-    db = get_db()
-    nameparts = author_name.split('@')
-    
-    author_options = pd.read_sql_query('SELECT * FROM contributor WHERE contributor.foaf_name LIKE \'%'+nameparts[-1]+'%\'', con = db)
-    author_options['name_score']=author_options.apply(lambda row: score_names(row, nameparts[0], nameparts[-1]), axis=1)
-    author_options.sort_values(by='name_score', ascending=False, inplace=True)
-    print(author_options['name_score'])
-    return render_template('link_thesaurus/authorlist.html', author_name = author_name, author_options=list(author_options.itertuples()))    
+
+@bp.route('/_add_numbers')
+def add_numbers():
+    a = request.args.get('a', 0, type=int)
+    b = request.args.get('b', 0, type=int)
+    return jsonify(result=a + b)
+
+
+@bp.route('/thesaureer_2/')
+@bp.route('/<author_name>/thesaureer_2/')
+def thesaureer_2():
+    author_name = request.args.get('author_name', '', type=str)
+
+    if not author_name: 
+        author_options = pd.DataFrame()
+
+    else:
+        db = get_db()
+        nameparts = author_name.split('@')
+        
+        author_options = pd.read_sql_query('SELECT * FROM contributor WHERE contributor.foaf_name LIKE \'%'+nameparts[-1]+'%\'', con = db)
+        if len(author_options)>0:
+            author_options['name_score']=author_options.apply(lambda row: score_names(row, nameparts[0], nameparts[-1]), axis=1)
+            author_options.sort_values(by='name_score', ascending=False, inplace=True)
+    print(author_options.head())
+    return author_options.to_json(orient = 'records')
 
 
 def normalized_levenshtein(s1,s2):
