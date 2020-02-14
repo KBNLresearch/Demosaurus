@@ -15,8 +15,7 @@
     <tbody class="TFtable">
 	{% for author_option in author_options %}
     <tr> <td><a class="action"  href="#"
-
-        onClick="MyWindow=window.open('{{ url_for('contributor.authorpage', id=author_option['ppn'])}}','MyWindow','width=600,height=300'); return false;">{{author_option['ppn']}} </a> </td>
+        onClick="MyWindow=window.open('{{ url_for('contributor.authorpage', id=author_option['ppn'])}}','MyWindow','width=700,height=400'); return false;">{{author_option['ppn']}} </a> </td>
 	<td> {{author_option['foaf_name']}} </td>
     <td>{{author_option['birthyear']}}-{{author_option['deathyear']}}</td>
     <td class="score" value="{{author_option['name_score']}}"> {{author_option['name_score']|round|int}}</td>
@@ -28,7 +27,6 @@
 
 <script type="text/javascript">
     
-
 
 var getColorForPercentage = function(this_perc, low=0.5) {
     var percentColors = [

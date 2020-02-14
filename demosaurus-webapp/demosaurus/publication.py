@@ -1,10 +1,11 @@
 from flask import (
-    Blueprint, flash, g, redirect, render_template, get_template_attribute, request, url_for
+    Blueprint, flash, g, redirect, render_template, get_template_attribute, request, url_for, json
 )
 from werkzeug.exceptions import abort
 
 
 from demosaurus.db import get_db
+
 
 bp = Blueprint('publication', __name__)
 
@@ -17,7 +18,7 @@ def utility_processor():
             ' FROM author_roles'
         ).fetchall()
         print(roles)
-        return roles
+        return json.dump(list_of_roles)
     return dict(list_of_roles=list_of_roles)
 
 @bp.route('/<id>/view')
@@ -38,7 +39,7 @@ def view(id):
         (id,)
     ).fetchall()
 
-    roles = db.execute(
+    roles_options = db.execute(
             ' SELECT author_rolesID, legible, ggc_code'
             ' FROM author_roles'
         ).fetchall()
@@ -46,7 +47,7 @@ def view(id):
     print(len(contributors),  'contributor records')
     print(contributors[0].keys())  
 
-    return render_template('publication/view.html', publication = publication, contributors=contributors, role_list=roles)
+    return render_template('publication/view.html', publication = publication, contributors=contributors, role_list=roles_options)
 
 
 

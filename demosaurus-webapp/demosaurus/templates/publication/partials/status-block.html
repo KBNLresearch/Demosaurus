@@ -1,89 +1,108 @@
 <h1> Te controleren/ aan te vullen:</h1>
 <table id="statustable">
   <thead>
-  <tr>
-    <td/><td/>
-    <th> Name </th>
-    <th> Role </th>
-    <th> PPN </th>
+    <tr>
+      <td/><td/>
+      <th> Name </th>
+      <th> Role </th>
+      <th> PPN </th>
 
-  </tr>	
+    </tr>	
   </thead>
   <tbody>
-    <script> var maxIndex =0; </script>
   	{% for contributor in contributors %}
-	<tr>
-  	<td class="button"><input onclick="move_row(this,1);" type="button" value="&#8679;" /></td>
-    <td class="button"><input onclick="move_row(this,0);" type="button" value="&#8681;" /></td>
-    <td class='tdinput'><input id="aut_name_{{loop.index}}"  name='aut_name' type="text" value="{{contributor['givenname']}}{{contributor['prefix']}} @{{contributor['familyname']}}"/></td>
-  	<td class='tdinput'>
+   <tr id='row_{{loop.index}}' name="{{contributor['familyname']}}">
+     <td class="button"><input onclick="move_row(this,1);" type="button" value="&#8679;" /></td>
+     <td class="button"><input onclick="move_row(this,0);" type="button" value="&#8681;" /></td>
+     <td class='tdinput'><input id="aut_name_{{loop.index}}"  name='aut_name' type="text" value="{{contributor['givenname']}}{{contributor['prefix']}} @{{contributor['familyname']}}"/></td>
+     <td class='tdinput'>
       <input value="{{contributor['legible']}} [{{contributor['ggc_code']}}]" class="role" id="role_{{loop.index}}">
     </td>
-  	<td>
+    <td>
       <input type="button" value="Zoek" id="thesaureerButton_{{loop.index}}" onclick="thesaureer({{loop.index}})"/>
-</td>
-  	
-  	</tr>
-  		<script>maxIndex = {{loop.index}}; // keep track of the number of contributors: more may be added
-      </script> 
-  	{% endfor %}
-    </tbody>
-    <tfoot>  
-      <tr><td/><td/><td><input type="button" value="Voeg naam toe" onclick="add_row()" /></td></tr></tfoot>
+    </td>
+
+  </tr>
+
+  {% endfor %}
+</tbody>
+<tfoot>  
+  <tr><td/><td/><td><input type="button" value="Voeg naam toe" onclick="add_row()" /></td></tr></tfoot>
 </table>
 
 <script type=text/javascript> 
+  var role_options = [];
+  {% for role in role_list %}
+  role_options.push({
+    label: "{{role['legible']}} [{{role['ggc_code']}}]"
+  });
+  {%endfor%}
 
-  console.log('Ik besta')
+  $('input[class=role]').autocomplete({
+    source: role_options
+  });
 
-  //      var role_list = {{list_of_roles()}};
-      var role_options = [];
-    {% for role in role_list %}
-    role_options.push({
-      label: "{{role['legible']}} [{{role['ggc_code']}}]"
-    });
-    {%endfor%}
-
-     $('input[class=role]').autocomplete({
-      source: role_options
-    });
+  var maxIndex = $("#statustable > tbody > tr").length
 
   function move_row(e, up) {
-        var row = $(e).closest('tr');
-        if (up)
-            row.prev().before(row);
-        else
-            row.next().after(row);
-    }
+    var row = $(e).closest('tr');
+    if (up)
+      row.prev().before(row);
+    else
+      row.next().after(row);
+  }
 
-    function thesaureer(item){
-      if (typeof(item) === 'number'){
-        var index = item
-      }
-      else {
-        var id = item.id;
-        var index = id.substring(id.lastIndexOf("_")+1)
-      }
-      var inputId = "aut_name_" + index;
-      var authorname = $("#"+ inputId).val();
-      var url = "{{ url_for('link_thesaurus.thesaureer_alt', author_name='placeholder')}}".replace('placeholder', authorname);
-      $('#thesaureerframe').attr('src', url);
-     
-      var a = 0;
+  function thesaureer(item){
+    if (typeof(item) === 'number'){
+      var index = item
     }
+    else {
+      var id = item.id;
+      var index = id.substring(id.lastIndexOf("_")+1)
+    }
+    var inputId = "aut_name_" + index;
+    var authorname = $("#"+ inputId).val();
+    var url = "{{ url_for('link_thesaurus.thesaureer_alt', author_name='placeholder')}}".replace('placeholder', authorname);
+    $('#thesaureerframe').attr('src', url);
+  }
 
-    function add_row() {
-      maxIndex ++;
-      $("#statustable > tbody").append($('<tr>')
-        .append($('<td>').append('<input onclick="move_row(this,1);" type="button" value="&#8679;">')) 
-        .append($('<td>').append('<input onclick="move_row(this,0);" type="button" value="&#8681;">')) 
-        .append($('<td>').append('<input id="aut_name_' + maxIndex + '" type="text" value="Voornaam @Achternaam">'))
-        .append($('<td>').append('<input class="role" id="role_' + maxIndex + '">'))
-        .append($('<td>').append('<input onclick="thesaureer('+maxIndex+');" type="button" value="Zoek" id="thesaureerButton_'+maxIndex+'">'))
-        )
-      $('input[id="role_' + maxIndex + '"]').autocomplete({
+  function thesaureer_ajax(index){
+    var authornameId = "aut_name_" + index;
+    var authorname = $("#"+ authornameId).val();
+
+    $.ajax({
+      url: '/thesaureer_2',
+      data: authorname,
+      type: 'POST',
+      succes: function(response) {
+                console.log(response);
+            },
+      error: function(error) {
+                console.log(error);
+            }
+    });
+
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function(){
+       if (this.readyState == 4 && this.status == 200) {
+        document.getElementById("thesaureervak").innerHTML = 'blablabla'
+    }}
+    var url = "{{ url_for('link_thesaurus.thesaureer_alt', author_name='placeholder')}}".replace('placeholder', authorname);
+    $('#thesaureerframe').attr('src', url);
+  }
+
+  function add_row() {
+    maxIndex ++;
+    $("#statustable > tbody").append($('<tr>')
+      .append($('<td>').append('<input onclick="move_row(this,1);" type="button" value="&#8679;">')) 
+      .append($('<td>').append('<input onclick="move_row(this,0);" type="button" value="&#8681;">')) 
+      .append($('<td>').append('<input id="aut_name_' + maxIndex + '" type="text" placeholder="Voornaam @Achternaam">'))
+      .append($('<td>').append('<input class="role" id="role_' + maxIndex + '">'))
+      .append($('<td>').append('<input onclick="thesaureer('+maxIndex+');" type="button" value="Zoek" id="thesaureerButton_'+maxIndex+'">'))
+      )
+    $('input[id="role_' + maxIndex + '"]').autocomplete({
       source: role_options
     });
-    }
+  }
 
 </script>

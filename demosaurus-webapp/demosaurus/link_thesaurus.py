@@ -15,6 +15,7 @@ bp = Blueprint('link_thesaurus', __name__)
 @bp.route('/thesaureer_alt/', defaults={'author_name': 'Pietje @Puk'})
 @bp.route('/<author_name>/thesaureer_alt/')
 def thesaureer_alt(author_name):
+    print('In thesaureer_alt')
     db = get_db()
     nameparts = author_name.split('@')
     

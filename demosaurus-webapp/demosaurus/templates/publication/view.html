@@ -1,5 +1,12 @@
 {% extends 'base.html' %}
 
+{% block title %}{{publication['hoofdTitel_title']}}{% endblock %}
+
+{% block header %}
+  
+{% endblock %}
+
+
 {% block content %}
 
 <div style="width:15%;float:left">
@@ -13,6 +20,8 @@
 <div style="width:59%;float:left;border-left: 1px solid lightgray;padding: 5px;height: 250px; overflow: scroll;">
   {% include "publication/partials/status-block.html"%}
 </div>
+
+<p id='thesaureervak'/>
 
 {% endblock %}
 
