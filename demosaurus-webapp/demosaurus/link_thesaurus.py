@@ -33,10 +33,12 @@ def thesaureer_2():
         nameparts = author_name.split('@')
         
         author_options = pd.read_sql_query('SELECT * FROM contributor WHERE contributor.foaf_name LIKE \'%'+nameparts[-1]+'%\'', con = db)
+        print(author_options.head())
+
         if len(author_options)>0:
             author_options['name_score']=author_options.apply(lambda row: score_names(row, nameparts[0], nameparts[-1]), axis=1)
             author_options.sort_values(by='name_score', ascending=False, inplace=True)
-    print(author_options.head())
+
     return author_options.to_json(orient = 'records')
 
 

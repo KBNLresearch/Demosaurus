@@ -37,7 +37,7 @@ CREATE TABLE "authorship" (
   "role" INTEGER,
   "source" TEXT,
   "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY ("author_ppn") REFERENCES author (ppn),
+  FOREIGN KEY ("author_ppn") REFERENCES contributor (ppn),
   FOREIGN KEY ("publication_ppn") REFERENCES publication (ppn),
   FOREIGN KEY ("publication_isbn") REFERENCES onix (isbn)
 );

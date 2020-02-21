@@ -44,8 +44,8 @@ def view(id):
             ' FROM author_roles'
         ).fetchall()
 
-    #print(len(contributors),  'contributor records')
-    #print(contributors[0].keys())  
+    print(len(contributors),  'contributor records')
+    print(contributors[0].keys())
 
     return render_template('publication/view.html', publication = publication, contributors=contributors, role_list=roles_options)
 

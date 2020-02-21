@@ -1,10 +1,18 @@
+<script type=text/javascript src="{{url_for('static', filename='js/thesaureer-block.js') }}"></script>
+
 <h1 id=thesaureer_title></h1>
 
 <p id='placeholder'></p>
 
 <!--<div style="height: 600px; overflow: scroll;">-->
-<table id=author_list class='table-scroll-body'>
-    <thead></thead>
-    <tbody class="TFtable" ></tbody>
+<table id=author_list class='fixed_header'>
+    <!--colgroup>
+        <col span = "3" name ="generalinfo" width="100px">
+        <col span="1" name="scores">
+    </colgroup-->
+    <thead class="head"></thead>
+    <tbody class="zebra"></tbody>
     <tfoot></tfoot>
 </table>
+
+

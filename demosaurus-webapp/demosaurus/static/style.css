@@ -1,3 +1,4 @@
+
 html { font-family: sans-serif; background: #eee; padding: 1rem; }
 body { max-width: 1500px; margin: 0 auto; background: white; }
 h1 { font-family: serif; color: #377ba8; margin: 1rem 0; }
@@ -19,16 +20,37 @@ section {clear: both;}
 .content form { margin: 1em 0; display: flex; flex-direction: column; }
 .content label { font-weight: bold; margin-bottom: 0.5em; }
 .content textarea { min-height: 12em; resize: vertical; }
-.TFtable tr:nth-child(odd){background: #b8d1f3;}
-.TFtable tr:nth-child(even){background: #dae5f4;}
+.zebra tr:nth-child(odd){background: #b8d1f3;}
+.zebra tr:nth-child(even){background: #dae5f4;}
 input.danger { color: #cc2f2e; }
 input[type=submit] { align-self: start; min-width: 10em; padding: 0;}
 input[type=button] {padding: 0; background: #377ba8; color: white;}
-table.table-scroll-body {
-  position: relative;
-  height: 200px}
-table.table-scroll-body tbody {
-    position: absolute;
-    width: 100%;
-    height: 150px;
-    overflow: scroll; }
+
+.fixed_header tbody{
+  display:block;
+  padding:2px;
+  overflow:auto;
+  height:50px;
+  width:100%;
+}
+
+.fixed_header thead tr{
+  display:block;
+}
+
+.fixed_header thead th{
+  vertical-align:bottom;
+  text-align:right;
+}
+
+
+.ppn_cell {width:100px; overflow: hidden; text-overflow: ellipsis;}
+.name_cell {width:200px; overflow: hidden; text-overflow: ellipsis;}
+.years_cell {width:80px; overflow: hidden; text-overflow: ellipsis;}
+td.score_cell {width:30px; overflow: hidden; text-overflow: ellipsis; horizontal-align:right}
+th.score_cell {width:30px; height:50px; white-space: nowrap; vertical-align:bottom;}
+
+th.score_cell > div {
+  transform: translate(-5px, -5px) rotate(315deg);
+  width: 30px;
+}
