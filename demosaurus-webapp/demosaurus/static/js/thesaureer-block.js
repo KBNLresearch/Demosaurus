@@ -1,19 +1,21 @@
 function add_to_author_list(row){
 
     var url = "{{ url_for('contributor.authorpage', id='placeholder')}}".replace('placeholder', row.ppn);
-    var link = '<a class="action"  href="#" onClick="open_popup(\''+url+'\')"; return false;>'+row.ppn+'</a>';
+
+    console.log(url);
+
+    var link = '<a class="action"  href="#" onClick="open_popup(\''+url+'\')"; return false;>'+row.foaf_name+'</a>';
+    console.log(link);
 
     var years = [row.birthyear,'-',row.deathyear].join('');
 
     $("#author_list > tbody").append($('<tr>')
-      .append($('<td class="ppn_cell" >').append(link))
-      .append($('<td class="name_cell">').text(row.foaf_name))
+      .append($('<td class="ppn_cell" >').text(row.ppn))
+      .append($('<td class="name_cell">').append(link))
       .append($('<td class="years_cell">').text(years))
-      .append($('<td class="score_cell">',{css: {"backgroundColor":getColorForPercentage(row.name_score)}}).text(Math.round(row.name_score)))
+      .append($('<td class="score_cell">').css("backgroundColor",getColorForPercentage(row.name_score)).text(Math.round(row.name_score)))
       );
   }
-
-
 
 
   var getColorForPercentage = function(this_perc, low=0.5) {
@@ -51,11 +53,8 @@ function add_to_author_list(row){
         }
         else {
           $('#placeholder').empty()
-          if ($("#author_list > thead > tr").length<2){
+          if ($("#author_list > thead > tr").length<1){
               $("#author_list > thead").append($('<tr>')
-//                .append($('<td/>')).append($('<td/>')).append($('<td/>')).append($('<th scope="col">')
- //                 .text('Scores'))
-  //              ).append($('<tr>')
                 .append($('<th scope="col" class="ppn_cell">').text('PPN'))
                 .append($('<th scope="col" class="name_cell">').text('Name'))
                 .append($('<th scope="col" class="years_cell">').text('Leefjaren'))
@@ -65,8 +64,7 @@ function add_to_author_list(row){
 
           $("#author_list > tbody").empty()
           for(var i = 0; i< response.length; i++){
-            console.log(response[i].id)
-            add_to_author_list(response[i])
+            add_to_author_list(response[i]);
           }
 
         }

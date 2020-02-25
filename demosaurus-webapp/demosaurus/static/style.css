@@ -2,15 +2,18 @@
 html { font-family: sans-serif; background: #eee; padding: 1rem; }
 body { max-width: 1500px; margin: 0 auto; background: white; }
 h1 { font-family: serif; color: #377ba8; margin: 1rem 0; }
-table {padding: 1;}
-td, th {vertical-align:top;}
-a { color: #377ba8; }
-hr { border: none; border-top: 1px solid lightgray; }
+
+
+a { color: #377ba8; } /* clickables */
+
+hr { border: none; border-top: 1px solid lightgray; } /* horizontal rule */
+
 nav { background: lightgray; display: flex; align-items: center; padding: 0 0.5rem; }
 nav h1 { flex: auto; margin: 0; }
 nav h1 a { text-decoration: none; padding: 0.25rem 0.5rem; }
 nav ul  { display: flex; list-style: none; margin: 0; padding: 0; }
 nav ul li a, nav ul li span, header .action { display: block; padding: 0.5rem; }
+
 section {clear: both;}
 .content { padding: 0 1rem 1rem; }
 .content > header { border-bottom: 1px solid lightgray; display: flex; align-items: flex-end; }
@@ -20,12 +23,19 @@ section {clear: both;}
 .content form { margin: 1em 0; display: flex; flex-direction: column; }
 .content label { font-weight: bold; margin-bottom: 0.5em; }
 .content textarea { min-height: 12em; resize: vertical; }
-.zebra tr:nth-child(odd){background: #b8d1f3;}
-.zebra tr:nth-child(even){background: #dae5f4;}
+
 input.danger { color: #cc2f2e; }
 input[type=submit] { align-self: start; min-width: 10em; padding: 0;}
 input[type=button] {padding: 0; background: #377ba8; color: white;}
 
+/*        Table stuff:             */
+td, th {vertical-align:top;}
+
+.zebra tr:nth-child(odd){background: #b8d1f3;}
+.zebra tr:nth-child(even){background: #dae5f4;}
+
+
+/* class fixed_header: body is scrollable */
 .fixed_header tbody{
   display:block;
   padding:2px;
@@ -33,24 +43,23 @@ input[type=button] {padding: 0; background: #377ba8; color: white;}
   height:50px;
   width:100%;
 }
-
-.fixed_header thead tr{
-  display:block;
-}
-
-.fixed_header thead th{
-  vertical-align:bottom;
-  text-align:right;
-}
+.fixed_header thead tr{display:block;}
+.fixed_header thead th{vertical-align:bottom; text-align:center;}
 
 
-.ppn_cell {width:100px; overflow: hidden; text-overflow: ellipsis;}
-.name_cell {width:200px; overflow: hidden; text-overflow: ellipsis;}
-.years_cell {width:80px; overflow: hidden; text-overflow: ellipsis;}
-td.score_cell {width:30px; overflow: hidden; text-overflow: ellipsis; horizontal-align:right}
-th.score_cell {width:30px; height:50px; white-space: nowrap; vertical-align:bottom;}
+/* table listing NTA-entries: specified column widths*/
 
+.ppn_cell {width:100px; max-width: 100px; overflow: hidden; text-overflow: ellipsis;}
+.name_cell {width:200px; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space:nowrap;}
+.years_cell {width:80px; max-width: 80px;overflow: hidden; text-overflow: ellipsis; text-align:center;}
+.score_cell {width:30px; max-width: 300px; overflow: hidden; text-overflow: ellipsis;}
+
+td.score_cell {text-align:right}
+
+/* score-cell header: rotate and translate a bit, to save space*/
+th.score_cell {height:50px;}
 th.score_cell > div {
-  transform: translate(-5px, -5px) rotate(315deg);
-  width: 30px;
+  transform: translate(0px, -12px) rotate(315deg);
+  text-align: left;
+  align: bottom;
 }
