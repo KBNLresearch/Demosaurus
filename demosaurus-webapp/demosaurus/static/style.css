@@ -1,6 +1,6 @@
 
-html { font-family: sans-serif; background: #eee; padding: 1rem; }
-body { max-width: 1500px; margin: 0 auto; background: white; }
+html { font-family: sans-serif; background: #eee; padding: 1rem; height: 95% }
+body { max-width: 1500px; margin: 0 auto; background: white; min-height: 100%}
 h1 { font-family: serif; color: #377ba8; margin: 1rem 0; }
 
 
@@ -40,7 +40,7 @@ td, th {vertical-align:top;}
   display:block;
   padding:2px;
   overflow:auto;
-  height:50px;
+  height:400px;
   width:100%;
 }
 .fixed_header thead tr{display:block;}
