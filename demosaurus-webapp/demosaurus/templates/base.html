@@ -6,6 +6,8 @@
 <script type=text/javascript> $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};</script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 
+{{ JSGlue.include() }}
+
 <title>{% block title %}{% endblock %} - Demosaurus</title>
 
 <section class="content">

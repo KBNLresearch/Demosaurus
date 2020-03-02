@@ -1,22 +1,19 @@
 function add_to_author_list(row){
 
-    var url = "{{ url_for('contributor.authorpage', id='placeholder')}}".replace('placeholder', row.ppn);
-
-    console.log(url);
-
-    var link = '<a class="action"  href="#" onClick="open_popup(\''+url+'\')"; return false;>'+row.foaf_name+'</a>';
-    console.log('link',link);
-
-
-    var choose = $('<a class="action" href="#" onclick="choose_ppn(\'placeholder\')"; return false;>'.replace('placeholder', row.ppn));
 
     var years = [row.birthyear,'-',row.deathyear].join('');
 
     $("#author_list > tbody").append($('<tr>')
-      .append($('<td class="ppn_cell" >').append(choose.text(row.ppn)))
-      .append($('<td class="name_cell">').append(link))
-      .append($('<td class="years_cell">').text(years))
-      .append($('<td class="score_cell">').css("backgroundColor",getColorForPercentage(row.name_score)).text(Math.round(row.name_score)))
+      .append($('<td class="ppn_cell" >')
+        .append($('<a class="action" href="#" onclick="choose_ppn(\''+row.ppn+'\')"; return false;>')
+          .text(row.ppn)))
+      .append($('<td class="name_cell">')
+        .append($('<a class="action"  href="#" onClick="open_popup(\''+Flask.url_for('contributor.authorpage', {'id':row.ppn})+'\')"; return false;>')
+          .text(row.foaf_name)))
+      .append($('<td class="years_cell">')
+        .text(years))
+      .append($('<td class="score_cell">').css("backgroundColor",getColorForPercentage(row.name_score))
+        .text(Math.round(row.name_score)))
       );
   }
 
@@ -73,9 +70,5 @@ function add_to_author_list(row){
         }
 
 function choose_ppn(ppn) {
-  console.log('choose this!',ppn)
-
-  console.log('into', $('#ppn_'+focus_index))
   $('#ppn_'+focus_index).val(ppn); 
-
 }
