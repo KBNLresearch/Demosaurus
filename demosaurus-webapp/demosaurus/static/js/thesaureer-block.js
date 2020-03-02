@@ -12,8 +12,14 @@ function add_to_author_list(row){
           .text(row.foaf_name)))
       .append($('<td class="years_cell">')
         .text(years))
+      .append($('<td class="score_cell">').css("backgroundColor",getColorForPercentage(row.score))
+        .text(Math.round(100*row.score)))
       .append($('<td class="score_cell">').css("backgroundColor",getColorForPercentage(row.name_score))
-        .text(Math.round(row.name_score)))
+        .text(Math.round(100*row.name_score)))
+      .append($('<td class="score_cell">').css("backgroundColor",getColorForPercentage(row.style_score))
+        .text(Math.round(100*row.style_score)))
+      .append($('<td class="score_cell">').css("backgroundColor",getColorForPercentage(row.genre_score))
+        .text(Math.round(100*row.genre_score)))
       );
   }
 
@@ -24,7 +30,7 @@ function add_to_author_list(row){
     { pct: low, color: { r: 0xff, g: 0xff, b: 0 } },
     { pct: 1.0, color: { r: 0x00, g: 0xff, b: 0 } } ];
 
-    this_perc = Number(this_perc) / 100;
+    this_perc = Number(this_perc) ;
     for (var i = 1; i < percentColors.length - 1; i++) {
       if (this_perc < percentColors[i].pct) {
         break;
@@ -58,7 +64,10 @@ function add_to_author_list(row){
                 .append($('<th scope="col" class="ppn_cell">').text('PPN'))
                 .append($('<th scope="col" class="name_cell">').text('Name'))
                 .append($('<th scope="col" class="years_cell">').text('Leefjaren'))
-                .append($('<th scope="col" class="score_cell">').append($('<div>').text('Name'))));
+                .append($('<th scope="col" class="score_cell">').append($('<div>').text('Totaal')))
+                .append($('<th scope="col" class="score_cell">').append($('<div>').text('Name')))
+                .append($('<th scope="col" class="score_cell">').append($('<div>').text('Stijl')))
+                .append($('<th scope="col" class="score_cell">').append($('<div>').text('Genre'))));
             }
           }
 

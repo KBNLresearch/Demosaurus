@@ -9,6 +9,7 @@ from demosaurus.db import get_db
 import pandas as pd
 from nltk.metrics import distance
 import re
+import numpy as np
 
 bp = Blueprint('link_thesaurus', __name__)
 
@@ -37,7 +38,15 @@ def thesaureer_2():
 
         if len(author_options)>0:
             author_options['name_score']=author_options.apply(lambda row: score_names(row, nameparts[0], nameparts[-1]), axis=1)
-            author_options.sort_values(by='name_score', ascending=False, inplace=True)
+            author_options['genre_score']=author_options.apply(lambda row: score_genre(None, None), axis=1)
+            author_options['style_score']=author_options.apply(lambda row: score_style(None, None), axis=1)
+
+            scores = ['name_score','genre_score','style_score']
+
+            author_options['score']= author_options[scores].apply(lambda row: np.average(row, weights=[0.5,0.2,0.2]), axis=1)
+
+
+            author_options.sort_values(by='score', ascending=False, inplace=True)
 
     return author_options.to_json(orient = 'records')
 
@@ -66,4 +75,10 @@ def score_names(authorshipItem, given_name, family_name):
             firstNameScore *= 0.9 if an[i][0] == cn[i][0] else .5
         else:
             firstNameScore *= normalized_levenshtein(an[i],cn[i])
-    return (50*familyNameScore+50*firstNameScore)
+    return (.5*familyNameScore+.5*firstNameScore)
+
+def score_genre(publication, reference_publications):
+    return 0.8
+
+def score_style(publication, reference_publications):
+    return 0.8
