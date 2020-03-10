@@ -1,7 +1,6 @@
 var focus_index;
 
   function init(){
-
     for(var i = 0; i< contributors.length; i++){
             add_status_row(name=contributors[i].name);
     }
@@ -9,6 +8,7 @@ var focus_index;
 
   function add_status_row(name="") {
     $("#statustable > tbody").append($('<tr id="row_' + maxIndex+'">')
+      .append($('<td>').append('<input onclick="delete_row(this);" type="button" value="&#10007;">'))
       .append($('<td>').append('<input onclick="move_row(this,1);" type="button" value="&#8679;">'))
       .append($('<td>').append('<input onclick="move_row(this,0);" type="button" value="&#8681;">'))
       .append($('<td>').append('<input id="aut_name_' + maxIndex + '" type="text" placeholder="Voornaam @Achternaam" value="'+ name+'">'))
@@ -21,6 +21,7 @@ var focus_index;
     });
     maxIndex ++;
   }
+
 
   function activate_row(index) {
     deactivate_rows();
@@ -61,6 +62,7 @@ var focus_index;
 
   function export_info() {
     console.log('Export button')
+
     deactivate_rows();
     
     var kmcs = [];

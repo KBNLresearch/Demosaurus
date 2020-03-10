@@ -1,11 +1,10 @@
 <script type=text/javascript src="{{url_for('static', filename='js/status-block.js') }}"></script>
 
-<input type="button" value="Exporteer" onclick="export_info()" />
-<h1> Auteurs: </h1>
+<h1> Te controleren/ aan te vullen:</h1>
 <table id="statustable">
   <thead>
     <tr>
-      <td/><td/>
+      <td/><td/><td/>
       <th> Name </th>
       <th> Role </th>
       <th> PPN </th>
@@ -16,12 +15,8 @@
 <!-- This is where authors may be pre-filled and/ or manually added (client-side)-->
 </tbody>
 <tfoot>  
-  <tr><td/><td/><td><input type="button" value="Voeg naam toe" onclick="add_status_row()" /></td></tr></tfoot>
+  <tr><td/><td/><td/><td><input type="button" value="Voeg naam toe" onclick="add_status_row()" /></td></tr></tfoot>
 </table>
-
-
-<h1> Onderwerp: </h1>
-<input type="button" value="Suggesties (Annif)" onclick="suggest_topics()" />
 
 <script type=text/javascript> 
   var role_options = [];
