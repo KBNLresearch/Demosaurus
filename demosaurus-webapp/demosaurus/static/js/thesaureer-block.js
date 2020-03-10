@@ -79,5 +79,6 @@ function add_to_author_list(row){
         }
 
 function choose_ppn(ppn) {
+  console.log('Choose', ppn);
   $('#ppn_'+focus_index).val(ppn); 
 }

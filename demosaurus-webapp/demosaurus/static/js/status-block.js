@@ -4,7 +4,7 @@ var focus_index;
 
     for(var i = 0; i< contributors.length; i++){
             add_status_row(name=contributors[i].name);
-  }
+    }
   }
 
   function add_status_row(name="") {
@@ -23,14 +23,20 @@ var focus_index;
   }
 
   function activate_row(index) {
+    deactivate_rows();
     focus_index = index;
 
+    $('#ppn_'+index).css("backgroundColor","Chartreuse");
+    $('#row_'+index).css("backgroundColor","Chartreuse");
+
+  }
+
+  function deactivate_rows() {
+    focus_index = -1;
+
     $("#statustable > tbody > tr").css("backgroundColor","");
-    $(".ppn").css("backgroundColor","");
-
-    $('#ppn_'+index).css("backgroundColor","red");
-    $('#row_'+index).css("backgroundColor","red");
-
+    $(".ppn").css("backgroundColor","");    
+    $(".role").css("backgroundColor","");    
   }
 
   function thesaureer(index){
@@ -55,6 +61,46 @@ var focus_index;
 
   function export_info() {
     console.log('Export button')
+    deactivate_rows();
+    
+    var kmcs = [];
+
+    var rows = $('#statustable > tbody > tr');
+    for (var i=0; i < rows.length; i++) {
+      var id = rows[i].id.split('_')[1];
+      console.log('row', id)
+      kmc = '301'+i;
+      kmc += '\t'+ $('#aut_name_'+id).val()
+
+      role = $('#role_'+id).val()
+      if (role) { 
+        role = role.replace(/(^.*\[|\].*$)/g, ''); // get the role-code bit
+        kmc += '$'+ role +'$';
+      }
+      else {
+        $('#role_'+id).css("backgroundColor","red");
+      }
+
+      ppn = $('#ppn_'+id).val()
+      if (ppn) {
+        kmc += '!'+ ppn +'!';
+      }
+      else {
+        $('#ppn_'+id).css("backgroundColor","red");
+      }
+
+
+      kmcs.push(kmc)
+
+    }
+
+    
+    $('#thesaureer_title').text('KMCS:');
+    $("#author_list > thead").empty();    
+    $("#author_list > tbody").empty();
+    //'#placeholder').textContent('Hier komen KMCs\n'+kmcs.join("\r\n"));
+    $('#placeholder').html("<p>" + kmcs.join("</p><p>") + "</p>");
+    console.log(kmcs.join("</p><p>"))
 
   }
 
