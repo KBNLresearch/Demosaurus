@@ -52,3 +52,13 @@ var focus_index;
         }
       });
   }
+
+  function export_info() {
+    console.log('Export button')
+
+  }
+
+  function suggest_topics() {
+    console.log('Annif button')
+
+  }
