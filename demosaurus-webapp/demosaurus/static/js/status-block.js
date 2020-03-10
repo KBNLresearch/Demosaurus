@@ -1,6 +1,9 @@
 var focus_index;
 
   function init(){
+
+    document.getElementById("contributors_tab").click();
+
     for(var i = 0; i< contributors.length; i++){
             add_status_row(name=contributors[i].name);
     }
@@ -64,6 +67,8 @@ var focus_index;
     console.log('Export button')
 
     deactivate_rows();
+
+    var allgood = true; 
     
     var kmcs = [];
 
@@ -81,6 +86,7 @@ var focus_index;
       }
       else {
         $('#role_'+id).css("backgroundColor","red");
+        allgood = false; 
       }
 
       ppn = $('#ppn_'+id).val()
@@ -89,12 +95,18 @@ var focus_index;
       }
       else {
         $('#ppn_'+id).css("backgroundColor","red");
+        allgood = false; 
       }
 
 
       kmcs.push(kmc)
-
     }
+
+      if (! allgood) {
+        //$('#contributors_tab').css("backgroundColor","red");
+        $('#export').append('<br>Let op: niet alle auteursinformatie is volledig ingevuld!');
+
+      }
 
     
     $('#thesaureer_title').text('KMCS:');

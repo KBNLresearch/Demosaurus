@@ -1,6 +1,13 @@
 <script type=text/javascript src="{{url_for('static', filename='js/status-block.js') }}"></script>
 
-<h1> Te controleren/ aan te vullen:</h1>
+
+<div class="tab">
+  <button class="tablinks" onclick="openTab(event, 'contributors')" id = "contributors_tab">Auteurs</button>
+  <button class="tablinks" onclick="openTab(event, 'subject')" id = "subject_tab">Onderwerp</button>
+  <button class="tablinks" onclick="openTab(event, 'export'); export_info()" id = "export_tab">Exporteer</button>
+</div>
+
+<div id="contributors" class="tabcontent">
 <table id="statustable">
   <thead>
     <tr>
@@ -9,7 +16,7 @@
       <th> Role </th>
       <th> PPN </th>
 
-    </tr>	
+    </tr> 
   </thead>
   <tbody>
 <!-- This is where authors may be pre-filled and/ or manually added (client-side)-->
@@ -17,6 +24,15 @@
 <tfoot>  
   <tr><td/><td/><td/><td><input type="button" value="Voeg naam toe" onclick="add_status_row()" /></td></tr></tfoot>
 </table>
+</div>
+
+<div id="subject" class="tabcontent">
+<input type="button" value="Suggesties (Annif)" onclick="suggest_topics()" />
+</div>
+
+<div id="export" class="tabcontent">
+Controleer KMC's hieronder, kopiëer en plak naar WinIBW
+</div>
 
 <script type=text/javascript> 
   var role_options = [];
