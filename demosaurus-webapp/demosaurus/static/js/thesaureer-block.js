@@ -62,10 +62,10 @@ function add_to_author_list(row){
           if ($("#author_list > thead > tr").length<1){
               $("#author_list > thead").append($('<tr>')
                 .append($('<th scope="col" class="ppn_cell">').text('PPN'))
-                .append($('<th scope="col" class="name_cell">').text('Name'))
+                .append($('<th scope="col" class="name_cell">').text('Naam'))
                 .append($('<th scope="col" class="years_cell">').text('Leefjaren'))
                 .append($('<th scope="col" class="score_cell">').append($('<div>').text('Totaal')))
-                .append($('<th scope="col" class="score_cell">').append($('<div>').text('Name')))
+                .append($('<th scope="col" class="score_cell">').append($('<div>').text('Naam')))
                 .append($('<th scope="col" class="score_cell">').append($('<div>').text('Stijl')))
                 .append($('<th scope="col" class="score_cell">').append($('<div>').text('Genre'))));
             }

@@ -12,8 +12,9 @@
   <thead>
     <tr>
       <td/><td/><td/>
-      <th> Name </th>
-      <th> Role </th>
+      <th> Naam </th>
+      <th> Rol </th>
+      <th> <div style="width:0; display: flex; justify-content: center;"> Primair? </div></th>
       <th> PPN </th>
 
     </tr> 
@@ -22,7 +23,7 @@
 <!-- This is where authors may be pre-filled and/ or manually added (client-side)-->
 </tbody>
 <tfoot>  
-  <tr><td/><td/><td/><td><input type="button" value="Voeg naam toe" onclick="add_status_row()" /></td></tr></tfoot>
+  <tr><td/><td/><td/><td><input type="button" value="Voeg naam toe" onclick="add_status_row()" /></td><td/></tr></tfoot>
 </table>
 </div>
 
@@ -32,7 +33,9 @@
 
 <div id="export" class="tabcontent">
 Controleer KMC's hieronder, kopiëer en plak naar WinIBW
+<div id="message"> Eventuele waarschuwingen </div>
 </div>
+
 
 <script type=text/javascript> 
   var role_options = [];
