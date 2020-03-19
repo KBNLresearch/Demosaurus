@@ -23,15 +23,23 @@
 
  <h1>Relevante publicaties:</h1>
  <hr/>
-
- <table>
-     {% for publication in publications %}
-        <tr>
-            <td> {{publication['title']}} </td>
-        </tr>   
-     {% endfor %}
-
- </table>
+{% if publications|length <1 %}
+<div>No matches</div>
+{% else %}
+<table >
+    <thead >
+        <tr><td>Titel</td><td/><td/></tr>
+    </thead>
+    <tbody class="zebra">
+    {% for publication in publications %}
+    <tr> 
+        <td> {{publication['kmc_4000'].split('/')[0].replace('@','')}} </td>
+        <td class="score_cell",  style="background-color:"getColorForPercentage(80)> 80</td>
+    </tr>
+    {% endfor %}
+</tbody>
+</table>
+{% endif %}
 
 
  

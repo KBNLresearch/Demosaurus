@@ -23,7 +23,21 @@ def authorpage(id):
         ' FROM contributor WHERE contributor.ppn = ?',
         (id,id,id,id)
     ).fetchone()  
+
+    publications = db.execute(
+        'WITH ppn AS (SELECT ? AS value)'
+        'SELECT * FROM publication, ppn'
+        '       WHERE instr(kmc_3000, ppn.value) > 0'
+        '          OR instr(kmc_3001, ppn.value) > 0'
+        '          OR instr(kmc_3002, ppn.value) > 0'
+        '          OR instr(kmc_3003, ppn.value) > 0'
+        '          OR instr(kmc_301x_1, ppn.value) > 0'
+        '          OR instr(kmc_301x_2, ppn.value) > 0'
+        '          OR instr(kmc_301x_3, ppn.value) > 0'
+        '          OR instr(kmc_301x_4, ppn.value) > 0',
+        (id,)
+        ).fetchall()
     
-    return render_template('contributor/authorpage.html', author=author, publications = [])
+    return render_template('contributor/authorpage.html', author=author, publications =publications)
 
 
