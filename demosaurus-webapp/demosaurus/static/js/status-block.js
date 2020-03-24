@@ -16,7 +16,7 @@ function add_status_row(name="") {
     .append($('<td>').append('<input onclick="move_row(this,0);" type="button" value="&#8681;">'))
     .append($('<td>').append('<input id="aut_name_' + maxIndex + '" type="text" placeholder="Voornaam @Achternaam" value="'+ name+'">'))
     .append($('<td>').append('<input class="role" id="role_' + maxIndex + '">'))
-    .append($('<td>').append('<input type="checkbox" value="Primair" checked>'))
+    .append($('<td>').append('<input id="is_primary_' + maxIndex + '" type="checkbox" value="Primair" checked>'))
     .append($('<td>').append('<input class="ppn" id="ppn_' + maxIndex + '">'))
     .append($('<td>').append('<input onclick="thesaureer('+maxIndex+');" type="button" value="Zoek in NTA" id="thesaureerButton_'+maxIndex+'">'))
     )
@@ -73,15 +73,16 @@ function export_info() {
   var allroles = true; 
   var allppns = true; 
 
-  var kmcs = [];
+  primary_authors = [];
+  secundary_authors = [];
+ 
 
+  // build up kmc contents for authors: authorname$role$!ppn!viafname
   var rows = $('#statustable > tbody > tr');
   for (var i=0; i < rows.length; i++) {
     var id = rows[i].id.split('_')[1];
     console.log('row', id);
-    kmc = '301'+i;
-    kmc += '\t'+ $('#aut_name_'+id).val()
-
+    kmc = $('#aut_name_'+id).val()
     role = $('#role_'+id).val()
     if (role) { 
         role = role.replace(/(^.*\[|\].*$)/g, ''); // get the role-code bit
@@ -100,10 +101,15 @@ function export_info() {
         $('#ppn_'+id).css("backgroundColor","red");
         allppns = false; 
       }
-
-      kmcs.push(kmc)
+      console.log('checbox:',($('#is_primary_'+id)));
+      console.log('checked:',($('#is_primary_'+id).checked));
+      if ($('#is_primary_'+id).is(':checked')){
+        primary_authors.push(kmc)
+      }
+      else {secundary_authors.push(kmc)}
     }
 
+    // Report about the completeness of the input
     console.log('allroles:', allroles, 'allppns:', allppns)
     if (! allroles) {
         //$('#contributors_tab').css("backgroundColor","red");
@@ -119,11 +125,19 @@ function export_info() {
       $("#author_list > thead").empty();    
       $("#author_list > tbody").empty();
 
-    $('#placeholder').html("<p>" + kmcs.join("</p><p>") + "</p>");
-    console.log(kmcs.join("</p><p>"))
+    
+    // Serve collected information in the web application
+    all_kmcs = ''
+    for (var i=0; i < primary_authors.length; i++) {
+      all_kmcs += "<p>300"+i+"\t"+primary_authors[i]+"</p>";
+    }
+    for (var i=0; i < secundary_authors.length; i++) {
+      all_kmcs += "<p>301"+i+"\t"+secundary_authors[i]+"</p>";
+    }
+    $('#placeholder').html(all_kmcs);
   }
 
   function suggest_topics() {
     console.log('Annif button clicked')
-
+    $('#placeholder').html('Annif API not connected');
   }
