@@ -37,7 +37,7 @@ function openTab(evt, tabName){
 
 }
 
-var getColorForPercentage = function(this_perc, low=0.5) {
+var getColorForPercentage = function(this_perc, saturation=1.0, low=0.5) {
     var percentColors = [
     { pct: 0.0, color: { r: 0xff, g: 0x00, b: 0 } },
     { pct: low, color: { r: 0xff, g: 0xff, b: 0 } },
@@ -60,5 +60,5 @@ var getColorForPercentage = function(this_perc, low=0.5) {
       g: Math.floor(lower.color.g * pctLower + upper.color.g * pctUpper),
       b: Math.floor(lower.color.b * pctLower + upper.color.b * pctUpper)
     };
-    return 'rgb(' + [color.r, color.g, color.b].join(',') + ')';
+    return 'rgba(' + [color.r, color.g, color.b, saturation].join(',') + ')';
   };

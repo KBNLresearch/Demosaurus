@@ -52,17 +52,19 @@ td, th {vertical-align:top;}
 .ppn_cell {width:100px; max-width: 100px; overflow: hidden; text-overflow: ellipsis;}
 .name_cell {width:200px; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space:nowrap;}
 .years_cell {width:80px; max-width: 80px;overflow: hidden; text-overflow: ellipsis; text-align:center;}
-.score_cell {width:30px; max-width: 30px; overflow: hidden; text-overflow: ellipsis;}
+/*.score_cell {width:30px; max-width: 30px; overflow: hidden; text-overflow: ellipsis;}*/
 
-td.score_cell {text-align:right}
+
+td.score_cell {text-align:right; width: 30px; background-color: white}
 
 /* score-cell header: rotate and translate a bit, to save space*/
-th.score_cell {height:50px; width: 30px; }
+th.score_cell {height:140px; white-space: nowrap; }
 th.score_cell > div {
-  transform: translate(0px, -12px) rotate(315deg);
-  text-align: left;
-  overflow: visible;
-  align: bottom;
+  transform: translate(18px, -2px) rotate(315deg);
+  width: 30px}
+th.score_cell > div > span {
+  border-bottom: 1px solid #ccc;
+  padding: 5px 10px;
 }
 
 

@@ -18,7 +18,7 @@ function add_status_row(name="") {
     .append($('<td>').append('<input class="role" id="role_' + maxIndex + '">'))
     .append($('<td>').append('<input id="is_primary_' + maxIndex + '" type="checkbox" value="Primair" checked>'))
     .append($('<td>').append('<input class="ppn" id="ppn_' + maxIndex + '">'))
-    .append($('<td>').append('<input onclick="thesaureer('+maxIndex+');" type="button" value="Zoek in NTA" id="thesaureerButton_'+maxIndex+'">'))
+    .append($('<td>').append('<input onclick="thesaureer('+maxIndex+');" type="button" value="&#128269;" id="thesaureerButton_'+maxIndex+'">'))
     )
   $('input[id="role_' + maxIndex + '"]').autocomplete({
     source: role_options

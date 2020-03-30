@@ -37,9 +37,9 @@ def thesaureer_2():
         print(author_options.head())
 
         if len(author_options)>0:
-            author_options['name_score']=author_options.apply(lambda row: score_names(row, nameparts[0], nameparts[-1]), axis=1)
-            author_options['genre_score']=author_options.apply(lambda row: score_genre(None, None), axis=1)
-            author_options['style_score']=author_options.apply(lambda row: score_style(None, None), axis=1)
+            author_options=pd.concat((author_options, author_options.apply(lambda row: score_names(row, nameparts[0], nameparts[-1]), axis=1)), axis=1)
+            author_options=pd.concat((author_options, author_options.apply(lambda row: score_genre(None,None), axis=1)), axis=1)
+            author_options=pd.concat((author_options, author_options.apply(lambda row: score_style(None,None), axis=1)), axis=1)
 
             scores = ['name_score','genre_score','style_score']
 
@@ -59,26 +59,33 @@ def normalized_levenshtein(s1,s2):
 
 def score_names(authorshipItem, given_name, family_name):
     familyNameScore =  normalized_levenshtein(authorshipItem['foaf_familyname'],family_name)   
+    confidence = 1
     firstNameScore = 1
     try: 
         an,cn= [list(filter(None,re.split('\.|\s+', name))) for name in [authorshipItem['foaf_givenname'],given_name]]
         firstNameScore *= 1 if len(an)==len(cn) else .8
+        confidence *= 0.8
     except: 
         #print ('Cant score firstname(s)')
         #print (contributorItem, contributorItem.dtype)
         an, cn = [[],[]]
         firstNameScore=.5
+        confidence *= 0.5
     
     for i in range(min(len(an),len(cn))):
-        if len(an[i])==1 or len(cn[i])==1: # Just initials: compare first letter only
-                                           # Gives less reliable score: make it 0.9 to account for confidence loss 
-            firstNameScore *= 0.9 if an[i][0] == cn[i][0] else .5
+        if len(an[i])==1 or len(cn[i])==1: # Just initials: compare first letter only                                        
+            firstNameScore *= 1 if an[i][0] == cn[i][0] else .5
+            confidence *= 0.8 # Gives less reliable score: confidence penalty 
         else:
             firstNameScore *= normalized_levenshtein(an[i],cn[i])
-    return (.5*familyNameScore+.5*firstNameScore)
+    return pd.Series([.5*familyNameScore+.5*firstNameScore, confidence], index = ['name_score', 'name_confidence'])
 
 def score_genre(publication, reference_publications):
-    return 0.8
+    score=1
+    confidence=0.2
+    return pd.Series([score, confidence], index = ['genre_score', 'genre_confidence'])
 
 def score_style(publication, reference_publications):
-    return 0.8
+    score=1
+    confidence=0.2
+    return pd.Series([score, confidence], index = ['style_score', 'style_confidence'])
