@@ -12,14 +12,18 @@ function add_to_author_list(row){
           .text(row.foaf_name)))
       .append($('<td class="years_cell">')
         .text(years))
-      .append($('<td class="score_cell">').append($('<div>').css("backgroundColor",getColorForPercentage(row.score))
+      .append($('<td class="years_cell">').append($('<div>').css("backgroundColor",getColorForPercentage(row.score))
         .text(Math.round(100*row.score))))
       .append($('<td class="score_cell">').append($('<div>').css("backgroundColor",getColorForPercentage(row.name_score,row.name_confidence))
         .text(Math.round(100*row.name_score))))
-      .append($('<td class="score_cell">').append($('<div>').css("backgroundColor",getColorForPercentage(row.style_score, row.style_confidence))
-        .text(Math.round(100*row.style_score))))
+      .append($('<td class="score_cell">').append($('<div>').css("backgroundColor",getColorForPercentage(row.role_score,row.role_confidence))
+        .text(Math.round(100*row.role_score))))
       .append($('<td class="score_cell">').append($('<div>').css("backgroundColor",getColorForPercentage(row.genre_score,row.genre_confidence))
         .text(Math.round(100*row.genre_score))))
+      .append($('<td class="score_cell">').append($('<div>').css("backgroundColor",getColorForPercentage(row.topic_score,row.topic_confidence))
+        .text(Math.round(100*row.topic_score))))
+      .append($('<td class="score_cell">').append($('<div>').css("backgroundColor",getColorForPercentage(row.style_score, row.style_confidence))
+        .text(Math.round(100*row.style_score))))
       );
   }
 
@@ -38,10 +42,13 @@ function add_to_author_list(row){
                 .append($('<th scope="col" class="ppn_cell">').text('PPN'))
                 .append($('<th scope="col" class="name_cell">').text('Naam'))
                 .append($('<th scope="col" class="years_cell">').text('Leefjaren'))
-                .append($('<th scope="col" class="score_cell">').append($('<div>').append($('<span>').text('Totaal'))))
+                .append($('<th scope="col" class="years_cell">').text('Match'))
                 .append($('<th scope="col" class="score_cell">').append($('<div>').append($('<span>').text('Naam'))))
+                .append($('<th scope="col" class="score_cell">').append($('<div>').append($('<span>').text('Rol'))))
+                .append($('<th scope="col" class="score_cell">').append($('<div>').append($('<span>').text('Genre'))))
+                .append($('<th scope="col" class="score_cell">').append($('<div>').append($('<span>').text('Onderwerp'))))
                 .append($('<th scope="col" class="score_cell">').append($('<div>').append($('<span>').text('Stijl'))))
-                .append($('<th scope="col" class="score_cell">').append($('<div>').append($('<span>').text('Genre')))));
+                );
             }
           }
 

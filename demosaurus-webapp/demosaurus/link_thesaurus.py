@@ -40,10 +40,16 @@ def thesaureer_2():
             author_options=pd.concat((author_options, author_options.apply(lambda row: score_names(row, nameparts[0], nameparts[-1]), axis=1)), axis=1)
             author_options=pd.concat((author_options, author_options.apply(lambda row: score_genre(None,None), axis=1)), axis=1)
             author_options=pd.concat((author_options, author_options.apply(lambda row: score_style(None,None), axis=1)), axis=1)
+            author_options=pd.concat((author_options, author_options.apply(lambda row: score_topic(None,None), axis=1)), axis=1)
+            author_options=pd.concat((author_options, author_options.apply(lambda row: score_role(None,None), axis=1)), axis=1)
 
-            scores = ['name_score','genre_score','style_score']
 
-            author_options['score']= author_options[scores].apply(lambda row: np.average(row, weights=[0.5,0.2,0.2]), axis=1)
+            features = ['name','genre','style','topic']
+
+            scores = [feature+'_score' for feature in features]
+            weights = [feature+'_confidence' for feature in features]
+
+            author_options['score']= author_options.apply(lambda row: np.average(row.loc[scores], weights=row.loc[weights]), axis=1)
 
 
             author_options.sort_values(by='score', ascending=False, inplace=True)
@@ -81,11 +87,22 @@ def score_names(authorshipItem, given_name, family_name):
     return pd.Series([.5*familyNameScore+.5*firstNameScore, confidence], index = ['name_score', 'name_confidence'])
 
 def score_genre(publication, reference_publications):
-    score=1
-    confidence=0.2
+    score=max(min(np.random.normal(0.6,0.1),1),0)
+    confidence=max(min(np.random.normal(0.4, 0.1),0.9),0.1)
     return pd.Series([score, confidence], index = ['genre_score', 'genre_confidence'])
 
 def score_style(publication, reference_publications):
-    score=1
-    confidence=0.2
+    score=max(min(np.random.normal(0.6,0.1),1),0)
+    confidence=max(min(np.random.normal(0.4, 0.1),0.9),0.1)
     return pd.Series([score, confidence], index = ['style_score', 'style_confidence'])
+
+def score_topic(publication, reference_publications):
+    score=max(min(np.random.normal(0.6, 0.1),1),0)
+    confidence=max(min(np.random.normal(0.4, 0.1),0.9),0.1)
+    return pd.Series([score, confidence], index = ['topic_score', 'topic_confidence'])
+
+def score_role(publication, reference_publications):
+    score=max(min(np.random.normal(0.6, 0.1),1),0)
+    confidence=max(min(np.random.normal(0.4, 0.1),0.9),0.1)
+    return pd.Series([score, confidence], index = ['role_score', 'role_confidence'])
+
