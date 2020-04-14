@@ -20,10 +20,11 @@ def authorpage(id):
         '                LEFT JOIN Wiki_languages ON Wikipedia.language = Wiki_languages.language'
         '                WHERE Wikipedia.ppn = ?'
         '                ORDER BY -Wiki_languages.rank desc LIMIT 1) AS WIKI'
-        ' FROM contributor WHERE contributor.ppn = ?',
+        ' FROM NTA WHERE NTA.ppn = ?',
         (id,id,id,id)
     ).fetchone()  
 
+    # Fetch all publications that this author has contributed to
     publications = db.execute(
         'WITH ppn AS (SELECT ? AS value)'
         'SELECT * FROM publication, ppn'

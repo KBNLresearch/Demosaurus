@@ -21,11 +21,18 @@ CREATE TABLE "publication" (
 
 );
 
-CREATE TABLE "contributor" (
-  "ppn" TEXT PRIMARY KEY,
-  "foaf_name" TEXT,
-  "editorial" TEXT
+CREATE TABLE "NTA" ( 
+  "editorial" TEXT, 
+  "foaf_name" TEXT, 
+  "foaf_givenname" TEXT, 
+  "foaf_familyname" TEXT, 
+  "birthyear" TEXT, 
+  "deathyear" TEXT, 
+  "related_entry" TEXT, 
+  "viaf_link" TEXT, 
+  "ppn" TEXT 
 );
+
 
 CREATE TABLE "authorship" (
   "authorshipID" INTEGER PRIMARY KEY AUTOINCREMENT, 

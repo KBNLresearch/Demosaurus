@@ -33,7 +33,7 @@ def thesaureer_2():
         db = get_db()
         nameparts = author_name.split('@')
         
-        author_options = pd.read_sql_query('SELECT * FROM contributor WHERE contributor.foaf_name LIKE \'%'+nameparts[-1]+'%\'', con = db)
+        author_options = pd.read_sql_query('SELECT * FROM NTA WHERE NTA.foaf_name LIKE \'%'+nameparts[-1]+'%\'', con = db)
         print(author_options.head())
 
         if len(author_options)>0:
@@ -97,7 +97,7 @@ def score_style(publication, reference_publications):
     return pd.Series([score, confidence], index = ['style_score', 'style_confidence'])
 
 def score_topic(publication, reference_publications):
-    score=max(min(np.random.normal(06, 0.1),1),0)
+    score=max(min(np.random.normal(0.6, 0.1),1),0)
     confidence=max(min(np.random.normal(0.4, 0.1),0.9),0.1)
     return pd.Series([score, confidence], index = ['topic_score', 'topic_confidence'])
 
