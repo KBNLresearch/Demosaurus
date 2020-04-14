@@ -87,22 +87,22 @@ def score_names(authorshipItem, given_name, family_name):
     return pd.Series([.5*familyNameScore+.5*firstNameScore, confidence], index = ['name_score', 'name_confidence'])
 
 def score_genre(publication, reference_publications):
-    score=max(min(np.random.normal(0.6,0.1),1),0)
+    score=max(min(np.random.normal(0.7,0.1),1),0)
     confidence=max(min(np.random.normal(0.4, 0.1),0.9),0.1)
     return pd.Series([score, confidence], index = ['genre_score', 'genre_confidence'])
 
 def score_style(publication, reference_publications):
-    score=max(min(np.random.normal(0.6,0.1),1),0)
+    score=max(min(np.random.normal(0.5,0.1),1),0)
     confidence=max(min(np.random.normal(0.4, 0.1),0.9),0.1)
     return pd.Series([score, confidence], index = ['style_score', 'style_confidence'])
 
 def score_topic(publication, reference_publications):
-    score=max(min(np.random.normal(0.6, 0.1),1),0)
+    score=max(min(np.random.normal(06, 0.1),1),0)
     confidence=max(min(np.random.normal(0.4, 0.1),0.9),0.1)
     return pd.Series([score, confidence], index = ['topic_score', 'topic_confidence'])
 
 def score_role(publication, reference_publications):
-    score=max(min(np.random.normal(0.6, 0.1),1),0)
+    score=max(min(np.random.normal(0.7, 0.1),1),0)
     confidence=max(min(np.random.normal(0.4, 0.1),0.9),0.1)
     return pd.Series([score, confidence], index = ['role_score', 'role_confidence'])
 
