@@ -1,3 +1,11 @@
+function score_span(score,confidence){
+  hovertext = "".concat('Score: ',String(Math.round(100*score)), '&#37; Confidence: ', String(Math.round(100*confidence)),'&#37;');
+  return $('<span title="'+hovertext+'" data-html="true" style="display: inline-block; width: 30px; height: 15px">')
+        .css("backgroundColor",getColorForPercentage(score,confidence))
+        .tooltip({})
+}
+
+
 function add_to_author_list(row){
 
 
@@ -14,16 +22,11 @@ function add_to_author_list(row){
         .text(years))
       .append($('<td class="years_cell">').append($('<div>').css("backgroundColor",getColorForPercentage(row.score))
         .text(Math.round(100*row.score))))
-      .append($('<td class="score_cell">').append($('<div>').css("backgroundColor",getColorForPercentage(row.name_score,row.name_confidence))
-        .text(Math.round(100*row.name_score))))
-      .append($('<td class="score_cell">').append($('<div>').css("backgroundColor",getColorForPercentage(row.role_score,row.role_confidence))
-        .text(Math.round(100*row.role_score))))
-      .append($('<td class="score_cell">').append($('<div>').css("backgroundColor",getColorForPercentage(row.genre_score,row.genre_confidence))
-        .text(Math.round(100*row.genre_score))))
-      .append($('<td class="score_cell">').append($('<div>').css("backgroundColor",getColorForPercentage(row.topic_score,row.topic_confidence))
-        .text(Math.round(100*row.topic_score))))
-      .append($('<td class="score_cell">').append($('<div>').css("backgroundColor",getColorForPercentage(row.style_score, row.style_confidence))
-        .text(Math.round(100*row.style_score))))
+      .append($('<td class="score_cell">').append(score_span(row.name_score,row.name_confidence)))
+      .append($('<td class="score_cell">').append(score_span(row.role_score,row.role_confidence)))
+      .append($('<td class="score_cell">').append(score_span(row.genre_score,row.genre_confidence)))
+      .append($('<td class="score_cell">').append(score_span(row.topic_score,row.topic_confidence)))
+      .append($('<td class="score_cell">').append(score_span(row.style_score, row.style_confidence)))
       );
   }
 
