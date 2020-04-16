@@ -51,6 +51,7 @@ function thesaureer(index){
 
   activate_row(index);
 
+  $("#author_list > tbody").empty()
   $('#thesaureer_title').text('NTA-records voor '+authorname);
 
   $.ajax({
@@ -139,5 +140,7 @@ function export_info() {
 
   function suggest_topics() {
     console.log('Annif button clicked')
+    $("#author_lis").empty();    
     $('#placeholder').html('Annif API not connected');
+
   }

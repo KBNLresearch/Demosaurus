@@ -40,7 +40,7 @@ td, th {vertical-align:top;}
   display:block;
   padding:2px;
   overflow:auto;
-  height:400px;
+  height:300px;
   width:100%;
 }
 .fixed_header thead tr{display:block;}
