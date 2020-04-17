@@ -1,2 +1,2 @@
 # Demosaurus
-Demo for automatic author attribution (thesaureren)
+Demo application: automated support for author attribution (thesaureren)
