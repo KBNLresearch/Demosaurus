@@ -1,4 +1,3 @@
-. venv/bin/activate
 cd demosaurus-webapp
 if (($#==0 ));
 	then 

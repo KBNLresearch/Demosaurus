@@ -6,6 +6,11 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
+numpy = "*"
+flask = "*"
+flask-jsglue = "*"
+pandas = "*"
+nltk = "*"
 
 [requires]
 python_version = "3.6"
