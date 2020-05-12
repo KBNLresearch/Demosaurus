@@ -17,8 +17,7 @@ CREATE TABLE "onix" (
 CREATE TABLE "publication" (
   "ppn" TEXT PRIMARY KEY,
   "title" TEXT,
-  "isbn" TEXT,
-
+  "isbn" TEXT
 );
 
 CREATE TABLE "NTA" ( 
