@@ -2,33 +2,136 @@
 
 
 
-{% block title %}{{publication['hoofdTitel_title']}}{% endblock %}
 
-{% block header %}
-  
-{% endblock %}
+{% block title %}{{publication['titelvermelding']}}{% endblock %}
+
+{% block header %}{% endblock %}
 
 
 {% block content %}
 
-
+{# Display cover #}
 <div style="width:15%;float:left">
-  {% include "publication/partials/cover-block.html"%}     
+    Placeholder
+    {#<!--<img src={{'/static/'+cover['location']}} alt="Front cover" style="max-width:90%;max-height:230px;width:auto;height:auto;padding: 10px;">-->
+    <!-- todo: locate cover (publication.py, first create and fill table in db) -->
+    <!-- todo: make into slideshow with other covers, maybe titlepage, option to enlarge image, etc. -->#}
 </div>
 
-<div style="width:25%;float:left">
-  {% include "publication/partials/onix-block.html"%}
+
+
+{# Status tabs #}
+<div style="width:80%;float:left;border-left: 1px solid lightgray;padding: 5px;height: 250px;">
+    <script type=text/javascript src="{{url_for('static', filename='js/status-block.js') }}"></script>
+
+    <script type=text/javascript> 
+    // initialize vars holding the role options and contributors 
+    console.log('Initializing variables')
+    var role_options = [];
+    {% for role in role_list %}
+    role_options.push({
+        label: "{{role['legible']}} [{{role['ggc_code']}}]"
+    });
+    {%endfor%}
+
+    var contributors = [];
+    {% for contributor in contributors %}
+    contributors.push({
+        name: "{{contributor['title'] if contributor['title']}}{{contributor['name']}}"
+    });
+    {%endfor%}
+
+    var maxIndex =0;
+
+</script>
+
+<div class="tab">
+  <button class="tablinks" onclick="openTab(event, 'general')" id = "subject_tab">Titelinformatie</button>
+  <button class="tablinks" onclick="openTab(event, 'subject')" id = "subject_tab">Onderwerp</button>
+  <button class="tablinks" onclick="openTab(event, 'contributors')" id = "contributors_tab">Auteurs</button>
+  <button class="tablinks" onclick="openTab(event, 'export'); export_info()" id = "export_tab">Exporteer</button>
 </div>
 
-<div style="width:59%;float:left;border-left: 1px solid lightgray;padding: 5px;height: 250px;">
-  {% include "publication/partials/status-block.html"%}
+<div id="general" class="tabcontent">
+    <table width="80%" >
+      <tr>
+        <td>Title</td>
+        <td>{{ publication['titelvermelding']}} </td>
+    </tr>
+    <tr>
+        <td>ISBN</td>
+        <td>{{ publication['isbn']}} </td>
+    </tr>
+    <tr>
+        <td>Samenvatting</td>
+        <td>Inhoud van kmc 4207</td>
+    </tr>
+
+</table>
 </div>
+
+
+<div id="subject" class="tabcontent">
+    <input type="button" value="Suggereer Brinkeys (Annif)" onclick="suggest_topics()" />
+</div>
+
+<div id="contributors" class="tabcontent">
+    <table id="statustable">
+      <thead>
+        <tr>
+          <td/><td/><td/>
+          <th> Naam </th>
+          <th> Rol </th>
+          <th> <div style="width:0; display: flex; justify-content: center;"> Primair? </div></th>
+          <th> PPN </th>
+
+      </tr> 
+  </thead>
+  <tbody>
+    <!-- This is where authors may be pre-filled and/ or manually added (client-side)-->
+</tbody>
+<tfoot>  
+  <tr><td/><td/><td/><td><input type="button" value="Voeg naam toe" onclick="add_status_row()" /></td><td/></tr></tfoot>
+</table>
+</div>
+
+
+<div id="export" class="tabcontent">
+    Controleer KMC's hieronder, kopiëer en plak naar WinIBW
+    <div id="message"> Eventuele waarschuwingen </div>
+</div>
+
+
+
+
+<script type=text/javascript> 
+  init();
+
+</script>
+</div>
+
+
+{# Area for thesauring, subject indexing etc #}
 
 <p id='thesaureervak'/>
-<div style="width:100%;float:left;">
-  {% include "link_thesaurus/thesaureer-block.html"%}     
-</div>
+<div style="width:100%;float:left;border-top: 1px solid lightgray">
+    <script type=text/javascript src="{{url_for('static', filename='js/thesaureer-block.js') }}"></script>
+
+    <h1 id=thesaureer_title></h1>
+
+    <div id='placeholder'></div>
+
+    <!--<div style="height: 600px; overflow: scroll;">-->
+        <table id=author_list class='fixed_header'>
+            <thead/>
+            <tbody class="zebra"></tbody>
+            <tfoot></tfoot>
+        </table>
 
 
 
-{% endblock %}
+    </div>
+
+
+
+    {% endblock %}

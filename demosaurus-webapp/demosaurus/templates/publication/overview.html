@@ -10,10 +10,10 @@
   {% for publication in publications %}
       <header>
         <div>
-          <h1>{{ publication['hoofdTitel_title'] }}</h1>
-          <div class="about"> {{publication['display_name'] }}</div>
+          <h1>{{ publication['titelvermelding']}} (PPN: {{publication['ppn']  }})</h1>
+          <div class="about"> {{ publication['verantwoordelijkheidsvermelding'] }} </div>
         </div>
-          <a class="action" href="{{ url_for('publication.view', id=publication['isbn']) }}">Thesaureer</a>
+          <a class="action" href="{{ url_for('publication.view', id=publication['ppn']) }}">Thesaureer</a>
           
       </header>
   {% endfor %}

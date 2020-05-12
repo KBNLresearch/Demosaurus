@@ -1,9 +1,10 @@
 var focus_index;
 
 function init(){
-
   document.getElementById("contributors_tab").click();
-
+  if (contributors.length < 1){
+    add_status_row();
+  }
   for(var i = 0; i< contributors.length; i++){
     add_status_row(name=contributors[i].name);
   }
@@ -142,5 +143,4 @@ function export_info() {
     console.log('Annif button clicked')
     $("#author_lis").empty();    
     $('#placeholder').html('Annif API not connected');
-
   }

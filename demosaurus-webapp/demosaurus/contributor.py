@@ -27,7 +27,7 @@ def authorpage(id):
     # Fetch all publications that this author has contributed to
     publications = db.execute(
         'WITH ppn AS (SELECT ? AS value)'
-        'SELECT * FROM publication, ppn'
+        'SELECT * FROM "Corstius-publication", ppn'
         '       WHERE instr(kmc_3000, ppn.value) > 0'
         '          OR instr(kmc_3001, ppn.value) > 0'
         '          OR instr(kmc_3002, ppn.value) > 0'
