@@ -46,18 +46,20 @@ function deactivate_rows() {
 }
 
 function thesaureer(index){
-  var contributornameId = "aut_name_" + index;
-  var contributorname = $("#"+ contributornameId).val();
+  var contributorname = $("#aut_name_" + index).val();
   console.log('Thesaureer name', contributorname);
 
   activate_row(index);
 
-  $("#contributor_list > tbody").empty()
+  $("#candidate_list > tbody").empty()
   $('#thesaureer_title').text('NTA-records voor '+contributorname);
 
   $.ajax({
-    url: '/thesaureer_2',
-    data: {'contributor_name': contributorname},
+    url: '/thesaureer',
+    data: {'contributor_name' : contributorname,
+          'contributor_role' : "Dit is de rol",
+           'publication_title': "Dit is de titel"
+         },
     dataType: 'json',
     success:  thesaureer_response,
     error: function(error) {
@@ -124,8 +126,8 @@ function export_info() {
       }
 
       $('#thesaureer_title').text('KMCS:');
-      $("#contributor_list > thead").empty();    
-      $("#contributor_list > tbody").empty();
+      $("#candidate_list > thead").empty();    
+      $("#candidate_list > tbody").empty();
 
     
     // Serve collected information in the web application
@@ -141,6 +143,6 @@ function export_info() {
 
   function suggest_topics() {
     console.log('Annif button clicked')
-    $("#contributor_lis").empty();    
+    $("#candidate_lis").empty();    
     $('#placeholder').html('Annif API not connected');
   }

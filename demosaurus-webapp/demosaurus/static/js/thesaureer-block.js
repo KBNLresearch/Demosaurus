@@ -5,20 +5,19 @@ function score_span(score,confidence){
         .tooltip({})
 }
 
-function author_note(authorrow){
+function candidate_note(candidaterow){
   return ''
-    +(authorrow.skopenote_nl || '')+' '
-    +(authorrow.editorial || '')+' '
-    +(authorrow.editorial_nl || '')+' '
+    +(candidaterow.skopenote_nl || '')+' '
+    +(candidaterow.editorial || '')+' '
+    +(candidaterow.editorial_nl || '')+' '
 
 }
 
-function add_to_author_list(row){
-
-
+function add_to_candidate_list(row){
+  console.log('add_to_candidate_list now')
     var years = [row.birthyear,'-',row.deathyear].join('');
 
-    $("#author_list > tbody").append($('<tr>')
+    $("#candidate_list > tbody").append($('<tr>')
       .append($('<td>').append('<input onclick="delete_row(this);" type="button" value="&#10007;">'))
       .append($('<td class="ppn_cell" >')
         .append($('<a class="action" href="#" onclick="choose_ppn(\''+row.ppn+'\')"; return false;>')
@@ -26,7 +25,7 @@ function add_to_author_list(row){
       .append($('<td class="name_cell">')
         .append($('<a class="action"  href="#" onClick="open_popup(\''+Flask.url_for('contributor.authorpage', {'id':row.ppn})+'\')"; return false;>')
           .text(row.foaf_name)))
-      .append($('<td class="name_cell">').text(author_note(row)))
+      .append($('<td class="name_cell">').text(candidate_note(row)))
       .append($('<td class="years_cell">')
         .text(years))
       .append($('<td class="years_cell">').append($('<div>').css("backgroundColor",getColorForPercentage(row.score))
@@ -45,12 +44,12 @@ function add_to_author_list(row){
 
         if (response.length<1) {
           $('#placeholder').text('Geen records gevonden');
-          $("#author_list > thead").empty()
+          $("#candidate_list > thead").empty()
         }
         else {
           $('#placeholder').empty()
-          if ($("#author_list > thead > tr").length<1){
-              $("#author_list > thead").append($('<tr>')
+          if ($("#candidate_list > thead > tr").length<1){
+              $("#candidate_list > thead").append($('<tr>')
                 .append($('<th scope="col">').html("&#10007;"))
                 .append($('<th scope="col" class="ppn_cell">').text('PPN'))
                 .append($('<th scope="col" class="name_cell">').text('Naam'))
@@ -68,11 +67,11 @@ function add_to_author_list(row){
 
           ndisplay = Math.min(response.length, 20);
           // Figure out how to deal with pagination.. 
-          console.log(ndisplay);
+          console.log('Display:', ndisplay);
 
           for(var i = 0; i< ndisplay; i++){
-            add_to_author_list(response[i]);
             console.log(i);
+            add_to_candidate_list(response[i]);
           }
 
         }

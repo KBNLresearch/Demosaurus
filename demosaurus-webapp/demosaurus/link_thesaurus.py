@@ -21,9 +21,8 @@ def add_numbers():
     return jsonify(result=a + b)
 
 
-@bp.route('/thesaureer_2/')
-@bp.route('/<author_name>/thesaureer_2/')
-def thesaureer_2():
+@bp.route('/thesaureer/')
+def thesaureer():
     author_name = request.args.get('contributor_name', '', type=str)
 
     if not author_name: 
