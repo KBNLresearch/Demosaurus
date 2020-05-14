@@ -53,21 +53,27 @@
 </div>
 
 <div id="general" class="tabcontent">
-    <table width="80%" >
+    <table id="publicationinfo">
+      <thead/>        
+    <tbody>
       <tr>
-        <td>Title</td>
-        <td>{{ publication['titelvermelding']}} </td>
+        <td>Titel, subtitel</td>
+        <td><input type="text" placeholder="Titel : subtitel(s)" value="{{ publication['titelvermelding']}}"/> </td>
     </tr>
     <tr>
         <td>ISBN</td>
-        <td>{{ publication['isbn']}} </td>
+        <td><input type="text" placeholder="ISBN" value="{{ publication['isbn']}}"/> </td>
     </tr>
     <tr>
         <td>Samenvatting</td>
-        <td>Inhoud van kmc 4207</td>
+       <!-- ('<input id="aut_name_' + maxIndex + '" type="text" placeholder="Voornaam @Achternaam" value="'+ name+'">'))-->
+        <td><input type="text" placeholder="Inhoud van kmc 4207" value="" width="80%" /></td>
     </tr>
 
+</tbody>
+<tfoot/>  
 </table>
+
 </div>
 
 
