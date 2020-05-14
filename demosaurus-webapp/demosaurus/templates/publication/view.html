@@ -22,7 +22,7 @@
 
 {# Status tabs #}
 <div style="width:80%;float:left;border-left: 1px solid lightgray;padding: 5px;height: 250px;">
-    <script type=text/javascript src="{{url_for('static', filename='js/status-block.js') }}"></script>
+    <script type=text/javascript src="{{url_for('static', filename='js/contributor-block.js') }}"></script>
 
     <script type=text/javascript> 
     // initialize vars holding the role options and contributors 
@@ -76,7 +76,7 @@
 </div>
 
 <div id="contributors" class="tabcontent">
-    <table id="statustable">
+    <table id="contributortable">
       <thead>
         <tr>
           <td/><td/><td/>
@@ -88,10 +88,10 @@
       </tr> 
   </thead>
   <tbody>
-    <!-- This is where authors may be pre-filled and/ or manually added (client-side)-->
+    <!-- This is where contributors may be pre-filled and/ or manually added (client-side)-->
 </tbody>
 <tfoot>  
-  <tr><td/><td/><td/><td><input type="button" value="Voeg naam toe" onclick="add_status_row()" /></td><td/></tr></tfoot>
+  <tr><td/><td/><td/><td><input type="button" value="Voeg naam toe" onclick="add_contributor_row()" /></td><td/></tr></tfoot>
 </table>
 </div>
 
@@ -122,7 +122,7 @@
     <div id='placeholder'></div>
 
     <!--<div style="height: 600px; overflow: scroll;">-->
-        <table id=author_list class='fixed_header'>
+        <table id=contributor_list class='fixed_header'>
             <thead/>
             <tbody class="zebra"></tbody>
             <tfoot></tfoot>
