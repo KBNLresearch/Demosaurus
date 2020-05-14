@@ -55,7 +55,7 @@ function add_to_candidate_list(row){
                 .append($('<th scope="col" class="name_cell">').text('Naam'))
                 .append($('<th scope="col" class="name_cell">').text('Notitie'))
                 .append($('<th scope="col" class="years_cell">').text('Leefjaren'))
-                .append($('<th scope="col" class="years_cell">').text('Match'))
+                .append($('<th scope="col" class="match_cell">').text('Match'))
                 .append($('<th scope="col" class="score_cell">').append($('<div>').append($('<span>').text('Naam'))))
                 .append($('<th scope="col" class="score_cell">').append($('<div>').append($('<span>').text('Rol'))))
                 .append($('<th scope="col" class="score_cell">').append($('<div>').append($('<span>').text('Genre'))))
