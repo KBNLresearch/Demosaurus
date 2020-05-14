@@ -24,7 +24,7 @@ def add_numbers():
 @bp.route('/thesaureer_2/')
 @bp.route('/<author_name>/thesaureer_2/')
 def thesaureer_2():
-    author_name = request.args.get('author_name', '', type=str)
+    author_name = request.args.get('contributor_name', '', type=str)
 
     if not author_name: 
         author_options = pd.DataFrame()
