@@ -82,18 +82,21 @@
 </div>
 
 <div id="contributors" class="tabcontent">
-    <table id="contributortable">
+    <table id="contributortable" class="fixed_header" >
       <thead>
         <tr>
-          <td/><td/><td/>
-          <th> Naam </th>
-          <th> Rol </th>
+          <th>&#10007;</th>
+          <th>&#8679;</th>
+          <th>&#8681;</th>
+
+          <th class="name_cell"> Naam </th>
+          <th class="name_cell"> Rol </th>
           <th> <div style="width:0; display: flex; justify-content: center;"> Primair? </div></th>
-          <th> PPN </th>
+          <th class="name_cell"> PPN </th>
 
       </tr> 
   </thead>
-  <tbody>
+  <tbody style="max-height: 120px">
     <!-- This is where contributors may be pre-filled and/ or manually added (client-side)-->
 </tbody>
 <tfoot>  
@@ -128,9 +131,9 @@
     <div id='placeholder'></div>
 
     <!--<div style="height: 600px; overflow: scroll;">-->
-        <table id=candidate_list class='fixed_header'>
+        <table id=candidate_list class='fixed_header' >
             <thead/>
-            <tbody class="zebra"></tbody>
+            <tbody class="zebra" style="height: 300px"></tbody>
             <tfoot></tfoot>
         </table>
 

@@ -26,12 +26,7 @@ section {clear: both;}
 input.danger { color: #cc2f2e; }
 input[type=submit] { align-self: start; min-width: 10em; padding: 0;}
 input[type=button] {padding: 2px; border: 1px solid #ccc; background: #eee;}
-input[type=button]:hover {
-  background-color: #ddd;
-}
-
-/*        Table stuff:             */
-td, th {vertical-align:top;}
+input[type=button]:hover {background-color: #ddd;}
 
 .zebra tr:nth-child(odd){background: #eee;}
 .zebra tr:nth-child(even){background: #dae5f4;}
@@ -40,35 +35,40 @@ td, th {vertical-align:top;}
 /* class fixed_header: body is scrollable */
 .fixed_header tbody{
   display:block;
-  padding:2px;
+  padding:0px;
   overflow:auto;
-  height:300px;
   width:100%;
+  border-spacing: 0px;
 }
 .fixed_header thead tr{display:block;}
-.fixed_header thead th{vertical-align:bottom; text-align:center;}
+.fixed_header thead th{vertical-align:bottom; text-align:center; padding: 0px}
+
+.fixed_header tbody td{border: 1px solid white; vertical-align: middle; overflow: hidden; text-overflow: ellipsis; padding: 0px }
+
 
 
 /* table listing NTA-entries: specified column widths*/
 
-.ppn_cell {width:100px; max-width: 100px; overflow: hidden; text-overflow: ellipsis;}
-.name_cell {width:200px; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space:nowrap;}
-.years_cell {width:100px; max-width: 100px;overflow: hidden; text-overflow: ellipsis; text-align:center;}
-.match_cell {width:100px; max-width: 100px;overflow: hidden; text-overflow: ellipsis; text-align:center; background-color: white}
+.ppn_cell {width:100px; max-width: 100px; }
+.name_cell {width:200px; max-width: 200px; white-space:nowrap;}
+.years_cell {width:100px; max-width: 100px; text-align:center; }
+.match_cell {width:100px; max-width: 100px; height: 100%; text-align:center; }
+.match_cell div {height: 100%; width: 100%; } /* border: 1px solid black;*/
 
-/*.score_cel {width:30px; max-width: 30px; overflow: hidden; text-overflow: ellipsis;}*/
+.fixed_header td.score_cell {text-align:right;  width: 50px; background-color: white; height: 100%; border-style: none solid none none; border-color: #ccc; padding: 2px 0px 2px 2px;}
+.fixed_header td.score_cell div {display: inline-block; padding: 30% 0px 0px 0px;  vertical-align: middle;}
 
-
-td.score_cell {text-align:right; width: 30px; background-color: white}
 
 /* score-cell header: rotate and translate a bit, to save space*/
-th.score_cell {height:50px; white-space: nowrap; }
+th.score_cell {height:50px; white-space: nowrap; padding: 0px}
 th.score_cell > div {
-  transform: translate(18px, -2px) rotate(315deg);
-  width: 30px}
+  text-align: left;
+  transform: translate(35.3553px, -14px) rotate(315deg);
+  width: 50px}
 th.score_cell > div > span {
+  text-align: left;
   border-bottom: 1px solid #ccc;
-  padding: 5px 10px;
+  padding: 3px 5px;
 }
 
 

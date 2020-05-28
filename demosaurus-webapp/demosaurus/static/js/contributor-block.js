@@ -32,8 +32,8 @@ function activate_row(index) {
   deactivate_rows();
   focus_index = index;
 
-  $('#ppn_'+index).css("backgroundColor","Chartreuse");
-  $('#row_'+index).css("backgroundColor","Chartreuse");
+  $('#ppn_'+index).css("background-color","#ddd");
+  $('#row_'+index).css("background-color","#ccc");
 
 }
 

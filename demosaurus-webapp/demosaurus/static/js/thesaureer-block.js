@@ -1,7 +1,8 @@
 function score_span(score,confidence){
   hovertext = "".concat('Score: ',String(Math.round(100*score)), '&#37; Confidence: ', String(Math.round(100*confidence)),'&#37;');
-  return $('<span title="'+hovertext+'" data-html="true" style="display: inline-block; width: 30px; height: 15px">')
-        .css("backgroundColor",getColorForPercentage(score,confidence))
+  return $('<div title="'+hovertext+'" data-html="true">')
+        .css("background-color",getColorForPercentage(score))
+        .css("width",Math.round(50*confidence))
         .tooltip({})
 }
 
@@ -18,17 +19,17 @@ function add_to_candidate_list(row){
     var years = [row.birthyear,'-',row.deathyear].join('');
 
     $("#candidate_list > tbody").append($('<tr>')
-      .append($('<td>').append('<input onclick="delete_row(this);" type="button" value="&#10007;">'))
+      .append($('<td>').append('<input onclick="delete_row(this);" type="button" value="&#10007;" padding="0px">'))
       .append($('<td class="ppn_cell" >')
         .append($('<a class="action" href="#" onclick="choose_ppn(\''+row.ppn+'\')"; return false;>')
           .text(row.ppn)))
       .append($('<td class="name_cell">')
         .append($('<a class="action"  href="#" onClick="open_popup(\''+Flask.url_for('contributor.authorpage', {'id':row.ppn})+'\')"; return false;>')
           .text(row.foaf_name)))
-      .append($('<td class="name_cell">').text(candidate_note(row)))
+      .append($('<td class="name_cell" title="'+candidate_note(row)+'">').text(candidate_note(row)).tooltip())
       .append($('<td class="years_cell">')
         .text(years))
-      .append($('<td class="years_cell">').append($('<div>').css("backgroundColor",getColorForPercentage(row.score))
+      .append($('<td class="match_cell">').append($('<div>').css("background-color",getColorForPercentage(row.score))
         .text(Math.round(100*row.score))))
       .append($('<td class="score_cell">').append(score_span(row.name_score,row.name_confidence)))
       .append($('<td class="score_cell">').append(score_span(row.role_score,row.role_confidence)))
