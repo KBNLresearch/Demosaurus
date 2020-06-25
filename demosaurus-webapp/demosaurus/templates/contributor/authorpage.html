@@ -1,10 +1,14 @@
 {% extends 'base.html' %}
 
+
 {% block header %}
   <h1>{% block title %}{{author['foaf_name']}}{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
+
+<script type=text/javascript src="{{url_for('static', filename='js/author-page.js') }}"></script>
+
  <table width="100%">
 <tr> <td style="white-space:nowrap">PPN: </td>
     <td>{{author['ppn']}}</td></tr>
@@ -23,26 +27,26 @@
     <td> <a class="action" href="https://google.com/?q={{author['foaf_name']}}" target="_blank">Zoek </a></td></tr>
 </table>
 
- <h1>Relevante publicaties:</h1>
+ <h1>Relevante publicaties in vergelijking met {{title}}</h1>
  <hr/>
 {% if publications|length <1 %}
 <div>No matches</div>
 {% else %}
-<table >
-    <thead >
-        <tr><td>Titel</td><td/><td/></tr>
-    </thead>
-    <tbody class="zebra">
-    {% for publication in publications %}
-    <tr> 
-        <td> {{publication['kmc_4000'].split('/')[0].replace('@','')}} </td>
-        <td class="score_cell",  style="background-color:"getColorForPercentage(80)> 80</td>
-    </tr>
-    {% endfor %}
-</tbody>
+<table id="publication_list" class='fixed_header'>
+    <thead/>           
+    <tbody class="zebra"/>
+    <tfoot/>
 </table>
+
+ <script type="text/javascript">
+    var publications = JSON.parse({{publications|tojson}});
+    console.log(publications);
+    add_to_publication_list(publications);
+    </script>
+
 {% endif %}
 
+    
 
  
 {% endblock %}

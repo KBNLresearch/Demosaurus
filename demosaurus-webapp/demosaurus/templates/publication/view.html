@@ -12,7 +12,7 @@
 
 {# Display cover #}
 <div style="width:15%;float:left">
-    Placeholder
+    Cover-image
     {#<!--<img src={{'/static/'+cover['location']}} alt="Front cover" style="max-width:90%;max-height:230px;width:auto;height:auto;padding: 10px;">-->
     <!-- todo: locate cover (publication.py, first create and fill table in db) -->
     <!-- todo: make into slideshow with other covers, maybe titlepage, option to enlarge image, etc. -->#}
@@ -25,6 +25,7 @@
     <script type=text/javascript src="{{url_for('static', filename='js/contributor-block.js') }}"></script>
 
     <script type=text/javascript> 
+
     // initialize vars holding the role options and contributors 
     console.log('Initializing variables')
     var role_options = [];
@@ -53,21 +54,24 @@
 </div>
 
 <div id="general" class="tabcontent">
+    <script type="text/javascript">
+        //console.log(publication)
+    </script>
     <table id="publicationinfo">
       <thead/>        
     <tbody>
       <tr>
         <td>Titel, subtitel</td>
-        <td><input type="text" placeholder="Titel : subtitel(s)" value="{{ publication['titelvermelding']}}"/> </td>
+        <td><input id="publication_title" type="text" placeholder="Titel : subtitel(s)" value="{{ publication['titelvermelding']}}" size="80" /> </td>
     </tr>
     <tr>
         <td>ISBN</td>
         <td><input type="text" placeholder="ISBN" value="{{ publication['isbn']}}"/> </td>
     </tr>
     <tr>
-        <td>Samenvatting</td>
+        <td valign="top">Samenvatting</td>
        <!-- ('<input id="aut_name_' + maxIndex + '" type="text" placeholder="Voornaam @Achternaam" value="'+ name+'">'))-->
-        <td><input type="text" placeholder="Inhoud van kmc 4207" value="" width="80%" /></td>
+        <td><textarea id="samenvatting" rows="1" cols="80">{{publication['samenvatting-inhoudsopgave'] or "Inhoud van kmc 4207"}}</textarea></td>
     </tr>
 
 </tbody>

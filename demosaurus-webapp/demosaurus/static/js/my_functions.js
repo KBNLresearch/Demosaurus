@@ -37,6 +37,14 @@ function openTab(evt, tabName){
 
 }
 
+function score_span(score,confidence){
+  hovertext = "".concat('Score: ',String(Math.round(100*score)), '&#37; Confidence: ', String(Math.round(100*confidence)),'&#37;');
+  return $('<div title="'+hovertext+'" data-html="true">')
+        .css("background-color",getColorForPercentage(score))
+        .css("width",Math.round(50*confidence))
+        .tooltip({})
+}
+
 var getColorForPercentage = function(this_perc, saturation=1.0, low=0.5) {
     var percentColors = [
     { pct: 0.0, color: { r: 0xff, g: 0x00, b: 0 } },

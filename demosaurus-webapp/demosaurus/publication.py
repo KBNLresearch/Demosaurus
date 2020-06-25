@@ -27,9 +27,14 @@ def view(id):
     publication = db.execute(
         ' SELECT *'
         ' FROM "publication_basicinfo"'
+        ' LEFT JOIN "publication_samenvatting-inhoudsopgave"'
+        ' ON "ppn" = "publication_ppn"'
         ' WHERE ppn = ?',
         (id,)
     ).fetchone()
+
+    print(publication.keys)
+
     contributors = db.execute(
         ' SELECT *'
         ' FROM authorship_ggc'
@@ -61,8 +66,6 @@ def view(id):
     except: True
 
     return render_template('publication/view.html', publication = publication, cover = cover_location, contributors=contributors, role_list=roles_options)
-
-
 
 
 

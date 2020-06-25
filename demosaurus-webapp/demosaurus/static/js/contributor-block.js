@@ -47,6 +47,8 @@ function deactivate_rows() {
 
 function thesaureer(index){
   var contributorname = $("#aut_name_" + index).val();
+  try {var role = $('#role_'+index).val().match(/\[(.*?)\]/)[1];}
+  catch(e) {var role = null; }
   console.log('Thesaureer name', contributorname);
 
   activate_row(index);
@@ -57,11 +59,14 @@ function thesaureer(index){
   $.ajax({
     url: '/thesaureer',
     data: {'contributor_name' : contributorname,
-          'contributor_role' : "Dit is de rol",
-           'publication_title': "Dit is de titel"
+          'contributor_role' : role,
+           'publication_title': $('#publication_title').val()
          },
     dataType: 'json',
-    success:  thesaureer_response,
+    context:this,
+    success: function(response){
+      thesaureer_response(response,index);
+    },
     error: function(error) {
       console.log(error);
     }

@@ -1,22 +1,15 @@
-function score_span(score,confidence){
-  hovertext = "".concat('Score: ',String(Math.round(100*score)), '&#37; Confidence: ', String(Math.round(100*confidence)),'&#37;');
-  return $('<div title="'+hovertext+'" data-html="true">')
-        .css("background-color",getColorForPercentage(score))
-        .css("width",Math.round(50*confidence))
-        .tooltip({})
-}
 
 function candidate_note(candidaterow){
   return ''
     +(candidaterow.skopenote_nl || '')+' '
     +(candidaterow.editorial || '')+' '
     +(candidaterow.editorial_nl || '')+' '
-
 }
 
-function add_to_candidate_list(row){
+function add_to_candidate_list(row, context){
   console.log('add_to_candidate_list now')
     var years = [row.birthyear,'-',row.deathyear].join('');
+    context['id']=row.ppn;
 
     $("#candidate_list > tbody").append($('<tr>')
       .append($('<td>').append('<input onclick="delete_row(this);" type="button" value="&#10007;" padding="0px">'))
@@ -24,7 +17,7 @@ function add_to_candidate_list(row){
         .append($('<a class="action" href="#" onclick="choose_ppn(\''+row.ppn+'\')"; return false;>')
           .text(row.ppn)))
       .append($('<td class="name_cell">')
-        .append($('<a class="action"  href="#" onClick="open_popup(\''+Flask.url_for('contributor.authorpage', {'id':row.ppn})+'\')"; return false;>')
+        .append($('<a class="action"  href="#" onClick="open_popup(\''+Flask.url_for('contributor.authorpage', context)+'\')"; return false;>')
           .text(row.foaf_name)))
       .append($('<td class="name_cell" title="'+candidate_note(row)+'">').text(candidate_note(row)).tooltip())
       .append($('<td class="years_cell">')
@@ -40,7 +33,7 @@ function add_to_candidate_list(row){
   }
 
 
-  function thesaureer_response(response) {
+  function thesaureer_response(response, contributor_row) {
         console.log(response);
 
         if (response.length<1) {
@@ -67,12 +60,21 @@ function add_to_candidate_list(row){
           }
 
           ndisplay = Math.min(response.length, 20);
-          // Figure out how to deal with pagination.. 
+          // TODO: Figure out how to deal with pagination.. 
           console.log('Display:', ndisplay);
+
+          console.log('Creating context for publication');
+          try {var role = $('#role_'+contributor_row).val().match(/\[(.*?)\]/)[1];}
+          catch(e) {var role = null; }
+          console.log('Role:', role)
+          
+          var context = {'Title':$('#publication_title').val(), 'Role':role};
+          console.log('Context is nu:', context);
+
 
           for(var i = 0; i< ndisplay; i++){
             console.log(i);
-            add_to_candidate_list(response[i]);
+            add_to_candidate_list(response[i], context);
           }
 
         }
