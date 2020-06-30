@@ -46,8 +46,8 @@ def get_data():
     cur = con.cursor()
     #INHOUD = titel + samenvatting boek (annotatie met stempel analyitisch jeugd/volwassen en/of samenvatting uit samenvatting-inhoudsopgave)
     getdatabase = cur.execute(
-        "SELECT  "
-        "authorship_ggc.ppn as ppn, inhoud, `taal-publicatie` as t_p, `taal-origineel` as t_o, "
+        "SELECT "
+        "  publication_basicinfo.ppn as p_ppn, authorship_ggc.ppn as ppn, inhoud, `taal-publicatie` as t_p, `taal-origineel` as t_o, "
         "`land-van-uitgave` as lvu, `jaar-van-uitgave` as jvu, number_of_authors, `NUR-rubriek` as nrubriek, `NUGI-genre` as ngenre, "
         "number_of_words_in_titelvermelding, length_of_titelvermelding, "
         "themas, genres, foaf_familyname, uitgever_agg FROM publication_basicinfo "
@@ -63,7 +63,7 @@ def get_data():
         "authorship_ggc.ppn in (SELECT ppn from authorship_ggc group by ppn having count(*) >1) AND foaf_familyname "
         "in (SELECT foaf_familyname from (SELECT foaf_familyname, authorship_ggc.ppn FROM NTA INNER JOIN "
         "authorship_ggc on NTA.ppn = authorship_ggc.ppn where kind = 'primair' group by foaf_familyname, authorship_ggc.ppn having count(*) "
-        "> 1) group by foaf_familyname having count(*) > 10)")
+        "> 1) group by foaf_familyname having count(*) > 1)")
 
     cols = [column[0] for column in getdatabase.description]
     results= pd.DataFrame.from_records(data = getdatabase.fetchall(), columns = cols)
@@ -74,6 +74,8 @@ def get_data():
     results.ngenre.fillna(value='onbekend', inplace=True)
     results.genres = results.genres.apply(literal_eval)
     results.themas = results.themas.apply(literal_eval)
+    results['jvu'] = results['jvu'].str.replace('XX', '50')
+    results['jvu'] = results['jvu'].str.replace('X', '5')
     #mlb = MultiLabelBinarizer()
     #encoded = pd.DataFrame(mlb.fit_transform(results['genres']), columns=mlb.classes_, index=results.index)
     #results2 = pd.concat([results,encoded], axis=1)
@@ -81,7 +83,7 @@ def get_data():
     #result = pd.concat([results2,encoded2], axis=1)
     #result["genres"] = pd.to_numeric(result["genres"])
     #result["themas"] = pd.to_numeric(result["themas"])
-    #pd.options.display.max_columns= 50
+    #pd.options.display.max_columns= 15
     #cv = CountVectorizer(analyzer=set)
     #encoded = pd.DataFrame(cv.fit_transform(results['genres']), index=results.index)
     #print(cv.vocabulary_)
