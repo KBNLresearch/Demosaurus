@@ -33,8 +33,14 @@ def thesaureer():
         db = get_db()
         nameparts = author_name.split('@')
         
-        author_options = pd.read_sql_query('SELECT * FROM NTA WHERE NTA.foaf_name LIKE \'%'+nameparts[-1]+'%\'', con = db)
-        print(author_options.head())
+        author_options = pd.read_sql_query('''SELECT NTA.ppn, foaf_name, foaf_givenname, 
+            foaf_familyname, skos_preflabel, birthyear, deathyear, 
+            editorial_nl, editorial, skopenote_nl, related_entry_ppn,
+            ISNI.identifier AS isni
+            FROM NTA 
+            LEFT JOIN ISNI ON NTA.ppn = ISNI.ppn 
+            WHERE NTA.foaf_name LIKE \'%'''+nameparts[-1]+'%\'', con = db)
+        print(author_options.dtypes)
 
         if len(author_options)>0:
             author_options=pd.concat((author_options, author_options.apply(lambda row: score_names(row, nameparts[0], nameparts[-1]), axis=1)), axis=1)
@@ -102,8 +108,7 @@ def score_topic(author_record, author_context):
     return pd.Series([score, confidence], index = ['topic_score', 'topic_confidence'])
 
 def score_role(author_record, author_context):
-    print('Score role author', author_record, '-', author_context)
-    if author_context == '':
+    if not author_context or not author_record :
         score = 0
         confidence = 0
     else:

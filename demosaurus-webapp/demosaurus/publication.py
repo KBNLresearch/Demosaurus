@@ -28,8 +28,8 @@ def view(id):
         ' SELECT *'
         ' FROM "publication_basicinfo"'
         ' LEFT JOIN "publication_samenvatting-inhoudsopgave"'
-        ' ON "ppn" = "publication_ppn"'
-        ' WHERE ppn = ?',
+        ' ON "publication_basicinfo.publication_ppn" = "publication_samenvatting-inhoudsopgave.publication_ppn"'
+        ' WHERE publication_basicinfo.publication_ppn = ?',
         (id,)
     ).fetchone()
 
@@ -73,7 +73,7 @@ def view(id):
 def overview():
     db = get_db()
     publications = db.execute(
-        ' SELECT ppn, titelvermelding, verantwoordelijkheidsvermelding'
+        ' SELECT publication_ppn, titelvermelding, verantwoordelijkheidsvermelding'
         ' FROM publication_basicinfo'
         ' ORDER BY RANDOM() LIMIT 20'
     ).fetchmany(20)

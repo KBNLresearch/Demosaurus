@@ -13,8 +13,8 @@ bp = Blueprint('contributor', __name__)
 
 @bp.route('/<id>/authorpage')
 def authorpage(id):
-    title = request.args.get('Title', None)
-    role = request.args.get('Role', None)
+    title = request.args.get('Title', '', type=str)
+    role = request.args.get('Role', '', type=str)
 
     db = get_db()
     author = db.execute(
@@ -75,7 +75,7 @@ def score_topic(publication, reference_publication):
 
 def score_role(publication, reference_publication):
     print('score_role', publication, reference_publication)
-    if reference_publication == 'null' or not publication :
+    if not reference_publication or not publication :
         score = 0
         confidence = 0
     else: 
