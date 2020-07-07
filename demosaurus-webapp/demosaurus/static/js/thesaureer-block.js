@@ -9,13 +9,13 @@ function candidate_note(candidaterow){
 function add_to_candidate_list(row, context){
   console.log('add_to_candidate_list now')
     var years = [row.birthyear,'-',row.deathyear].join('');
-    context['id']=row.ppn;
+    context['id']=row.author_ppn;
 
     $("#candidate_list > tbody").append($('<tr>')
       .append($('<td>').append('<input onclick="delete_row(this);" type="button" value="&#10007;" padding="0px">'))
       .append($('<td class="ppn_cell" >')
-        .append($('<a class="action" href="#" onclick="choose_ppn(\''+row.ppn+'\')"; return false;>')
-          .text(row.ppn)))
+        .append($('<a class="action" href="#" onclick="choose_ppn(\''+row.author_ppn+'\')"; return false;>')
+          .text(row.author_ppn)))
       .append($('<td class="name_cell">')
         .append($('<a class="action"  href="#" onClick="open_popup(\''+Flask.url_for('contributor.authorpage', context)+'\')"; return false;>')
           .text(row.foaf_name)))

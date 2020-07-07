@@ -19,23 +19,23 @@ def authorpage(id):
     db = get_db()
     author = db.execute(
         ' SELECT *, '
-        '        (SELECT identifier FROM VIAF WHERE ppn = ? LIMIT 1) AS VIAF,'
-        '        (SELECT identifier FROM ISNI WHERE ppn = ? LIMIT 1) AS ISNI,'
-        '        (SELECT identifier FROM Wikipedia '
-        '                LEFT JOIN Wiki_languages ON Wikipedia.language = Wiki_languages.language'
-        '                WHERE Wikipedia.ppn = ?'
-        '                ORDER BY -Wiki_languages.rank desc LIMIT 1) AS WIKI'
-        ' FROM NTA WHERE NTA.ppn = ?',
+        '        (SELECT identifier FROM author_VIAF WHERE author_ppn = ? LIMIT 1) AS VIAF,'
+        '        (SELECT identifier FROM author_ISNI WHERE author_ppn = ? LIMIT 1) AS ISNI,'
+        '        (SELECT identifier FROM author_Wikipedia '
+        '                LEFT JOIN wiki_preferred_languages ON author_Wikipedia.language = wiki_preferred_languages.language'
+        '                WHERE author_Wikipedia.author_ppn = ?'
+        '                ORDER BY -wiki_preferred_languages.rank desc LIMIT 1) AS WIKI'
+        ' FROM author_NTA WHERE author_NTA.author_ppn = ?',
         (id,id,id,id)
     ).fetchone()  
 
     # Fetch all publications that this author has contributed to
-    publications = pd.read_sql_query('SELECT publication_ppn, role, kind, rank, titelvermelding, verantwoordelijkheidsvermelding,' 
+    publications = pd.read_sql_query('SELECT publication_basicinfo.publication_ppn, role, kind, rank, titelvermelding, verantwoordelijkheidsvermelding,' 
     ' \"taal-publicatie\", \"taal-origineel\", \"land-van-uitgave\", isbn, isbn_2, \"jaar-van-uitgave\", uitgever, uitgever_2,'
-    ' authorship_ggc.ppn AS author_ppn    '
+    ' authorship_ggc.author_ppn    '
     ' FROM authorship_ggc LEFT JOIN publication_basicinfo'
-    ' ON authorship_ggc.publication_ppn = publication_basicinfo.ppn'
-    ' WHERE authorship_ggc.ppn =? ', params = [id], con = db)
+    ' ON authorship_ggc.publication_ppn = publication_basicinfo.publication_ppn'
+    ' WHERE authorship_ggc.author_ppn =? ', params = [id], con = db)
 
     publications = publications.loc[publications.titelvermelding != title]
 

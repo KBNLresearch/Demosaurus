@@ -15,7 +15,7 @@ def utility_processor():
         db = get_db()
         roles = db.execute(
             ' SELECT author_rolesID, legible, ggc_code'
-            ' FROM author_roles'
+            ' FROM authorship_roles'
         ).fetchall()
         print(roles)
         return json.dump(list_of_roles)
@@ -26,9 +26,9 @@ def view(id):
     db = get_db()
     publication = db.execute(
         ' SELECT *'
-        ' FROM "publication_basicinfo"'
-        ' LEFT JOIN "publication_samenvatting-inhoudsopgave"'
-        ' ON "publication_basicinfo.publication_ppn" = "publication_samenvatting-inhoudsopgave.publication_ppn"'
+        ' FROM publication_basicinfo'
+        ' LEFT JOIN publication_samenvatting_inhoudsopgave'
+        ' ON publication_basicinfo.publication_ppn = publication_samenvatting_inhoudsopgave.publication_ppn'
         ' WHERE publication_basicinfo.publication_ppn = ?',
         (id,)
     ).fetchone()
@@ -38,15 +38,15 @@ def view(id):
     contributors = db.execute(
         ' SELECT *'
         ' FROM authorship_ggc'
-        ' LEFT JOIN author_roles'
-        ' ON authorship_ggc.role = author_roles.ggc_code'
+        ' LEFT JOIN authorship_roles'
+        ' ON authorship_ggc.role = authorship_roles.ggc_code'
         ' WHERE authorship_ggc.publication_ppn = ?',
         (id,)
     ).fetchall()
 
     roles_options = db.execute(
             ' SELECT author_rolesID, legible, ggc_code'
-            ' FROM author_roles'
+            ' FROM authorship_roles'
         ).fetchall()
 
     try:

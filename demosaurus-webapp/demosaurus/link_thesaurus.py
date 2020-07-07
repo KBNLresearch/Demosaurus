@@ -33,13 +33,13 @@ def thesaureer():
         db = get_db()
         nameparts = author_name.split('@')
         
-        author_options = pd.read_sql_query('''SELECT NTA.ppn, foaf_name, foaf_givenname, 
+        author_options = pd.read_sql_query('''SELECT author_NTA.author_ppn, foaf_name, foaf_givenname, 
             foaf_familyname, skos_preflabel, birthyear, deathyear, 
             editorial_nl, editorial, skopenote_nl, related_entry_ppn,
-            ISNI.identifier AS isni
-            FROM NTA 
-            LEFT JOIN ISNI ON NTA.ppn = ISNI.ppn 
-            WHERE NTA.foaf_name LIKE \'%'''+nameparts[-1]+'%\'', con = db)
+            author_ISNI.identifier AS isni
+            FROM author_NTA 
+            LEFT JOIN author_ISNI ON author_NTA.author_ppn = author_ISNI.author_ppn 
+            WHERE foaf_name LIKE \'%'''+nameparts[-1]+'%\'', con = db)
         print(author_options.dtypes)
 
         if len(author_options)>0:
