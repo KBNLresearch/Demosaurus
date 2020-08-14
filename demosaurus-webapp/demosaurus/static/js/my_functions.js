@@ -1,5 +1,6 @@
 function move_row(e, up) {
     var row = $(e).closest('tr');
+    console.log(row);
     if (up)
       row.prev().before(row);
     else
