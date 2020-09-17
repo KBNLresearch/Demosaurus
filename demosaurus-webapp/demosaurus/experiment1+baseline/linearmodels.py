@@ -107,11 +107,11 @@ results = get_data()
 print(results)
 
 inhoud_feature = 'inhoud'
-#cat_feature = ['t_p', 't_o', 'lvu', 'nrubriek', 'ngenre', 'number_of_authors']
+cat_feature = ['t_p', 't_o', 'lvu', 'nrubriek', 'ngenre', 'number_of_authors', 'titel_ranges']
 publisher_feature = ['uitgever_agg']
-num_feature = ['jvu']
-#layered_features = 'genres'
-#layered_features2 = 'themas'
+num_feature = ['number_of_words_in_titelvermelding', 'length_of_titelvermelding','jvu', 'mean_wordlength_titelvermelding', 'median_wordlength_titelvermelding']
+layered_features = 'genres'
+layered_features2 = 'themas'
 #pubklicationdata = ['t_p']
 
 
@@ -128,11 +128,11 @@ layered_features_transformer = Pipeline(steps=[('cvt', CountVectorizer(analyzer=
 preprocessor = ColumnTransformer(
  transformers=[
         ('text', inhoud_transformer, inhoud_feature), #TfidfVectorizer accepts column name only between quotes
-       # ('category', categorical_transformer, cat_feature),
+       ('category', categorical_transformer, cat_feature),
         ('publisher', publisher_transformer, publisher_feature),
         ('numerical', numerical_transformer, num_feature),
-       # ('layeredcat', layered_features_transformer, layered_features),
-      #  ('layeredcattwo', layered_features_transformer, layered_features2),
+        ('layeredcat', layered_features_transformer, layered_features),
+       ('layeredcattwo', layered_features_transformer, layered_features2),
    ],
  )
 
