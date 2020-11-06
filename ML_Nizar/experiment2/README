@@ -1,0 +1,4 @@
+AT.sql: verkrijgen van juiste trainingsdata
+Alternativetraining: publicaties met 5 tot 20 auteurs (en andere varianten) creeeren 
+Similarity learner: Similarity learner machine learning model (GBM), models vergelijken, hyperparameter tuning, voor performance@k1 omzetten, correlaties, feature importances etc
+inhoud model en alternatief: tfidf similarity voor titel + zelfgemaakte inhoud features, met avg en topk metrics respectievelijk

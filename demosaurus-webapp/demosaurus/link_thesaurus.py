@@ -21,10 +21,10 @@ def add_numbers():
     return jsonify(result=a + b)
 
 
-@bp.route('/thesaureer_2/')
-@bp.route('/<author_name>/thesaureer_2/')
-def thesaureer_2():
-    author_name = request.args.get('author_name', '', type=str)
+@bp.route('/thesaureer/')
+def thesaureer():
+    author_name = request.args.get('contributor_name', '', type=str)
+    author_role = request.args.get('contributor_role', '', type=str)
 
     if not author_name: 
         author_options = pd.DataFrame()
@@ -33,15 +33,21 @@ def thesaureer_2():
         db = get_db()
         nameparts = author_name.split('@')
         
-        author_options = pd.read_sql_query('SELECT * FROM NTA WHERE NTA.foaf_name LIKE \'%'+nameparts[-1]+'%\'', con = db)
-        print(author_options.head())
+        author_options = pd.read_sql_query('''SELECT author_NTA.author_ppn, foaf_name, foaf_givenname, 
+            foaf_familyname, skos_preflabel, birthyear, deathyear, 
+            editorial_nl, editorial, skopenote_nl, related_entry_ppn,
+            author_ISNI.identifier AS isni
+            FROM author_NTA 
+            LEFT JOIN author_ISNI ON author_NTA.author_ppn = author_ISNI.author_ppn 
+            WHERE foaf_name LIKE \'%'''+nameparts[-1]+'%\'', con = db)
+        print(author_options.dtypes)
 
         if len(author_options)>0:
             author_options=pd.concat((author_options, author_options.apply(lambda row: score_names(row, nameparts[0], nameparts[-1]), axis=1)), axis=1)
             author_options=pd.concat((author_options, author_options.apply(lambda row: score_genre(None,None), axis=1)), axis=1)
             author_options=pd.concat((author_options, author_options.apply(lambda row: score_style(None,None), axis=1)), axis=1)
             author_options=pd.concat((author_options, author_options.apply(lambda row: score_topic(None,None), axis=1)), axis=1)
-            author_options=pd.concat((author_options, author_options.apply(lambda row: score_role(None,None), axis=1)), axis=1)
+            author_options=pd.concat((author_options, author_options.apply(lambda row: score_role(None,author_role), axis=1)), axis=1)
 
 
             features = ['name','genre','style','topic']
@@ -86,23 +92,27 @@ def score_names(authorshipItem, given_name, family_name):
             firstNameScore *= normalized_levenshtein(an[i],cn[i])
     return pd.Series([.5*familyNameScore+.5*firstNameScore, confidence], index = ['name_score', 'name_confidence'])
 
-def score_genre(publication, reference_publications):
+def score_genre(author_record, author_context):
     score=max(min(np.random.normal(0.7,0.1),1),0)
     confidence=max(min(np.random.normal(0.4, 0.1),0.9),0.1)
     return pd.Series([score, confidence], index = ['genre_score', 'genre_confidence'])
 
-def score_style(publication, reference_publications):
+def score_style(author_record, author_context):
     score=max(min(np.random.normal(0.5,0.1),1),0)
     confidence=max(min(np.random.normal(0.4, 0.1),0.9),0.1)
     return pd.Series([score, confidence], index = ['style_score', 'style_confidence'])
 
-def score_topic(publication, reference_publications):
+def score_topic(author_record, author_context):
     score=max(min(np.random.normal(0.6, 0.1),1),0)
     confidence=max(min(np.random.normal(0.4, 0.1),0.9),0.1)
     return pd.Series([score, confidence], index = ['topic_score', 'topic_confidence'])
 
-def score_role(publication, reference_publications):
-    score=max(min(np.random.normal(0.7, 0.1),1),0)
-    confidence=max(min(np.random.normal(0.4, 0.1),0.9),0.1)
+def score_role(author_record, author_context):
+    if not author_context or not author_record :
+        score = 0
+        confidence = 0
+    else:
+        score=max(min(np.random.normal(0.7, 0.1),1),0)
+        confidence=max(min(np.random.normal(0.4, 0.1),0.9),0.1)
     return pd.Series([score, confidence], index = ['role_score', 'role_confidence'])
 

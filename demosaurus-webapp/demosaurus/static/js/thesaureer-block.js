@@ -1,35 +1,29 @@
-function score_span(score,confidence){
-  hovertext = "".concat('Score: ',String(Math.round(100*score)), '&#37; Confidence: ', String(Math.round(100*confidence)),'&#37;');
-  return $('<span title="'+hovertext+'" data-html="true" style="display: inline-block; width: 30px; height: 15px">')
-        .css("backgroundColor",getColorForPercentage(score,confidence))
-        .tooltip({})
-}
 
-function author_note(authorrow){
+function candidate_note(candidaterow){
   return ''
-    +(authorrow.skopenote_nl || '')+' '
-    +(authorrow.editorial || '')+' '
-    +(authorrow.editorial_nl || '')+' '
-
+    +(candidaterow.skopenote_nl || '')+' '
+    +(candidaterow.editorial || '')+' '
+    +(candidaterow.editorial_nl || '')+' '
 }
 
-function add_to_author_list(row){
-
-
+function add_to_candidate_list(row, context){
+  console.log('add_to_candidate_list now')
     var years = [row.birthyear,'-',row.deathyear].join('');
+    context['id']=row.author_ppn;
 
-    $("#author_list > tbody").append($('<tr>')
-      .append($('<td>').append('<input onclick="delete_row(this);" type="button" value="&#10007;">'))
+    $("#candidate_list > tbody").append($('<tr>')
+      .append($('<td>').append('<input onclick="delete_row(this);" type="button" value="&#10007;" padding="0px">'))
       .append($('<td class="ppn_cell" >')
-        .append($('<a class="action" href="#" onclick="choose_ppn(\''+row.ppn+'\')"; return false;>')
-          .text(row.ppn)))
+        .append($('<a class="action" href="#" onclick="choose_ppn(\''+row.author_ppn+'\')"; return false;>')
+          .text(row.author_ppn)))
       .append($('<td class="name_cell">')
-        .append($('<a class="action"  href="#" onClick="open_popup(\''+Flask.url_for('contributor.authorpage', {'id':row.ppn})+'\')"; return false;>')
+        .append($('<a class="action"  href="#" onClick="open_popup(\''+Flask.url_for('contributor.authorpage', context)+'\')"; return false;>')
           .text(row.foaf_name)))
-      .append($('<td class="name_cell">').text(author_note(row)))
+      .append($('<td>').html((row.isni?'&#10003;':'')))
+      .append($('<td class="name_cell" title="'+candidate_note(row)+'">').text(candidate_note(row)).tooltip())
       .append($('<td class="years_cell">')
         .text(years))
-      .append($('<td class="years_cell">').append($('<div>').css("backgroundColor",getColorForPercentage(row.score))
+      .append($('<td class="match_cell">').append($('<div>').css("background-color",getColorForPercentage(row.score))
         .text(Math.round(100*row.score))))
       .append($('<td class="score_cell">').append(score_span(row.name_score,row.name_confidence)))
       .append($('<td class="score_cell">').append(score_span(row.role_score,row.role_confidence)))
@@ -40,23 +34,24 @@ function add_to_author_list(row){
   }
 
 
-  function thesaureer_response(response) {
+  function thesaureer_response(response, contributor_row) {
         console.log(response);
 
         if (response.length<1) {
           $('#placeholder').text('Geen records gevonden');
-          $("#author_list > thead").empty()
+          $("#candidate_list > thead").empty()
         }
         else {
           $('#placeholder').empty()
-          if ($("#author_list > thead > tr").length<1){
-              $("#author_list > thead").append($('<tr>')
-                .append($('<th scope="col">').html("&#10007;"))
+          if ($("#candidate_list > thead > tr").length<1){
+              $("#candidate_list > thead").append($('<tr>')
+                .append($('<th scope="col" padding="0px">').html("&#10007;"))
                 .append($('<th scope="col" class="ppn_cell">').text('PPN'))
                 .append($('<th scope="col" class="name_cell">').text('Naam'))
+                .append($('<th scope="col">').text('ISNI'))
                 .append($('<th scope="col" class="name_cell">').text('Notitie'))
                 .append($('<th scope="col" class="years_cell">').text('Leefjaren'))
-                .append($('<th scope="col" class="years_cell">').text('Match'))
+                .append($('<th scope="col" class="match_cell">').text('Match'))
                 .append($('<th scope="col" class="score_cell">').append($('<div>').append($('<span>').text('Naam'))))
                 .append($('<th scope="col" class="score_cell">').append($('<div>').append($('<span>').text('Rol'))))
                 .append($('<th scope="col" class="score_cell">').append($('<div>').append($('<span>').text('Genre'))))
@@ -67,12 +62,21 @@ function add_to_author_list(row){
           }
 
           ndisplay = Math.min(response.length, 20);
-          // Figure out how to deal with pagination.. 
-          console.log(ndisplay);
+          // TODO: Figure out how to deal with pagination.. 
+          console.log('Display:', ndisplay);
+
+          console.log('Creating context for publication');
+          try {var role = $('#role_'+contributor_row).val().match(/\[(.*?)\]/)[1];}
+          catch(e) {var role = null; }
+          console.log('Role:', role)
+          
+          var context = {'Title':$('#publication_title').val(), 'Role':role};
+          console.log('Context is nu:', context);
+
 
           for(var i = 0; i< ndisplay; i++){
-            add_to_author_list(response[i]);
             console.log(i);
+            add_to_candidate_list(response[i], context);
           }
 
         }

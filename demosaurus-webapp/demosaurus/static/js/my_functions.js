@@ -1,5 +1,6 @@
 function move_row(e, up) {
     var row = $(e).closest('tr');
+    console.log(row);
     if (up)
       row.prev().before(row);
     else
@@ -35,6 +36,14 @@ function openTab(evt, tabName){
   document.getElementById(tabName).style.display = "block";
   evt.currentTarget.className += " active";
 
+}
+
+function score_span(score,confidence){
+  hovertext = "".concat('Score: ',String(Math.round(100*score)), '&#37; Confidence: ', String(Math.round(100*confidence)),'&#37;');
+  return $('<div title="'+hovertext+'" data-html="true">')
+        .css("background-color",getColorForPercentage(score))
+        .css("width",Math.round(50*confidence))
+        .tooltip({})
 }
 
 var getColorForPercentage = function(this_perc, saturation=1.0, low=0.5) {

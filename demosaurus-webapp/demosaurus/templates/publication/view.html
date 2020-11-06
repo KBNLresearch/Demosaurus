@@ -2,33 +2,149 @@
 
 
 
-{% block title %}{{publication['hoofdTitel_title']}}{% endblock %}
 
-{% block header %}
-  
-{% endblock %}
+{% block title %}{{publication['titelvermelding']}}{% endblock %}
+
+{% block header %}{% endblock %}
 
 
 {% block content %}
 
-
+{# Display cover #}
 <div style="width:15%;float:left">
-  {% include "publication/partials/cover-block.html"%}     
+    Cover-image
+    {#<!--<img src={{'/static/'+cover['location']}} alt="Front cover" style="max-width:90%;max-height:230px;width:auto;height:auto;padding: 10px;">-->
+    <!-- todo: locate cover (publication.py, first create and fill table in db) -->
+    <!-- todo: make into slideshow with other covers, maybe titlepage, option to enlarge image, etc. -->#}
 </div>
 
-<div style="width:25%;float:left">
-  {% include "publication/partials/onix-block.html"%}
+
+
+{# Status tabs #}
+<div style="width:80%;float:left;border-left: 1px solid lightgray;padding: 5px;height: 250px;">
+    <script type=text/javascript src="{{url_for('static', filename='js/contributor-block.js') }}"></script>
+
+    <script type=text/javascript> 
+
+    // initialize vars holding the role options and contributors 
+    console.log('Initializing variables')
+    var role_options = [];
+    {% for role in role_list %}
+    role_options.push({
+        label: "{{role['legible']}} [{{role['ggc_code']}}]"
+    });
+    {%endfor%}
+
+    var contributors = [];
+    {% for contributor in contributors %}
+    contributors.push({
+        name: "{{contributor['title'] if contributor['title']}}{{contributor['name']}}",
+        role: "{{contributor['role']  if contributor['role']}}"
+    });
+    {%endfor%}
+
+    var maxIndex =0;
+
+</script>
+
+<div class="tab">
+  <button class="tablinks" onclick="openTab(event, 'general')" id = "basic_tab">Titelinformatie <span class="flag" id="basic_tab_flag">&#10071;</span></button>
+  <button class="tablinks" onclick="openTab(event, 'subject')" id = "subject_tab">Onderwerp<span class="flag" id="subject_tab_flag">&#10071;</span></button>
+  <button class="tablinks" onclick="openTab(event, 'contributors')" id = "contributors_tab">Auteurs<span class="flag" id="contributors_tab_flag">&#10071;</span></button>
+  <button class="tablinks" onclick="openTab(event, 'export'); export_info()" id = "export_tab">Exporteer</button>
 </div>
 
-<div style="width:59%;float:left;border-left: 1px solid lightgray;padding: 5px;height: 250px;">
-  {% include "publication/partials/status-block.html"%}
+<div id="general" class="tabcontent">
+    <script type="text/javascript">
+        //console.log(publication)
+    </script>
+    <table id="publicationinfo">
+      <thead/>        
+    <tbody>
+      <tr>
+        <td>Titel, subtitel</td>
+        <td><input id="publication_title" type="text" placeholder="Titel : subtitel(s)" value="{{ publication['titelvermelding']}}" size="80" /> </td>
+    </tr>
+    <tr>
+        <td>ISBN</td>
+        <td><input type="text" placeholder="ISBN" value="{{ publication['isbn']}}"/> </td>
+    </tr>
+    <tr>
+        <td valign="top">Samenvatting</td>
+       <!-- ('<input id="aut_name_' + maxIndex + '" type="text" placeholder="Voornaam @Achternaam" value="'+ name+'">'))-->
+        <td><textarea id="samenvatting" rows="1" cols="80">{{publication['samenvatting-inhoudsopgave'] or "Inhoud van kmc 4207"}}</textarea></td>
+    </tr>
+
+</tbody>
+<tfoot/>  
+</table>
+
 </div>
+
+
+<div id="subject" class="tabcontent">
+    <input type="button" value="Suggereer Brinkeys (Annif)" onclick="suggest_topics()" />
+</div>
+
+<div id="contributors" class="tabcontent">
+    <table id="contributortable" class="fixed_header" margin = 0>
+      <thead>
+        <tr>
+          <th>&#10007;</th>
+          <th>&#8679;</th>
+          <th>&#8681;</th>
+
+          <th class="name_cell"> Naam </th>
+          <th class="name_cell"> Rol </th>
+          <th class="name_cell"> PPN </th>
+      </tr> 
+  </thead>
+  <tbody style="max-height: 120px">
+    <!-- This is where contributors may be pre-filled and/ or manually added (client-side)-->
+</tbody>
+<tfoot>  
+  <tr align="right">
+    <td><input type="button" value="Voeg naam toe" onclick="add_contributor_row()" /></td></tr></tfoot>
+</table>
+</div>
+
+
+<div id="export" class="tabcontent">
+    Controleer KMC's hieronder, kopiëer en plak naar WinIBW
+    <div id="message"> Eventuele waarschuwingen </div>
+</div>
+
+
+
+
+<script type=text/javascript> 
+  init();
+
+</script>
+</div>
+
+
+{# Area for thesauring, subject indexing etc #}
 
 <p id='thesaureervak'/>
-<div style="width:100%;float:left;">
-  {% include "link_thesaurus/thesaureer-block.html"%}     
-</div>
+<div style="width:100%;float:left;border-top: 1px solid lightgray">
+    <script type=text/javascript src="{{url_for('static', filename='js/thesaureer-block.js') }}"></script>
+
+    <h1 id=thesaureer_title></h1>
+
+    <div id='placeholder'></div>
+
+    <!--<div style="height: 600px; overflow: scroll;">-->
+        <table id=candidate_list class='fixed_header' >
+            <thead/>
+            <tbody class="zebra" style="height: 300px"></tbody>
+            <tfoot></tfoot>
+        </table>
 
 
 
-{% endblock %}
+    </div>
+
+
+
+    {% endblock %}
