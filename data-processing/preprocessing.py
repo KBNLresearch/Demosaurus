@@ -10,34 +10,16 @@ import difflib
 import os, sys
 from collections import Counter
 import pickle
+from fuzzywuzzy import process
 
 def export_table(table_name, df):
+    assert len(df)>0    
     table_loc = os.path.join('../data/clean_csv',table_name+'.csv')
     df.to_csv(table_loc, sep=';', index = False)
 
-
-
-with open('stopwordsDutch.txt','r') as f:
-    stopwords = [x.strip() for x in f.readlines()]
-tokenizer = nltk.tokenize.WordPunctTokenizer()    
-
-def process_text(text, utf= True, lowercase=True, tokenize=True, stopword=True, stemming=True, alphanumeric = True):
-    if utf:
-        text = unidecode(text)
-    if lowercase: 
-        text = text.lower()
-    if tokenize:
-        tokens = tokenizer.tokenize(text)
-    if stopword:
-        assert tokenize
-        tokens = [token for token in tokens if token not in stopwords]
-    if stemming:
-        assert tokenize
-        tokens = [stemmer.stem(token) for token in tokens]
-    if alphanumeric:
-        assert tokenize
-        tokens = [token for token in tokens if token.isalnum()]
-    return tokens if tokenize else text
+def import_table(table_name):
+    table_loc = os.path.join('../data/clean_csv',table_name+'.csv')
+    return pd.read_csv(table_loc, sep=';')
 
 
 def read_ggc_data(filename, sep, skiprows=[]):
@@ -53,37 +35,44 @@ def read_ggc_data(filename, sep, skiprows=[]):
         'kmc_1500_c':'taal_origineel',      
         'kmc_1700':'land_van_uitgave',     
         'kmc_2000':'isbn', 'kmc_2001':'isbn_2',      
-        'kmc_3000':'auteur_primair',      
-        'kmc_3001':'auteur_co_1',      
-        'kmc_3002':'auteur_co_2',      
-        'kmc_3003':'auteur_co_3',     
-        'kmc_301x_1':'auteur_sec_1',     
-        'kmc_301x_2':'auteur_sec_2',      
-        'kmc_301x_3':'auteur_sec_3',     
-        'kmc_301x_4':'auteur_sec_4',     
+        #'kmc_3000':'auteur_primair',     # Fobid interpretations 
+        #'kmc_3001':'auteur_co_1',      
+        #'kmc_3002':'auteur_co_2',      
+        #'kmc_3003':'auteur_co_3',     
+        #'kmc_301x_1':'auteur_sec_1',     
+        #'kmc_301x_2':'auteur_sec_2',      
+        #'kmc_301x_3':'auteur_sec_3',     
+        #'kmc_301x_4':'auteur_sec_4',     
+        'kmc_301x_1':'kmc_3011',
+        'kmc_301x_2':'kmc_3012',
+        'kmc_301x_3':'kmc_3013',
+        'kmc_301x_4':'kmc_3014',
         'kmc_4000':'titel_verantwoordelijkheidsvermelding',     
         'kmc_4030':'uitgever',      
         'kmc_4031':'uitgever_2',      
         'kmc_4061':'annotatie_illustratie',      
-        'kmc_5060':'NUGI_genre',      
-        'kmc_5061':'NUR_rubriek',     
-        'kmc_520x_1':'brinkman_1','kmc_520x_2':'brinkman_2','kmc_520x_3':'brinkman_3','kmc_520x_4':'brinkman_4',     
-        'kmc_556x_1':'CBK_thema_1','kmc_556x_2':'CBK_thema_2','kmc_556x_3':'CBK_thema_3','kmc_556x_4':'CBK_thema_4',     
-        'kmc_557x_1':'CBK_genre_1','kmc_557x_2':'CBK_genre_2','kmc_557x_3':'CBK_genre_3','kmc_557x_4':'CBK_genre_4',     
         'kmc_4200':'deelvermelding',      
         'kmc_4201':'annotatie_alg','kmc_4202':'annotatie_alg2',     
         'kmc_4203':'annotatie_editie',      
         'kmc_4204':'annotatie_bibliografie',      
         'kmc_4205':'annotatie_inhoud',      
         'kmc_4206':'annotatie_taal',      
-        'kmc_4207':'samenvatting_inhoudsopgave',     
+        'kmc_4207':'annotatie_samenvatting_inhoudsopgave',     
         'kmc_4208':'annotatie_verschijningsfrequentie',     
         'kmc_4209':'annotatie_karakteriserendegegevens',      
         'kmc_4600':'annotatie_analytisch_volw',     
-        'kmc_4601':'annotatie_analytisch_jeugd'}, inplace=True)
+        'kmc_4601':'annotatie_analytisch_jeugd',
+        'kmc_5060':'NUGI_genre',      
+        'kmc_5061':'NUR_rubriek',     
+        'kmc_520x_1':'brinkman_1','kmc_520x_2':'brinkman_2','kmc_520x_3':'brinkman_3','kmc_520x_4':'brinkman_4',     
+        'kmc_556x_1':'CBK_thema_1','kmc_556x_2':'CBK_thema_2','kmc_556x_3':'CBK_thema_3','kmc_556x_4':'CBK_thema_4',     
+        'kmc_557x_1':'CBK_genre_1','kmc_557x_2':'CBK_genre_2','kmc_557x_3':'CBK_genre_3','kmc_557x_4':'CBK_genre_4'
+        }, inplace=True)
     print('Parsed ggc_data. Number of records:', len(ggc_data))
     return ggc_data
 
+with open('stopwordsDutch.txt','r') as f:
+    stopwords = [x.strip() for x in f.readlines()]
 
 def clean_publisher(publisher):
     throwaway = ['uitgeverij', 'uitgevers', 'uitgever', 'drukkerij', 'uitgegeven', 'boekdrukkerij', 'uitgeversmaatschappij', 
@@ -91,8 +80,14 @@ def clean_publisher(publisher):
          'gebr', '.', ']', '[', 'gebroeders', 'stichting', 'n.v', 'b.v', 'b.v.', 'be', 'uitgeversmij', 'mij.', 
          '-mij', '-mij.', 'uitg.', 'mij', 'amsterdam', 'holland', '.]', '[.', ')', '.)', '(', '(.', ';', ':', 'nv', 
          "'", 'distr', 'distributie', 'vof', 'v.o.f.']
-    try: return ' '.join([x for x in process_text(re.sub('^.*?: ', '', publisher), stemming=False, alphanumeric = False) if x not in throwaway])
-    except: return ''
+    publisher = unidecode(publisher).lower()
+    publisher = re.sub('^.*?: ', '', publisher)
+    tokens = tokenizer.tokenize(publisher)
+    tokens = [token for token in tokens if token not in stopwords and token not in throwaway]
+
+    return ' '.join(tokens)
+    #try: return ' '.join(tokens)
+    #except: return ''
 
 
 def publisher_mapping(publishers):
@@ -145,20 +140,6 @@ def export_basic_info(ggc_data):
     export_table('publication_basicinfo', table)
 
 
-def export_title(ggc_data):
-    table = ggc_data[['publication_ppn']]
-    table.loc[:,'titelvermelding'] = ggc_data['titel_verantwoordelijkheidsvermelding'].apply(lambda x: x.split('/')[0])
-    table.loc[:,'titellengte'] = table['titelvermelding'].apply(lambda x: len(x))
-    bins_lengths = [0,5,10,15,20,25,30,35,40,45,50,60,70,80,90,100,150,250,1000]
-    label_ranges = ['0_5', '6_10', '11_15', '16_20', '21_25', '26_30', '31_35', '36_40', '41_45', '46_50', '51_60',
-               '61_70', '71_80', '81_90', '91_100', '101_150', '151_250', '251_1000']
-    table.loc[:,'titellengte_ranges'] = pd.cut(table['titellengte'], bins=bins_lengths, right=True, labels=label_ranges)
-    table.loc[:,'titelwoorden'] = table['titelvermelding'].apply(lambda x: process_text(x, stopword=False, stemming = False))
-    table.loc[:,'titellengte_Nwoorden'] = table['titelwoorden'].apply(lambda x: len(x))
-    table.loc[:,'woordlengte_gem'] = table['titelwoorden'].apply(lambda x: np.mean([len(w) for w in x]))
-    table.loc[:,'woordlengte_gem_rond'] = table['woordlengte_gem'].apply(lambda x: round(x*2)/2)
-    table.loc[:,'woordlengte_med'] = table['titelwoorden'].apply(lambda x: np.median([len(w) for w in x]))
-    export_table('publication_titlefeatures', table)    
 
 def ranked_subject(label, ggc_data):
     df = pd.DataFrame()
@@ -168,26 +149,89 @@ def ranked_subject(label, ggc_data):
         df = df.append(bit, sort=False)
     return df
 
+def find_most_similar_thesaurus_item(x, thesaurus, column, threshold = 90): 
+    # Obtain the closest match and return if it is above the threshold  
+    item, score, index = process.extract(x, thesaurus[column], limit = 1)[0]
+    if score >= threshold: 
+        return thesaurus.loc[index,'identifier']   
 
-def export_subjects(ggc_data):
-    ranked_subjects = ['brinkman','CBK_thema','CBK_genre']
+def export_subjects(ggc_data, subset = []):
+    ranked_subjects = ['brinkman','CBK_thema','CBK_genre','unescocode']
     nonranked_subjects = ['NUGI_genre','NUR_rubriek']
-    for subject in ranked_subjects + nonranked_subjects:
+    for subject in (subset if subset != [] else ranked_subjects + nonranked_subjects):
+        assert subject in ranked_subjects or subject in nonranked_subjects
         if subject in ranked_subjects:
             table = pd.DataFrame()
             for c in [c for c in ggc_data.columns if subject in c]:
                 bit = ggc_data[['publication_ppn', c]].rename(columns={c:subject}).dropna()
-                bit['rank'] = c.split('_')[-1]
+                bit['rank'] = c.split('_')[-1]                
                 table = table.append(bit, sort=False)
         else:
             table = ggc_data[['publication_ppn', subject]]
+        if subject == 'CBK_genre':       
+            thesaurus = import_table('thesaurus_CBK_genres')                         
+            thesaurus['CBK_genre'] = thesaurus.genre.str.strip().str.lower()
+            # Merge with thesaurus (ignore casing and omit trailing whitespace/punctuation)
+            # to obtain identifiers
+            df = table.merge(thesaurus, how='left', 
+                left_on=table['CBK_genre'].str.lower().str.strip(' !\',+:'), 
+                right_on=thesaurus['CBK_genre'])
+            # Try to match items that weren't linked successfully with fuzzy matching
+            df.loc[df['identifier'].isna(),'identifier'] = df.loc[df['identifier'].isna(),'CBK_genre_x'].apply(
+                lambda x:find_most_similar_thesaurus_item(x, thesaurus, 'CBK_genre'))
+            # get relevant columns and drop unmatched items 
+            table = df[['publication_ppn','identifier','rank']].dropna() 
+            # cast identifier back to integer (became float due to NAN's when merging)
+            table.loc[:,'identifier'] = table.identifier.astype(pd.Int64Dtype())
+            # rename column 
+            table.rename(columns={'identifier':'CBK_genre'})
         export_table('publication_'+subject, table)
+
+def export_annotations(ggc_data):
+    df = pd.DataFrame()
+    for c in [c for c in ggc_data.columns if 'annotatie' in c]:
+        bit = ggc_data[['publication_ppn', c]].rename(columns={c:'annotation'}).dropna()
+        bit['kind'] = '_'.join(c.split('_')[1:])
+        df = df.append(bit, sort=False)
+    export_table('publication_annotations', df)
+
+
+def match_authorparts(author):
+    ppn = '(!(?P<author_ppn>[^!]+)!)?'
+    role = '(\$(?P<role>[^!]+)\$)?'
+    title = '(#(?P<title>[^#]+)#)?'
+    name = '(?P<name>[^#$!]+)'
+    match = re.match(title+name+role+ppn, author)
+    index= ['title','name','role','author_ppn']
+
+    if not match:
+        print('Cannot match parts for', author)
+        items = [None for i in index]
+    else:
+        items = [match.group(i) for i in index]
+    return pd.Series(items, index= ['title','name','role','author_ppn'])
+
+def export_authorship(ggc_data):
+    table = pd.DataFrame()
+
+    for kmc in [3000,3001,3002,3003,3011,3012,3013,3014]:
+        column = 'kmc_'+str(kmc)
+        bit = ggc_data[['publication_ppn', column]].dropna()
+        bit[['title','name','role','author_ppn']] = bit.apply(lambda x: match_authorparts(x[column]),axis=1)       
+        bit['kmc'] = kmc
+        table = table.append(bit.drop(columns=[column]), sort=False)
+        
+    export_table('authorship_ggc', table)
+
+
 
 def main():
     ggc_data = read_ggc_data('../data/kb_kinderboeken_20200320.txt', sep='\t', skiprows=[13463,52313,80849, 147033, 156969,171677,189676,195328])   
     #export_basic_info(ggc_data)
     #export_title(ggc_data)
-    export_subjects(ggc_data)
+    #export_subjects(ggc_data, subset = ['CBK_genre'])
+    #export_authorship(ggc_data)
+    export_annotations(ggc_data)
 
 
 if __name__ == "__main__":
