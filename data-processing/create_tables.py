@@ -133,7 +133,7 @@ def get_schema(table_name):
 
 def main():
 	#fill_table('publication_basicinfo')
-	#fill_table('publication_titlefeatures')
+	
 	#for subject in ['brinkman','CBK_thema','CBK_genre','NUGI_genre','NUR_rubriek']:
 	#	fill_table('publication_'+subject)
 	#for authorbit in ['author_NTA','author_isni','author_viaf','author_wikipedia','author_worldcat','wiki_preferred_languages', 'authorship_roles']:
@@ -143,8 +143,8 @@ def main():
 #		fill_table(bit)
 	#fill_table('authorship_ggc')
 	#fill_table('publication_datasplits')
-	fill_table('publication_annotations')
-
+	#fill_table('publication_annotations')
+	fill_table('publication_titlefeatures')
 
 
 

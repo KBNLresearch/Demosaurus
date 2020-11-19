@@ -61,7 +61,17 @@ def title_features():
     table.loc[:,'woordlengte_gem'] = table['titelwoorden'].apply(lambda x: np.mean([len(w) for w in x]))
     table.loc[:,'woordlengte_gem_rond'] = table['woordlengte_gem'].apply(lambda x: round(x*2)/2)
     table.loc[:,'woordlengte_med'] = table['titelwoorden'].apply(lambda x: np.median([len(w) for w in x]))
+    table.drop(columns = ['titel_verantwoordelijkheidsvermelding'], inplace = True)
     export_table('publication_titlefeatures', table)    
 
-def content_features(ggc_data):
+def content_features():
     content = ['title']
+
+
+def main():
+    title_features()
+    content_features()
+
+
+if __name__ == "__main__":
+    main()
