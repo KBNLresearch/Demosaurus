@@ -144,7 +144,8 @@ def main():
 	#fill_table('authorship_ggc')
 	#fill_table('publication_datasplits')
 	#fill_table('publication_annotations')
-	fill_table('publication_titlefeatures')
+	#fill_table('publication_titlefeatures')
+	fill_table('publication_contentfeatures')
 
 
 

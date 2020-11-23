@@ -65,11 +65,26 @@ def title_features():
     export_table('publication_titlefeatures', table)    
 
 def content_features():
-    content = ['title']
+    table = import_table('publication_titlefeatures')[['publication_ppn','titelvermelding']]
+    annotations = import_table('publication_annotations')
+    rel_annotations = ['samenvatting_inhoudsopgave', 'analytisch_volw', 'analytisch_jeugd']
+    bits = [annotations.loc[annotations.kind==k] for k in rel_annotations]
+    # irrel_annotations = ['illustratie','deelvermelding','alg','alg2', 'editie', 'bibliografie', 'inhoud','taal','verschijningsfrequentie', 'karakteriserendegegevens']
+    # irrel_annotations are those that are not expected to contribute to a content represenation
+    
+    
+    table['annotation'] = None # mock column to make sure the added annotations are properly labeled
+    for i, bit in enumerate(bits):
+        table = table.merge(bits[i][['publication_ppn','annotation']], on='publication_ppn', how = 'outer', suffixes = ['','_'+rel_annotations[i]])
+    table.drop(columns=['annotation'], inplace=True) # drop mock column
+    
+    # text processing, also based on similarity-space code by Nizar
 
+    export_table('publication_contentfeatures', table)
+    
 
 def main():
-    title_features()
+    #title_features()
     content_features()
 
 
