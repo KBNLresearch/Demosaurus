@@ -8,11 +8,13 @@ if __name__ == '__main__':
 				if line[0] == '#': continue
 				(key, val) = line.split()
 				config[key] = val
-		assert config['SECRET_KEY']
-	except AssertionError:
-		prinẗ('No SECRET_KEY in configuration file (config.txt)')
+		try: assert config['SECRET_KEY']
+		except: prinẗ('No SECRET_KEY in configuration file (config.txt)')
 	except (FileNotFoundError, IOError):
 		print('No configuration (config.txt) found')
 
 	app = create_app(SECRET_KEY = config['SECRET_KEY'])
-	app.run()
+	try: app.run(host = config['host'], port = config['port'])
+	except: 
+		print('No host/port specified in configuration (config.txt)')
+		app.run()
