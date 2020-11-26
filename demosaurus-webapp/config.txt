@@ -1,0 +1,2 @@
+# set configuration variables as <variable_name> <value>
+SECRET_KEY dev
