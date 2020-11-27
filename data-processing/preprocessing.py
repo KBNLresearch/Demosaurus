@@ -226,6 +226,9 @@ def export_authorship(ggc_data):
 
 
 def main():
+    if not os.path.isdir('../data/clean_csv'):
+        os.makedirs('../data/clean_csv')
+
     ggc_data = read_ggc_data('../data/kb_kinderboeken_20200320.txt', sep='\t', skiprows=[13463,52313,80849, 147033, 156969,171677,189676,195328])   
     #export_basic_info(ggc_data)
     #export_title(ggc_data)
