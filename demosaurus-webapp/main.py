@@ -1,3 +1,4 @@
+# coding = utf-8
 from demosaurus import create_app
 
 if __name__ == '__main__':
