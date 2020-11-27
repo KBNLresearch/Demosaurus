@@ -73,8 +73,10 @@ def read_ggc_data(filename, sep, skiprows=[]):
 
 with open('stopwordsDutch.txt','r') as f:
     stopwords = [x.strip() for x in f.readlines()]
+tokenizer = nltk.tokenize.WordPunctTokenizer()    
 
 def clean_publisher(publisher):
+    if not isinstance(publisher,str) : return ''
     throwaway = ['uitgeverij', 'uitgevers', 'uitgever', 'drukkerij', 'uitgegeven', 'boekdrukkerij', 'uitgeversmaatschappij', 
          'uitgeversmij', 'n.v.', 'uitgevers-maatschappij', 'maatschappij', '-maatschappij', '-', 'uitgevers-mij', 
          'gebr', '.', ']', '[', 'gebroeders', 'stichting', 'n.v', 'b.v', 'b.v.', 'be', 'uitgeversmij', 'mij.', 
@@ -230,10 +232,13 @@ def main():
         os.makedirs('../data/clean_csv')
 
     ggc_data = read_ggc_data('../data/kb_kinderboeken_20200320.txt', sep='\t', skiprows=[13463,52313,80849, 147033, 156969,171677,189676,195328])   
-    #export_basic_info(ggc_data)
-    #export_title(ggc_data)
-    #export_subjects(ggc_data, subset = ['CBK_genre'])
-    #export_authorship(ggc_data)
+    print('Basic info')
+    export_basic_info(ggc_data)
+    print('Subject indexing')
+    export_subjects(ggc_data)
+    print('Author indexing')
+    export_authorship(ggc_data)
+    print('Annotations')
     export_annotations(ggc_data)
 
 
