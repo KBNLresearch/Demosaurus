@@ -1,4 +1,0 @@
-# set configuration variables as <variable_name> <value>
-SECRET_KEY dev
-# host 192.87.165.4
-# port 3345
