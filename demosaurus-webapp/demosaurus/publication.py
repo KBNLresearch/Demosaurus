@@ -7,7 +7,8 @@ from werkzeug.exceptions import abort
 from demosaurus.db import get_db
 
 
-bp = Blueprint('publication', __name__)
+bp = Blueprint('publication', __name__)#, url_prefix='/demosaurus')
+#bp = Blueprint('publication', __name__, template_folder='templates')
 
 @bp.context_processor
 def utility_processor():    

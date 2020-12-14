@@ -6,7 +6,7 @@ from flask_jsglue import JSGlue
 
 def create_app(test_config=None, SECRET_KEY = 'dev'):
     # create and configure the app
-    app = Flask(__name__, instance_relative_config=True)
+    app = Flask(__name__, instance_relative_config=True)#, root_path='demosaurus')
     app.config.from_mapping(
         SECRET_KEY=SECRET_KEY,
         DATABASE=os.path.join(app.instance_path, 'demosaurus.sqlite'),
@@ -36,8 +36,8 @@ def create_app(test_config=None, SECRET_KEY = 'dev'):
     db.init_app(app)
 
     from . import publication
-    app.register_blueprint(publication.bp)
-    app.add_url_rule('/', endpoint='overview')
+    app.register_blueprint(publication.bp, url_prefix='/demosaurus')
+    #app.add_url_rule('/demosaurus', 'overview', publication.overview)
 
     from . import link_thesaurus
     app.register_blueprint(link_thesaurus.bp)
@@ -46,7 +46,4 @@ def create_app(test_config=None, SECRET_KEY = 'dev'):
     app.register_blueprint(contributor.bp)
 
     return app
-
-
-
 
