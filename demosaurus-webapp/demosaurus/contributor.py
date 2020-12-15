@@ -21,7 +21,7 @@ def authorpage(id):
         ' SELECT *, '
         '        (SELECT identifier FROM author_VIAF WHERE author_ppn = ? LIMIT 1) AS VIAF,'
         '        (SELECT identifier FROM author_ISNI WHERE author_ppn = ? LIMIT 1) AS ISNI,'
-        '        (SELECT identifier FROM author_Wikipedia '
+        '        (SELECT wiki_url FROM author_Wikipedia '
         '                LEFT JOIN wiki_preferred_languages ON author_Wikipedia.language = wiki_preferred_languages.language'
         '                WHERE author_Wikipedia.author_ppn = ?'
         '                ORDER BY -wiki_preferred_languages.rank desc LIMIT 1) AS WIKI'
@@ -30,7 +30,7 @@ def authorpage(id):
     ).fetchone()  
 
     # Fetch all publications that this author has contributed to
-    publications = pd.read_sql_query('SELECT publication_basicinfo.publication_ppn, role, kind, rank, titelvermelding, verantwoordelijkheidsvermelding,' 
+    publications = pd.read_sql_query('SELECT publication_basicinfo.publication_ppn, role, kmc, titelvermelding, verantwoordelijkheidsvermelding,' 
     ' \"taal-publicatie\", \"taal-origineel\", \"land-van-uitgave\", isbn, isbn_2, \"jaar-van-uitgave\", uitgever, uitgever_2,'
     ' authorship_ggc.author_ppn    '
     ' FROM authorship_ggc LEFT JOIN publication_basicinfo'
