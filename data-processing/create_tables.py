@@ -3,12 +3,13 @@ import pandas as pd
 import os
 
 def import_table(table_name, schema):
-    table_loc = os.path.join('../data/clean_csv',table_name+'.csv')
-    df = pd.read_csv(table_loc, sep=';', dtype = {d['field']:d['dtype'] for d in schema})
-    return df
+	"""Obtain dataframe from file ../data/clean_csv/<table_name>.csv, obeying the dtypes specified in the schema"""
+	table_loc = os.path.join('../data/clean_csv',table_name+'.csv')
+	df = pd.read_csv(table_loc, sep=';', dtype = {d['field']:d['dtype'] for d in schema})
+	return df
 
 def create_table(table_name, schema, db = '../data/demosaurus.sqlite'):
-	
+	"""Create or replace database table following datatypes specified in the schema"""
 	statement = "CREATE TABLE IF NOT EXISTS %s (" % table_name
 	for i, column in enumerate(schema):
 		if i>0: statement += ','
@@ -21,6 +22,7 @@ def create_table(table_name, schema, db = '../data/demosaurus.sqlite'):
 		c.execute(statement)
 	
 def fill_table(table_name, db = '../data/demosaurus.sqlite', overwrite = True):
+	""" Fill database table with records from file ../data/clean_csv/<table_name>.csv"""
 	schema = get_schema(table_name)
 	print(table_name, schema)
 	df = import_table(table_name, schema)
@@ -30,18 +32,20 @@ def fill_table(table_name, db = '../data/demosaurus.sqlite', overwrite = True):
 		df.to_sql(name=table_name,con=con, if_exists=('append' if overwrite else 'replace'), index=False)
 
 def get_schema(table_name):
+	"""Specification of schemas ('dtype' for pandas and 'types'  for sqlite, and sqlite constraints)"""
 	if table_name == 'publication_basicinfo':
 		schema = [
 			{'field': 'publication_ppn', 'dtype':str, 'type':'TEXT', 'constraints':'NOT NULL PRIMARY KEY'},
-			{'field': 'titel_verantwoordelijkheidsvermelding', 'dtype':str, 'type':'TEXT','constraints':''},
-	    	{'field': 'taal_publicatie', 'dtype':str, 'type': 'TEXT', 'constraints':''},
-	    	{'field': 'taal_origineel', 'dtype':str, 'type': 'TEXT', 'constraints':''},
-	    	{'field': 'land_van_uitgave', 'dtype':str, 'type': 'TEXT', 'constraints':''},
-	    	{'field': 'isbn', 'dtype':pd.Int64Dtype(), 'type': 'INTEGER', 'constraints':''},
-	    	{'field': 'isbn_2', 'dtype':pd.Int64Dtype(), 'type': 'INTEGER','constraints':''},
-	    	{'field': 'jaar_van_uitgave', 'dtype':pd.Int64Dtype(), 'type': 'INTEGER', 'constraints':''},
-	    	{'field': 'uitgever', 'dtype':str, 'type': 'TEXT', 'constraints':''},
-	    	{'field': 'uitgever_2', 'dtype':str, 'type': 'TEXT', 'constraints':''}]
+			{'field': 'titelvermelding', 'dtype':str, 'type':'TEXT','constraints':''},
+			{'field': 'verantwoordelijkheidsvermelding', 'dtype':str, 'type':'TEXT','constraints':''},
+			{'field': 'taal_publicatie', 'dtype':str, 'type': 'TEXT', 'constraints':''},
+			{'field': 'taal_origineel', 'dtype':str, 'type': 'TEXT', 'constraints':''},
+			{'field': 'land_van_uitgave', 'dtype':str, 'type': 'TEXT', 'constraints':''},
+			{'field': 'isbn', 'dtype':pd.Int64Dtype(), 'type': 'INTEGER', 'constraints':''},
+			{'field': 'isbn_2', 'dtype':pd.Int64Dtype(), 'type': 'INTEGER','constraints':''},
+			{'field': 'jaar_van_uitgave', 'dtype':pd.Int64Dtype(), 'type': 'INTEGER', 'constraints':''},
+			{'field': 'uitgever', 'dtype':str, 'type': 'TEXT', 'constraints':''},
+			{'field': 'uitgever_2', 'dtype':str, 'type': 'TEXT', 'constraints':''}]
 	elif table_name == 'publication_titlefeatures':
 		schema = [
 			{'field': 'publication_ppn', 'dtype':str, 'type':'TEXT', 'constraints':'NOT NULL PRIMARY KEY'},
@@ -132,22 +136,21 @@ def get_schema(table_name):
 
 
 def main():
-	#fill_table('publication_basicinfo')
+	fill_table('publication_basicinfo')
 	
-	#for subject in ['brinkman','CBK_thema','CBK_genre','NUGI_genre','NUR_rubriek']:
-	#	fill_table('publication_'+subject)
-	#for authorbit in ['author_NTA','author_isni','author_viaf','author_wikipedia','author_worldcat','wiki_preferred_languages', 'authorship_roles']:
-	#	fill_table(authorbit)
-	#fill_table('publication_CBK_genre')
-	#for bit in ['thesaurus_CBK_genres','thesaurus_brinkmantrefwoorden']:
-#		fill_table(bit)
-	#fill_table('authorship_ggc')
-	#fill_table('publication_datasplits')
-	#fill_table('publication_annotations')
-	#fill_table('publication_titlefeatures')
+	for subject in ['brinkman','CBK_thema','CBK_genre','NUGI_genre','NUR_rubriek']:
+		fill_table('publication_'+subject)
+	for authorbit in ['author_NTA','author_isni','author_viaf','author_wikipedia','author_worldcat','wiki_preferred_languages', 'authorship_roles']:
+		fill_table(authorbit)
+	for bit in ['thesaurus_CBK_genres','thesaurus_brinkmantrefwoorden']:
+		fill_table(bit)
+	fill_table('authorship_ggc')
+	fill_table('publication_datasplits')
+	fill_table('publication_annotations')
+	fill_table('publication_titlefeatures')
 	fill_table('publication_contentfeatures')
 
 
 
 if __name__ == "__main__":
-    main()	   
+	main()	   
