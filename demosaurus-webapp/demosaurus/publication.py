@@ -25,12 +25,17 @@ def utility_processor():
 def view(id):
     db = get_db()
     publication = db.execute(
+        ' WITH annotations AS ('
+        '     SELECT publication_ppn, group_concat(annotation) AS annotations from publication_annotations'
+        '     WHERE publication_annotations.publication_ppn = ?'
+        '     AND kind in ("samenvatting_inhoudsopgave", "analytisch_volw", "analytisch_jeugd")'
+        '     GROUP BY publication_ppn)'
         ' SELECT *'
         ' FROM publication_basicinfo'
-        ' LEFT JOIN publication_samenvatting_inhoudsopgave'
-        ' ON publication_basicinfo.publication_ppn = publication_samenvatting_inhoudsopgave.publication_ppn'
+        ' LEFT JOIN annotations'
+        ' ON publication_basicinfo.publication_ppn = annotations.publication_ppn'
         ' WHERE publication_basicinfo.publication_ppn = ?',
-        (id,)
+        (id,id)
     ).fetchone()
 
     print(publication.keys)
@@ -45,7 +50,7 @@ def view(id):
     ).fetchall()
 
     roles_options = db.execute(
-            ' SELECT author_rolesID, legible, ggc_code'
+            ' SELECT authorship_roles_ID, legible, ggc_code'
             ' FROM authorship_roles'
         ).fetchall()
 
