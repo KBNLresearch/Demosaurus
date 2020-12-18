@@ -23,6 +23,7 @@
 {# Status tabs #}
 <div style="width:80%;float:left;border-left: 1px solid lightgray;padding: 5px;height: 250px;">
     <script type=text/javascript src="{{url_for('static', filename='js/contributor-block.js') }}"></script>
+    <script type=text/javascript src="{{url_for('static', filename='js/subjects-block.js') }}"></script>
 
     <script type=text/javascript> 
 
@@ -43,13 +44,23 @@
     });
     {%endfor%}
 
+     var subjects = [];
+    {% for subject in subjects %}
+    subjects.push({
+        rank: "{{subject['rank']}}",
+        CBK_genre_id: "{{subject['CBK_genre_id']}}",
+        CBK_genre: "{{subject['CBK_genre']}}",
+        //etc. for CBK-thema, brinkman, ..
+    });
+    {%endfor%}
+
     var maxIndex =0;
 
 </script>
 
 <div class="tab">
   <button class="tablinks" onclick="openTab(event, 'general')" id = "basic_tab">Titelinformatie <span class="flag" id="basic_tab_flag">&#10071;</span></button>
-  <button class="tablinks" onclick="openTab(event, 'subject')" id = "subject_tab">Onderwerp<span class="flag" id="subject_tab_flag">&#10071;</span></button>
+  <button class="tablinks" onclick="openTab(event, 'subjects')" id = "subjects_tab">Onderwerpen<span class="flag" id="subject_tab_flag">&#10071;</span></button>
   <button class="tablinks" onclick="openTab(event, 'contributors')" id = "contributors_tab">Auteurs<span class="flag" id="contributors_tab_flag">&#10071;</span></button>
   <button class="tablinks" onclick="openTab(event, 'export'); export_info()" id = "export_tab">Exporteer</button>
 </div>
@@ -82,8 +93,23 @@
 </div>
 
 
-<div id="subject" class="tabcontent">
+<div id="subjects" class="tabcontent">
     <input type="button" value="Suggereer Brinkeys (Annif)" onclick="suggest_topics()" />
+
+    <div>CBK genres</div>
+    <table id="table_CBK-genres">
+      <thead>
+        <tr>
+          <th>&#10007;</th>
+          <th>&#8679;</th>
+          <th>&#8681;</th>
+          <th>Term</th>
+        </tr>
+      </thead>
+    <tbody style="max-height: 120px">
+    <!-- This is where contributors may be pre-filled and/ or manually added (client-side)-->
+    </tbody>
+  </table>
 </div>
 
 <div id="contributors" class="tabcontent">
@@ -118,7 +144,8 @@
 
 
 <script type=text/javascript> 
-  init();
+  init_contributors();
+  init_subjects();
 
 </script>
 </div>
