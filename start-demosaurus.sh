@@ -3,7 +3,11 @@ if (($#==0 ));
 	then 
 	test -f ~/surfdrive/Demosaurus/demosaurus.sqlite \
 		&& echo "Syncing database from Surfdrive" \
+<<<<<<< HEAD
 		&& rsync ~/surfdrive/Demosaurus/demosaurus.sqlite instance/demosaurus.sqlite \
+=======
+		&& rsync ../data/demosaurus.sqlite instance/demosaurus.sqlite \
+>>>>>>> origin/master
 		|| ( flask init-db && echo "No database in Surfdrive. Instantiated new database." )
 else
  	echo "Not syncing database."

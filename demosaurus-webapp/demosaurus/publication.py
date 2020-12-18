@@ -25,12 +25,17 @@ def utility_processor():
 def view(id):
     db = get_db()
     publication = db.execute(
+        ' WITH annotations AS ('
+        '     SELECT publication_ppn, group_concat(annotation) AS annotations from publication_annotations'
+        '     WHERE publication_annotations.publication_ppn = ?'
+        '     AND kind in ("samenvatting_inhoudsopgave", "analytisch_volw", "analytisch_jeugd")'
+        '     GROUP BY publication_ppn)'
         ' SELECT *'
         ' FROM publication_basicinfo'
-        ' LEFT JOIN publication_samenvatting_inhoudsopgave'
-        ' ON publication_basicinfo.publication_ppn = publication_samenvatting_inhoudsopgave.publication_ppn'
+        ' LEFT JOIN annotations'
+        ' ON publication_basicinfo.publication_ppn = annotations.publication_ppn'
         ' WHERE publication_basicinfo.publication_ppn = ?',
-        (id,)
+        (id,id)
     ).fetchone()
 
     print(publication.keys)
@@ -45,7 +50,7 @@ def view(id):
     ).fetchall()
 
     roles_options = db.execute(
-            ' SELECT author_rolesID, legible, ggc_code'
+            ' SELECT authorship_roles_ID, legible, ggc_code'
             ' FROM authorship_roles'
         ).fetchall()
 
@@ -78,48 +83,3 @@ def overview():
         ' ORDER BY RANDOM() LIMIT 20'
     ).fetchmany(20)
     return render_template('publication/overview.html', publications=publications)
-
-
-
-
-# @bp.route('/')
-# def overview():
-#     db = get_db()
-#     publications = db.execute(
-#         'SELECT * '
-#         ' FROM Corstius_onix'
-#         ' JOIN authorship'
-#         ' ON onix.isbn = authorship.publication_isbn'
-#         ' WHERE authorship.seq_nr = 1'
-#         ' AND authorship.source = \'Onix\''
-#     ).fetchall()
-#     return render_template('publication/overview.html', publications=publications)
-
-
-# @bp.route('/<id>/view')
-# def view(id):
-#     db = get_db()
-#     publication = db.execute(
-#         ' SELECT *'
-#         ' FROM onix'
-#         ' WHERE onix.isbn = ?',
-#         (id,)
-#     ).fetchone()
-#     contributors = db.execute(
-#         ' SELECT *'
-#         ' FROM authorship'
-#         ' JOIN author_roles'
-#         ' ON authorship.role = author_roles.author_rolesID'
-#         ' WHERE authorship.publication_isbn = ?',
-#         (id,)
-#     ).fetchall()
-
-#     roles_options = db.execute(
-#             ' SELECT author_rolesID, legible, ggc_code'
-#             ' FROM author_roles'
-#         ).fetchall()
-
-#     print(len(contributors),  'contributor records')
-#     print(contributors[0].keys())
-
-#     return render_template('publication/view.html', publication = publication, contributors=contributors, role_list=roles_options)
