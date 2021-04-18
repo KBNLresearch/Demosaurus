@@ -1,27 +1,29 @@
+
 {% extends 'base.html' %}
 
 
+{% block header %}
+<h1>{% block title %}{{publication['titelvermelding']}}{% endblock %}</h1>
+{% endblock %}
 
 
-{% block title %}{{publication['titelvermelding']}}{% endblock %}
-
-{% block header %}{% endblock %}
 
 
 {% block content %}
 
+<!--
 {# Display cover #}
 <div style="width:15%;float:left">
     Cover-image
-    {#<!--<img src={{'/static/'+cover['location']}} alt="Front cover" style="max-width:90%;max-height:230px;width:auto;height:auto;padding: 10px;">-->
-    <!-- todo: locate cover (publication.py, first create and fill table in db) -->
-    <!-- todo: make into slideshow with other covers, maybe titlepage, option to enlarge image, etc. -->#}
+    {#<img src={{'/static/'+cover['location']}} alt="Front cover" style="max-width:90%;max-height:230px;width:auto;height:auto;padding: 10px;">
+    todo: locate cover (publication.py, first create and fill table in db)
+    todo: make into slideshow with other covers, maybe titlepage, option to enlarge image, etc.#}
 </div>
-
+-->
 
 
 {# Status tabs #}
-<div style="width:80%;float:left;border-left: 1px solid lightgray;padding: 5px;height: 250px;">
+<div style="width:80%;float:left; padding: 5px;height: 450px;">
     <script type=text/javascript src="{{url_for('static', filename='js/contributor-block.js') }}"></script>
 
     <script type=text/javascript> 
@@ -56,25 +58,53 @@
 
 <div id="general" class="tabcontent">
     <script type="text/javascript">
-        //console.log(publication)
+        console.log(publication)
     </script>
-    <table id="publicationinfo">
+    <table id="publicationinfo", class="tbinfo">
       <thead/>        
     <tbody>
       <tr>
         <td>Titel, subtitel</td>
-        <td><input id="publication_title" type="text" placeholder="Titel : subtitel(s)" value="{{ publication['titelvermelding']}}" size="80" /> </td>
+        <!--td><input id="publication_title" type="text" placeholder="Titel : subtitel(s)" value="{{ publication['titelvermelding']}}" size="80" /> </td-->
+        <td>{{ publication['titelvermelding']}}</td>
     </tr>
     <tr>
         <td>ISBN</td>
-        <td><input type="text" placeholder="ISBN" value="{{ publication['isbn']}}"/> </td>
+        <!--td><input type="text" placeholder="ISBN" value="{{ publication['isbn']}}"/> </td-->
+        <td>{{ publication['isbn']}}</td>
+    </tr>
+    <tr>
+      <td>Jaar van uitgave</td>
+      <!--td><input type="text" placeholder="Jaar van uitgave" value="{{ publication['jaar_van_uitgave']}}"/></td-->
+      <td>{{ publication['jaar_van_uitgave']}}</td>
+    </tr>
+    <tr>
+      <td>Uitgever</td>
+      <!--td><input type="text" placeholder="Uitgever" value="{{ publication['uitgever']}}"/></td-->
+      <td>{{ publication['uitgever'] or "-"}}</td>
+    </tr>
+    <tr>
+      <td>Taal publicatie</td>
+      <!--td><input type="text" placeholder="Taal publicatie" value="{{ publication['taal_publicatie']}}"/></td-->
+      <td>{{ publication['taal_publicatie']}}</td>
+    </tr>
+    <tr>
+      <td>Taal origineel</td>
+      <!--td><input type="text" placeholder="Taal origineel" value="{{ publication['taal_origineel']}}"/></td-->
+      <td>{{ publication['taal_origineel']}}</td>
+    </tr>
+    <tr>
+      <td>Land van uitgave</td>
+      <!--td><input type="text" placeholder="Land van uitgave" value="{{ publication['land_van_uitgave']}}"/></td-->
+      <td>{{ publication['land_van_uitgave']}}</td>
     </tr>
     <tr>
         <td valign="top">Samenvatting</td>
        <!-- ('<input id="aut_name_' + maxIndex + '" type="text" placeholder="Voornaam @Achternaam" value="'+ name+'">'))-->
-        <td><textarea id="samenvatting" rows="1" cols="80">{{publication['annotations'] or "Inhoudelijke omschrijving (bv. KMC 4207)"}}</textarea></td>
+        <!--td><textarea id="samenvatting" rows="1" cols="80">{{publication['annotations'] or "Inhoudelijke omschrijving (bv. KMC 4207)"}}</textarea></td-->
+        <td>{{publication['annotations'] or "Inhoudelijke omschrijving (bv. KMC 4207)"}}</td>
     </tr>
-
+    <!-- jaar van uitgave, uitgever, andere features die gebruikt worden voor onderwerpsontsluiting en thesaureren-->
 </tbody>
 <tfoot/>  
 </table>
@@ -127,24 +157,57 @@
 {# Area for thesauring, subject indexing etc #}
 
 <p id='thesaureervak'/>
-<div style="width:100%;float:left;border-top: 1px solid lightgray">
-    <script type=text/javascript src="{{url_for('static', filename='js/thesaureer-block.js') }}"></script>
+<div style="width:100%;float:left;">
+    
 
-    <h1 id=thesaureer_title></h1>
+    <h2 id=thesaureer_title></h2>
 
     <div id='placeholder'></div>
 
     <!--<div style="height: 600px; overflow: scroll;">-->
-        <table id=candidate_list class='fixed_header' >
-            <thead/>
-            <tbody class="zebra" style="height: 300px"></tbody>
-            <tfoot></tfoot>
-        </table>
+    <table id="candidate_list" class="fixed_header">
+        <thead/>
+        <!--tbody class="zebra" style="height: 300px"></tbody-->
+        <tbody class="zebra"/>
+        <tfoot/>
+    </table>
+
+    <script type="text/javascript" src="{{url_for('static', filename='js/thesaureer-block.js') }}"></script>
+
+</div>
+
+<!-- thesaureerblock sub-scores tooltip table.-->
+<div class="divTable" id="myContentHover" style="display: none;">
+<div class="divTableHeading">
+<div class="divTableRow">
+<div class="divTableHead"></div>
+<div class="divTableHead">Score</div>
+<div class="divTableHead">Confidence</div>
+</div>
+</div>
+<div class="divTableBody">
+<div class="divTableRow">
+<div class="divTableCell" id="tttb1"><b>Rol</b></div>
+<div class="divTableCell" id="tttb2">&nbsp;</div>
+<div class="divTableCell" id="tttb3">&nbsp;</div>
+</div>
+<div class="divTableRow">
+<div class="divTableCell" id="tttb4"><b>Genre</b></div>
+<div class="divTableCell" id="tttb5">&nbsp;</div>
+<div class="divTableCell" id="tttb6">&nbsp;</div>
+</div>
+<div class="divTableRow">
+<div class="divTableCell" id="tttb7"><b>Onderwerp</b></div>
+<div class="divTableCell" id="tttb8">&nbsp;</div>
+<div class="divTableCell" id="tttb9">&nbsp;</div>
+</div>
+<div class="divTableRow">
+<div class="divTableCell" id="tttb10"><b>Stijl</b></div>
+<div class="divTableCell" id="tttb11">&nbsp;</div>
+<div class="divTableCell" id="tttb12">&nbsp;</div>
+</div>
+</div>
+</div>
 
 
-
-    </div>
-
-
-
-    {% endblock %}
+{% endblock %}

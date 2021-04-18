@@ -34,10 +34,11 @@ function openTab(evt, tabName){
 
   // Show the current tab, and add an "active" class to the button that opened the tab
   document.getElementById(tabName).style.display = "block";
-  evt.currentTarget.className += " active";
+  evt.currentTarget.className += "active";
 
 }
 
+/*
 function score_span(score,confidence){
   hovertext = "".concat('Score: ',String(Math.round(100*score)), '&#37; Confidence: ', String(Math.round(100*confidence)),'&#37;');
   return $('<div title="'+hovertext+'" data-html="true">')
@@ -45,6 +46,7 @@ function score_span(score,confidence){
         .css("width",Math.round(50*confidence))
         .tooltip({})
 }
+*/
 
 var getColorForPercentage = function(this_perc, saturation=1.0, low=0.5) {
     var percentColors = [
@@ -71,3 +73,14 @@ var getColorForPercentage = function(this_perc, saturation=1.0, low=0.5) {
     };
     return 'rgba(' + [color.r, color.g, color.b, saturation].join(',') + ')';
   };
+  
+  // Hover over Match column shows scores.
+  $(function() {
+      $( '#myHoverTitle' ).tooltip({ content: $('#authorMatchHover').html() });
+  });
+
+  // DataTabel.js init interactive tables.
+  $(document).ready( function () {
+    $('#publication_list').DataTable();
+    //$('#candidate_list').DataTable({data: response});
+} );

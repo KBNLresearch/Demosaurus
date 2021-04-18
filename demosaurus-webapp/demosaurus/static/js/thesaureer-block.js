@@ -1,4 +1,3 @@
-
 function candidate_note(candidaterow){
   return ''
     +(candidaterow.skopenote_nl || '')+' '
@@ -8,6 +7,7 @@ function candidate_note(candidaterow){
 
 function add_to_candidate_list(row, context){
   console.log('add_to_candidate_list now')
+  console.log(row)
     var years = [row.birthyear,'-',row.deathyear].join('');
     context['id']=row.author_ppn;
 
@@ -23,19 +23,26 @@ function add_to_candidate_list(row, context){
       .append($('<td class="name_cell" title="'+candidate_note(row)+'">').text(candidate_note(row)).tooltip())
       .append($('<td class="years_cell">')
         .text(years))
-      .append($('<td class="match_cell">').append($('<div>').css("background-color",getColorForPercentage(row.score))
+      .append($('<td class="match_cell" data-rij="' + row + '">').append($('<div>').css("background-color",getColorForPercentage(row.score))
         .text(Math.round(100*row.score))))
+
+      /*
       .append($('<td class="score_cell">').append(score_span(row.name_score,row.name_confidence)))
       .append($('<td class="score_cell">').append(score_span(row.role_score,row.role_confidence)))
       .append($('<td class="score_cell">').append(score_span(row.genre_score,row.genre_confidence)))
       .append($('<td class="score_cell">').append(score_span(row.topic_score,row.topic_confidence)))
       .append($('<td class="score_cell">').append(score_span(row.style_score, row.style_confidence)))
+      */
       );
+      
   }
 
 
   function thesaureer_response(response, contributor_row) {
+        console.log('je vader');
         console.log(response);
+        console.log(contributor_row);
+        console.log('je moeder');
 
         if (response.length<1) {
           $('#placeholder').text('Geen records gevonden');
@@ -52,15 +59,35 @@ function add_to_candidate_list(row, context){
                 .append($('<th scope="col" class="name_cell">').text('Notitie'))
                 .append($('<th scope="col" class="years_cell">').text('Leefjaren'))
                 .append($('<th scope="col" class="match_cell">').text('Match'))
+                /*
                 .append($('<th scope="col" class="score_cell">').append($('<div>').append($('<span>').text('Naam'))))
                 .append($('<th scope="col" class="score_cell">').append($('<div>').append($('<span>').text('Rol'))))
                 .append($('<th scope="col" class="score_cell">').append($('<div>').append($('<span>').text('Genre'))))
                 .append($('<th scope="col" class="score_cell">').append($('<div>').append($('<span>').text('Onderwerp'))))
                 .append($('<th scope="col" class="score_cell">').append($('<div>').append($('<span>').text('Stijl'))))
+                */
                 );
             }
+            //console.log('Display:', ndisplay);
+
+            
+            console.log('Creating context for publication');
+            try {var role = $('#role_'+contributor_row).val().match(/\[(.*?)\]/)[1];}
+            catch(e) {var role = null; }
+            console.log('Role:', role)
+            
+            var context = {'Title':$('#publication_title').val(), 'Role':role};
+            console.log('Context is nu:', context);
+            for(var i = 0; i<response.length; i++){
+              add_to_candidate_list(response[i], context);
+            }
+            
+            $('#candidate_list').DataTable();
           }
 
+
+
+          /*
           ndisplay = Math.min(response.length, 20);
           // TODO: Figure out how to deal with pagination.. 
           console.log('Display:', ndisplay);
@@ -74,10 +101,11 @@ function add_to_candidate_list(row, context){
           console.log('Context is nu:', context);
 
 
-          for(var i = 0; i< ndisplay; i++){
+          for(var i = 0; i< response.length; i++){
             console.log(i);
             add_to_candidate_list(response[i], context);
           }
+          */
 
         }
 

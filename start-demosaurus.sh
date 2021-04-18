@@ -1,13 +1,9 @@
 cd demosaurus-webapp
 if (($#==0 ));
 	then 
-	test -f ~/surfdrive/Demosaurus/demosaurus.sqlite \
+	test -f ~/surfdrive/Shared/Demosaurus-data/demosaurus.sqlite \
 		&& echo "Syncing database from Surfdrive" \
-<<<<<<< HEAD
-		&& rsync ~/surfdrive/Demosaurus/demosaurus.sqlite instance/demosaurus.sqlite \
-=======
-		&& rsync ../data/demosaurus.sqlite instance/demosaurus.sqlite \
->>>>>>> origin/master
+		&& rsync ~/surfdrive/Shared/Demosaurus-data/demosaurus.sqlite instance/demosaurus.sqlite \
 		|| ( flask init-db && echo "No database in Surfdrive. Instantiated new database." )
 else
  	echo "Not syncing database."

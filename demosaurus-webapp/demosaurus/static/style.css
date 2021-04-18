@@ -1,7 +1,7 @@
 
-html { font-family: sans-serif; background: #eee; padding: 1rem; height: 95% }
+html { font-family: "Open Sans", Arial, sans-serif; background: #eee; padding: 1rem; height: 95% }
 body { max-width: 1500px; margin: 0 auto; background: white; min-height: 100%}
-h1 { font-family: serif; color: #377ba8; margin: 1rem 0; }
+h1 { font-family: "Open Sans", Arial, sans-serif; color: #377ba8; margin: 1rem 0; }
 
 
 a { color: #377ba8; } /* clickables */
@@ -16,7 +16,7 @@ nav ul li a, nav ul li span, header .action { display: block; padding: 0.5rem; }
 
 section {clear: both;}
 .content { padding: 0 1rem 1rem; }
-.content > header { border-bottom: 1px solid lightgray; display: flex; align-items: flex-end; }
+.content > header { display: flex; align-items: flex-end; }
 .content > header h1 { flex: auto; margin: 1rem 0 0.25rem 0; }
 .content:last-child { margin-bottom: 0; }
 .content form { margin: 1em 0; display: flex; flex-direction: column; }
@@ -34,8 +34,14 @@ textarea {
   resize: none;
 }
 
+/*#table_author {} white-space:nowrap*/
+
 .zebra tr:nth-child(odd){background: #eee;}
 .zebra tr:nth-child(even){background: #dae5f4;}
+
+/* Table with extra info author and publication on 'authorpage.html' and 'view.html' */
+.tbinfo td:first-child { font-weight: bold; white-space: nowrap; padding-right: 20px; width: 1em; }
+.tbinfo { width: "100%"; text-align: left}
 
 
 /* class fixed_header: body is scrollable */
@@ -47,7 +53,7 @@ textarea {
   border-spacing: 0px;
 }
 .fixed_header thead tr{display:block;}
-.fixed_header thead th{vertical-align:bottom; text-align:center; padding: 0px}
+/*.fixed_header thead th{vertical-align:bottom; text-align:center; padding: 0px}*/
 
 .fixed_header tbody td{border: 1px solid white; vertical-align: middle; overflow: hidden; text-overflow: ellipsis; padding: 0px }
 
@@ -55,19 +61,23 @@ textarea {
 
 /* table listing NTA-entries: specified column widths*/
 
+
 .ppn_cell {width:100px; max-width: 100px; }
 .title_cell {width:300px; max-width: 300px; }
 .name_cell {width:200px; max-width: 200px; white-space:nowrap;}
 .name_cell > input {width: 95%}
-.years_cell {width:100px; max-width: 100px; text-align:center; }
+.years_cell {width:100px; max-width: 100px; text-align:left; }
 .match_cell {width:100px; max-width: 100px; height: 100%; text-align:center; }
-.match_cell div {height: 100%; width: 100%; } /* border: 1px solid black;*/
+.match_cell div {height: 100%; width: 100%; } 
 
+
+/*
 .fixed_header td.score_cell {text-align:right;  width: 50px; background-color: white; height: 100%; border-style: none solid none none; border-color: #ccc; padding: 2px 0px 2px 2px;}
 .fixed_header td.score_cell div {display: inline-block; padding: 30% 0px 0px 0px;  vertical-align: middle;}
+*/
 
 
-/* score-cell header: rotate and translate a bit, to save space*/
+/* score-cell header: rotate and translate a bit, to save space
 th.score_cell {height:50px; white-space: nowrap; padding: 0px}
 th.score_cell > div {
   text-align: left;
@@ -78,7 +88,7 @@ th.score_cell > div > span {
   border-bottom: 1px solid #ccc;
   padding: 3px 5px;
 }
-
+*/
 
 /* Style the tab */
 .tab {
@@ -123,4 +133,37 @@ th.score_cell > div > span {
   padding: 6px 12px;
   border: 1px solid #ccc;
   border-top: none;
+}
+
+/* Hover with sub-scores styling */
+.divTable{
+  display: table;
+  width: 100%;
+  background: rgb(55, 123, 168, 0.9);
+}
+.divTableRow {
+  display: table-row;
+  background: rgb(55, 123, 168, 0.95);
+  
+}
+.divTableHeading {
+  background: #628CA8;
+  display: table-header-group;
+}
+.divTableCell, .divTableHead {
+  border: 0px;
+  display: table-cell;
+  padding: 3px 10px;
+  text-align: left;
+  font-family: "Open Sans", Arial, sans-serif;
+
+}
+.divTableHeading {
+  background: rgb(55, 123, 168, 0.9);
+  display: table-header-group;
+  font-weight: bold;
+}
+.divTableBody {
+  display: table-row-group;
+
 }
