@@ -46,13 +46,13 @@ textarea {
 
 /* class fixed_header: body is scrollable */
 .fixed_header tbody{
-  display:block;
+  /* display:block; */
   padding:0px;
   overflow:auto;
   width:100%;
   border-spacing: 0px;
 }
-.fixed_header thead tr{display:block;}
+/*.fixed_header thead tr{display:block;}*/
 /*.fixed_header thead th{vertical-align:bottom; text-align:center; padding: 0px}*/
 
 .fixed_header tbody td{border: 1px solid white; vertical-align: middle; overflow: hidden; text-overflow: ellipsis; padding: 0px }

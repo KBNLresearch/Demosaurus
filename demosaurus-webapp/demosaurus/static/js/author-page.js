@@ -20,7 +20,7 @@ function add_to_publication_list(publications){
       .append($('<td class="ppn_cell" >').text(row.publication_ppn))
       .append($('<td class="title_cell" >').text(row.titelvermelding))
       //.append($('<td class="match_cell">').append($('<div>')
-      .append($('<td class="match_cell" data-rij="' + i + '" id="myHoverTitle">').append($('<div>')
+      .append($('<td class="match_cell" data-rij="' + i + '" id="authorMatchTt">').append($('<div>')
           .css("background-color",getColorForPercentage(1))
           .text(Math.round(100*1.))))
       );
@@ -33,7 +33,7 @@ function add_to_publication_list(publications){
       var tooltipJSON = publications[$(this).data("rij")];
       var tooltipValues = [];
       $('#tttb2').text(Math.round(publications[$(this).data("rij")]["role_score"]*100) + '%');
-      $('#tttb3').text(Math.round(publications[$(this).data("rij")]["role_score"]*100) + '%');
+      $('#tttb3').text(Math.round(publications[$(this).data("rij")]["role_confidence"]*100) + '%');
       
       $('#tttb5').text(Math.round(publications[$(this).data("rij")]["genre_score"]*100) + '%');
       $('#tttb6').text(Math.round(publications[$(this).data("rij")]["genre_confidence"]*100) + '%');

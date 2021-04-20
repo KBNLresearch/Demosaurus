@@ -5,38 +5,6 @@ function candidate_note(candidaterow){
     +(candidaterow.editorial_nl || '')+' '
 }
 
-function add_to_candidate_list(row, context){
-  console.log('add_to_candidate_list now')
-  console.log(row)
-    var years = [row.birthyear,'-',row.deathyear].join('');
-    context['id']=row.author_ppn;
-
-    $("#candidate_list > tbody").append($('<tr>')
-      .append($('<td>').append('<input onclick="delete_row(this);" type="button" value="&#10007;" padding="0px">'))
-      .append($('<td class="ppn_cell" >')
-        .append($('<a class="action" href="#" onclick="choose_ppn(\''+row.author_ppn+'\')"; return false;>')
-          .text(row.author_ppn)))
-      .append($('<td class="name_cell">')
-        .append($('<a class="action"  href="#" onClick="open_popup(\''+Flask.url_for('contributor.authorpage', context)+'\')"; return false;>')
-          .text(row.foaf_name)))
-      .append($('<td>').html((row.isni?'&#10003;':'')))
-      .append($('<td class="name_cell" title="'+candidate_note(row)+'">').text(candidate_note(row)).tooltip())
-      .append($('<td class="years_cell">')
-        .text(years))
-      .append($('<td class="match_cell" data-rij="' + row + '">').append($('<div>').css("background-color",getColorForPercentage(row.score))
-        .text(Math.round(100*row.score))))
-
-      /*
-      .append($('<td class="score_cell">').append(score_span(row.name_score,row.name_confidence)))
-      .append($('<td class="score_cell">').append(score_span(row.role_score,row.role_confidence)))
-      .append($('<td class="score_cell">').append(score_span(row.genre_score,row.genre_confidence)))
-      .append($('<td class="score_cell">').append(score_span(row.topic_score,row.topic_confidence)))
-      .append($('<td class="score_cell">').append(score_span(row.style_score, row.style_confidence)))
-      */
-      );
-      
-  }
-
 
   function thesaureer_response(response, contributor_row) {
         console.log('je vader');
@@ -59,17 +27,8 @@ function add_to_candidate_list(row, context){
                 .append($('<th scope="col" class="name_cell">').text('Notitie'))
                 .append($('<th scope="col" class="years_cell">').text('Leefjaren'))
                 .append($('<th scope="col" class="match_cell">').text('Match'))
-                /*
-                .append($('<th scope="col" class="score_cell">').append($('<div>').append($('<span>').text('Naam'))))
-                .append($('<th scope="col" class="score_cell">').append($('<div>').append($('<span>').text('Rol'))))
-                .append($('<th scope="col" class="score_cell">').append($('<div>').append($('<span>').text('Genre'))))
-                .append($('<th scope="col" class="score_cell">').append($('<div>').append($('<span>').text('Onderwerp'))))
-                .append($('<th scope="col" class="score_cell">').append($('<div>').append($('<span>').text('Stijl'))))
-                */
                 );
             }
-            //console.log('Display:', ndisplay);
-
             
             console.log('Creating context for publication');
             try {var role = $('#role_'+contributor_row).val().match(/\[(.*?)\]/)[1];}
@@ -78,9 +37,71 @@ function add_to_candidate_list(row, context){
             
             var context = {'Title':$('#publication_title').val(), 'Role':role};
             console.log('Context is nu:', context);
+
             for(var i = 0; i<response.length; i++){
-              add_to_candidate_list(response[i], context);
-            }
+              //add_to_candidate_list(response[i], context);
+              console.log('add_to_candidate_list now')
+              console.log(response[i])
+                var years = [response[i].birthyear,'-',response[i].deathyear].join('');
+                context['id']=response[i].author_ppn;
+
+                $("#candidate_list > tbody").append($('<tr>')
+                  .append($('<td>').append('<input onclick="delete_row(this);" type="button" value="&#10007;" padding="0px">'))
+                  .append($('<td class="ppn_cell" >')
+                    .append($('<a class="action" href="#" onclick="choose_ppn(\''+response[i].author_ppn+'\')"; return false;>')
+                      .text(response[i].author_ppn)))
+                  .append($('<td class="name_cell">')
+                    .append($('<a class="action"  href="#" onClick="open_popup(\''+Flask.url_for('contributor.authorpage', context)+'\')"; return false;>')
+                      .text(response[i].foaf_name)))
+                  .append($('<td>').html((response[i].isni?'&#10003;':'')))
+                  .append($('<td class="name_cell" title="'+candidate_note(response[i])+'">').text(candidate_note(response[i])).tooltip())
+                  .append($('<td class="years_cell">')
+                    .text(years))
+                  .append($('<td class="match_cell" data-rij="' + i + '" id="thesMatchTt">').append($('<div>').css("background-color",getColorForPercentage(response[i].score))
+                    .text(Math.round(100*response[i].score))))
+                  )};
+            // Hover div on Match with sub-scores. 
+            $('.match_cell').hover(
+            function() {
+              var tooltipValues = [];
+              $('#tttb2').text(Math.round(response[$(this).data("rij")]["role_score"]*100) + '%');
+              $('#tttb3').text(Math.round(response[$(this).data("rij")]["role_confidence"]*100) + '%');
+              
+              $('#tttb5').text(Math.round(response[$(this).data("rij")]["genre_score"]*100) + '%');
+              $('#tttb6').text(Math.round(response[$(this).data("rij")]["genre_confidence"]*100) + '%');
+              
+              $('#tttb8').text(Math.round(response[$(this).data("rij")]["topic_score"]*100) + '%');
+              $('#tttb9').text(Math.round(response[$(this).data("rij")]["topic_confidence"]*100) + '%');
+
+              $('#tttb11').text(Math.round(response[$(this).data("rij")]["style_score"]*100) + '%');
+              $('#tttb12').text(Math.round(response[$(this).data("rij")]["style_confidence"]*100) + '%');
+
+              $('#tttb14').text(Math.round(response[$(this).data("rij")]["name_score"]*100) + '%');
+              $('#tttb15').text(Math.round(response[$(this).data("rij")]["name_confidence"]*100) + '%');
+
+              var tooltip = $("<div class='tooltip'>" + $('#thesMatchHover').html() + "</div>")
+                .css({
+                  'color': '#fff',
+                  'position': 'absolute',
+                  'zIndex': '99999',
+                  'width': '200px',
+                  'height': '150px',
+                  'background-color': 'rgba(255, 99, 132, 0)',
+                });
+              $(this).append(tooltip);
+              $(document).on('mousemove', function(e) {
+                $('.tooltip').css({
+                  // pageX, pageY need to relocate (ie subtract 325 and 635) because DataTabels.js does somethin weird.
+                  left: e.pageX - 325,
+                  top: e.pageY - 635
+                });
+              });
+            },
+            function() {
+              $('.tooltip').remove();
+              }
+            );
+                        
             
             $('#candidate_list').DataTable();
           }
@@ -107,7 +128,7 @@ function add_to_candidate_list(row, context){
           }
           */
 
-        }
+        };
 
 function choose_ppn(ppn) {
   console.log('Choose', ppn);
