@@ -18,12 +18,20 @@ function open_popup (url, width=700, height=400) {
 
 function openTab(evt, tabName){
     // Declare all variables
+
+  console.log(tabName)
+
   var i, tabcontent, tablinks;
 
   // Get all elements with class="tabcontent" and hide them
   tabcontent = document.getElementsByClassName("tabcontent");
   for (i = 0; i < tabcontent.length; i++) {
     tabcontent[i].style.display = "none";
+  }
+
+  bottomcontent = document.getElementsByClassName("bottomcontent");
+  for (i = 0; i < bottomcontent.length; i++) {
+    bottomcontent[i].style.display = "none";
   }
 
   // Get all elements with class="tablinks" and remove the class "active"
@@ -87,5 +95,3 @@ var getColorForPercentage = function(this_perc, saturation=1.0, low=0.5) {
   $(document).ready( function () {
     $('#publication_list').DataTable();
 } );
-
-window.onload = fetchProjects()
