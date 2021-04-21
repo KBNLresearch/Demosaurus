@@ -50,12 +50,34 @@
 </script>
 
 
-<div class="tab">
+<!--div class="tab">
   <button class="tablinks" onclick="openTab(event, 'general')" id = "basic_tab">Titelinformatie <span class="flag" id="basic_tab_flag">&#10071;</span></button>
   <button class="tablinks" onclick="openTab(event, 'subject')" id = "subject_tab">Onderwerp<span class="flag" id="subject_tab_flag">&#10071;</span></button>
   <button class="tablinks" onclick="openTab(event, 'contributors')" id = "contributors_tab">Auteurs<span class="flag" id="contributors_tab_flag">&#10071;</span></button>
   <button class="tablinks" onclick="openTab(event, 'export'); export_info()" id = "export_tab">Exporteer</button>
+</div-->
+
+<!--div class="tab">
+  <ul class="breadcrumb">
+    <li><a href="javascript:openTab(event, 'general')" class="tablinks" id="basic_tab">Titelinformatie</a></li>
+    <li><a href="javascript:openTab(event, 'subject')" class="tablinks" id="subject_tab">Onderwerp</a></li>
+    <li><a href="javascript:openTab(event, 'contributors')" class="tablinks" id = "contributors_tab">Auteurs<span class="flag" id="contributors_tab_flag">&#10071;</span></a></li>
+    <li><a href="javascript:openTab(event, 'export'); export_info()" class="tablinks" id = "export_tab">Exporteer</a></li>
+  </ul>
+</div-->
+
+
+<div class="tab">
+  <ul class="breadcrumb">
+    <li><a href="#" onclick="openTab(event, 'general')" class="tablinks" id="basic_tab">Titelinformatie<span class="flag" id="basic_tab_flag">&#10071;</span></a></li>
+    <li><a href="#" onclick="openTab(event, 'subject')" class="tablinks" id="subject_tab">Onderwerp<span class="flag" id="subject_tab_flag">&#10071;</span></a></li>
+    <li><a href="#" onclick="openTab(event, 'contributors')" class="tablinks" id="contributors_tab">Auteurs<span class="flag" id="contributors_tab_flag">&#10071;</span></a></li>
+    <li><a href="#" onclick="openTab(event, 'export'); export_info()" class="tablinks" id="export_tab">Exporteer<span class="flag" id="export_tab_flag">&#10071;</span></a></li>
+  </ul>
 </div>
+
+
+
 
 <div id="general" class="tabcontent">
     <!--script type="text/javascript">
@@ -104,9 +126,71 @@
 
 </div>
 
-
+<!-- Annif block. -->
 <div id="subject" class="tabcontent">
-    <input type="button" value="Suggereer Brinkeys (Annif)" onclick="suggest_topics()" />
+  <div id="form">
+
+  <div class="container">
+
+    <div class="row pb-4">
+      <div class="col-md-8 mr-auto">
+        <div id="text-box" class="form-group">
+          <label for="text">Input text</label>
+          <div id="text-box-wrapper">
+            <textarea class="form-control" rows="20" name="text" id="text"
+            placeholder='Copy text here and press the button "Get suggestions"'></textarea>
+            <button id="button-clear" type="button" class="btn btn-danger">&#x2715;</button>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="project">Project (vocabulary and language)</label>
+          <div class="select-wrapper">
+            <select class="form-control" id="project">
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <fieldset id="limit-buttons" class="btn-group btn-group-toggle" data-toggle="buttons">
+            <legend data-i18n="limit">Max # of suggestions</legend>
+            <label class="btn btn-secondary">
+              <input type="radio" name="limit" value="10" checked>
+              10
+            </label>
+            <label class="btn btn-secondary">
+              <input type="radio" name="limit" value="15">
+              15
+            </label>
+            <label class="btn btn-secondary">
+              <input type="radio" name="limit" value="20">
+              20
+            </label>
+          </fieldset>
+        </div>
+        <img id="animation" src="static/img/annif-static.gif" alt="">
+        <button type="button" class="btn btn-primary" id="get-suggestions">Get suggestions</button>
+        
+        <div id="suggestions-wrapper">
+          <h2 id="suggestions" data-i18n="suggestions">Suggested subjects</h2>
+          <div class="d-flex justify-content-center">
+            <div id="results-spinner" class="spinner-border m-2" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+          </div>
+          <ul class="list-group" id="results">
+          </ul>
+          <ul class="list-group" id="no-results">
+            <li class="list-group-item p-0" data-i18n="no-results">Ei tuloksia</li>
+          </ul>
+        </div>
+
+      </div>
+
+    </div>
+    
+  </div>
+</div>
 </div>
 
 <div id="contributors" class="tabcontent">

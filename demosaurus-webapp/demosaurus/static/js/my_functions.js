@@ -29,12 +29,12 @@ function openTab(evt, tabName){
   // Get all elements with class="tablinks" and remove the class "active"
   tablinks = document.getElementsByClassName("tablinks");
   for (i = 0; i < tablinks.length; i++) {
-    tablinks[i].className = tablinks[i].className.replace("active", "");
+    tablinks[i].className = tablinks[i].className.replace(" active", "");
   }
 
   // Show the current tab, and add an "active" class to the button that opened the tab
   document.getElementById(tabName).style.display = "block";
-  evt.currentTarget.className += "active";
+  evt.currentTarget.className += " active";
 
 }
 
@@ -76,15 +76,16 @@ var getColorForPercentage = function(this_perc, saturation=1.0, low=0.5) {
   
   // Hover over Match column shows scores.
   $(function() {
-      $( '#authorMatchTt' ).tooltip({ content: $('#authorMatchHover').html() });
+      $('#authorMatchTt').tooltip({ content: $('#authorMatchHover').html() });
   });
 
   $(function() {
-      $( '#thesMatchTt' ).tooltip({ content: $('#thesMatchHover').html() });
+      $('#thesMatchTt').tooltip({ content: $('#thesMatchHover').html() });
   });
 
   // DataTabel.js init interactive tables.
   $(document).ready( function () {
     $('#publication_list').DataTable();
-    //$('#candidate_list').DataTable({data: response});
 } );
+
+window.onload = fetchProjects()
