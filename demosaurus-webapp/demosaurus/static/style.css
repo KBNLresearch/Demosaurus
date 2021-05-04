@@ -1,18 +1,20 @@
 
-html { font-family: "Open Sans", Arial, sans-serif; background: #eee; padding: 1rem; height: 95% }
-body { max-width: 1500px; margin: 0 auto; background: white; min-height: 100%}
-h1 { font-family: "Open Sans", Arial, sans-serif; color: #377ba8; margin: 1rem 0; }
+html { font-family: "Open Sans", Helvetica, sans-serif; background: #363838; padding: 1rem; height: 95% }
+body { max-width: 1500px; margin: 0 auto; background: #E8EAEC; min-height: 100%}
+h1 { font-family: "Open Sans", Helvetica, sans-serif; color: #FA761B; margin: 1rem 0; font-size: 30px; }
 
 
 a { color: #377ba8; } /* clickables */
 
 hr { border: none; border-top: 1px solid lightgray; } /* horizontal rule */
 
-nav { background: lightgray; display: flex; align-items: center; padding: 0 0.5rem; }
+/*
+nav { background: black; display: flex; align-items: center; padding: 0 0.5rem; }
 nav h1 { flex: auto; margin: 0; }
-nav h1 a { text-decoration: none; padding: 0.25rem 0.5rem; }
+nav h1 a { text-decoration: none; padding: 0.3rem 0.5rem; }
 nav ul  { display: flex; list-style: none; margin: 0; padding: 0; }
 nav ul li a, nav ul li span, header .action { display: block; padding: 0.5rem; }
+*/
 
 section {clear: both;}
 .content { padding: 0 1rem 1rem; }
@@ -88,12 +90,13 @@ th.score_cell > div > span {
 }
 */
 
-/* Style the tab */
+/* Style the tab 
 .tab {
   overflow: hidden;
   border: 1px solid #ccc;
   background-color: #f1f1f1;
 }
+*/
 
 /* Style the buttons that are used to open the tab content 
 .tab button {
@@ -127,14 +130,14 @@ th.score_cell > div > span {
   visibility: hidden;
 }
 
-/* Style the tab content */
+/* Style the tab content 
 .tabcontent {
   display: none;
   padding: 6px 12px;
   border: 1px solid #ccc;
   border-top: none;
 }
-
+*/
 
 /* Hover with sub-scores styling */
 .divTable{
@@ -171,17 +174,18 @@ th.score_cell > div > span {
 .breadcrumb { 
   list-style: none; 
   overflow: hidden; 
-  font: 18px Sans-Serif;
+  font: 18px "Open Sans", Helvetica, sans-serif;
 }
 .breadcrumb li { 
   float: left; 
 }
 .breadcrumb li a {
-  color: white;
+  color: #363838;
+  font-weight: bold;
   text-decoration: none; 
   padding: 10px 0 10px 60px;
   background: brown; /* fallback color */
-  background: hsla(34,85%,35%,1); 
+  background: hsla(46, 78%, 75%, 1);
   position: relative; 
   display: block;
   float: left;
@@ -194,7 +198,7 @@ th.score_cell > div > span {
   height: 0;
   border-top: 50px solid transparent; /* Go big on the size, and let overflow hide */
   border-bottom: 50px solid transparent;
-  border-left: 30px solid hsla(34,85%,35%,1);
+  border-left: 30px solid hsla(46, 78%, 75%, 1);
   position: absolute;
   top: 50%;
   margin-top: -50px; 
@@ -221,28 +225,16 @@ th.score_cell > div > span {
 .breadcrumb li:first-child a {
   padding-left: 30px;
 }
-.breadcrumb li:nth-child(2) a       { background:        hsla(34,85%,45%,1); }
-.breadcrumb li:nth-child(2) a:after { border-left-color: hsla(34,85%,45%,1); }
-.breadcrumb li:nth-child(3) a       { background:        hsla(34,85%,55%,1); }
-.breadcrumb li:nth-child(3) a:after { border-left-color: hsla(34,85%,55%,1); }
-.breadcrumb li:nth-child(4) a       { background:        hsla(34,85%,65%,1); }
-.breadcrumb li:nth-child(4) a:after { border-left-color: hsla(34,85%,65%,1); }
-/*.breadcrumb li:nth-child(5) a       { background:        hsla(34,85%,75%,1); }
-.breadcrumb li:nth-child(5) a:after { border-left-color: hsla(34,85%,75%,1); }
-.breadcrumb li:last-child a {
-  background: transparent !important;
-  color: black;
-  pointer-events: none;
-  cursor: default;
-}
-.breadcrumb li:last-child a::after { 
-  border: 0; 
-}*/
-
+.breadcrumb li:nth-child(2) a       { background:        hsla(46, 78%, 70%, 1); }
+.breadcrumb li:nth-child(2) a:after { border-left-color: hsla(46, 78%, 70%, 1); }
+.breadcrumb li:nth-child(3) a       { background:        hsla(46, 78%, 60%, 1); }
+.breadcrumb li:nth-child(3) a:after { border-left-color: hsla(46, 78%, 60%, 1); }
+.breadcrumb li:nth-child(4) a       { background:        hsla(46, 78%, 50%, 1); }
+.breadcrumb li:nth-child(4) a:after { border-left-color: hsla(46, 78%, 50%, 1); }
 
 .breadcrumb li a:hover { 
-  background: hsla(34, 85%, 25%, 1); 
+  background: hsla(46, 78%, 80%, 1); 
 }
 .breadcrumb li a:hover:after { 
-  border-left-color: hsla(34, 85%, 25%, 1) !important; 
+  border-left-color: hsla(46, 78%, 80%, 1) !important; 
 }

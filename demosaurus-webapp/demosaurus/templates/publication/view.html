@@ -2,8 +2,10 @@
 {% extends 'base.html' %}
 
 
+<!-- Title of publicationor "Demosaurus" as Header -->
 {% block header %}
-<h1>{% block title %}{{publication['titelvermelding']}}{% endblock %}</h1>
+
+<h1>{% block title %}Demosaurus{% endblock %}</h1>
 {% endblock %}
 
 
@@ -23,7 +25,7 @@
 
 
 {# Status tabs #}
-<div style="width:80%;float:left; padding: 5px;height: 450px;">
+<div>
   <script type=text/javascript src="{{url_for('static', filename='js/contributor-block.js') }}"></script>
   <script type=text/javascript> 
 
@@ -262,5 +264,6 @@
     </ul>
   </div>
 
+</div>
 
 {% endblock %}

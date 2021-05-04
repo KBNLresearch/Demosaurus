@@ -63,6 +63,7 @@ def create_app(test_config=None, SECRET_KEY='dev'):
     def create_all():
         db_users.create_all()
 
+    # Werkt niet? Je wil inloggen wanneer je op de "homepage" (root) beland.
     @app.route('/')
     @login_required
     def index():

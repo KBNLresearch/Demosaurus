@@ -28,7 +28,9 @@ function openTab(evt, tabName){
   for (i = 0; i < tabcontent.length; i++) {
     tabcontent[i].style.display = "none";
   }
-
+  
+  // When switching tabs, also show the corresponding results (2nd half of page).
+  // FIX: doesn't show back after hiding, .style.display = "block"; ?
   bottomcontent = document.getElementsByClassName("bottomcontent");
   for (i = 0; i < bottomcontent.length; i++) {
     bottomcontent[i].style.display = "none";
