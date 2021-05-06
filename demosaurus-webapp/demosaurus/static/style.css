@@ -1,8 +1,35 @@
+/*
+Used color scheme: https://color.adobe.com/Gutim-color-theme-16708150
 
-html { font-family: "Open Sans", Helvetica, sans-serif; background: #363838; padding: 1rem; height: 95% }
+.Gutim-1-hex { color: #22CCF0; }
+.Gutim-2-hex { color: #363838; }
+.Gutim-3-hex { color: #E0B31B; }
+.Gutim-4-hex { color: #FA761B; }
+.Gutim-5-hex { color: #E8EAEC; }
+
+.Gutim-1-rgba { color: rgba(33, 204, 239, 1); }
+.Gutim-2-rgba { color: rgba(54, 56, 56, 1); }
+.Gutim-3-rgba { color: rgba(223, 179, 26, 1); }
+.Gutim-4-rgba { color: rgba(249, 117, 26, 1); }
+.Gutim-5-rgba { color: rgba(232, 233, 235, 1); }
+
+.Gutim-1-hsla { color: hsla(190, 87, 53, 1); }
+.Gutim-2-hsla { color: hsla(180, 1, 21, 1); }
+.Gutim-3-hsla { color: hsla(46, 78, 49, 1); }
+.Gutim-4-hsla { color: hsla(24, 95, 54, 1); }
+.Gutim-5-hsla { color: hsla(210, 9, 91, 1); }
+
+Main font is Google fonts: "Ubuntu" and "Ubuntu Condensed" for tabs;
+*/
+
+html { font-family: "Ubuntu", Helvetica, sans-serif; background: #E8EAEC; padding: 1rem; height: 95% }
 body { max-width: 1500px; margin: 0 auto; background: #E8EAEC; min-height: 100%}
-h1 { font-family: "Open Sans", Helvetica, sans-serif; color: #FA761B; margin: 1rem 0; font-size: 30px; }
+h1 { font-family: "Ubuntu", Helvetica, sans-serif; color: #FA761B; margin: 1rem 0; font-size: 30px; }
 
+h2, h3, h4, p, td, th, input, label, legend {
+  font-family: "Ubuntu", Helvetica, sans-serif;
+  color: #363838;
+}
 
 a { color: #377ba8; } /* clickables */
 
@@ -25,9 +52,10 @@ section {clear: both;}
 .content label { font-weight: bold; margin-bottom: 0.5em; }
 
 input.danger { color: #cc2f2e; }
-input[type=submit] { align-self: start; min-width: 10em; padding: 0;}
-input[type=button] {padding: 2px; border: 1px solid #ccc; background: #eee;}
-input[type=button]:hover {background-color: #ddd;}
+input[type=submit] { align-self: start; min-width: 10em; padding: 0; color: #363838;}
+input[type=button] {padding: 2px; border: 1px solid lightgrey; background: #E8EAEC; color: #363838;, font-size: 16px;}
+input[type=button]:hover {background-color: #b9bfc6; color: #363838;}
+input[type=text] { align-self: start; min-width: 10em; padding: 0; color: #363838; font-size: 16px;}
 
 
 textarea {
@@ -38,8 +66,8 @@ textarea {
 
 /*#table_author {} white-space:nowrap*/
 
-.zebra tr:nth-child(odd){background: #eee;}
-.zebra tr:nth-child(even){background: #dae5f4;}
+.zebra tr:nth-child(odd){background: #d5d9dd;}
+.zebra tr:nth-child(even){background: #c6ccd2;}
 
 /* Table with extra info author and publication on 'authorpage.html' and 'view.html' */
 .tbinfo td:first-child { font-weight: bold; white-space: nowrap; padding-right: 20px; width: 1em; }
@@ -63,8 +91,8 @@ textarea {
 
 /* table listing NTA-entries: specified column widths*/
 .ppn_cell {width:100px; max-width: 100px; }
-.title_cell {width:300px; max-width: 300px; }
-.name_cell {width:200px; max-width: 200px; white-space:nowrap;}
+.title_cell {width:200px; max-width: 200px; }
+.name_cell {width:350px; max-width: 350px; white-space:nowrap;}
 .name_cell > input {width: 95%}
 .years_cell {width:100px; max-width: 100px; text-align:left; }
 .match_cell {width:100px; max-width: 100px; height: 100%; text-align:center; }
@@ -133,7 +161,7 @@ th.score_cell > div > span {
 /* Style the tab content 
 .tabcontent {
   display: none;
-  padding: 6px 12px;
+  padding: 0px 0px;
   border: 1px solid #ccc;
   border-top: none;
 }
@@ -143,11 +171,11 @@ th.score_cell > div > span {
 .divTable{
   display: table;
   width: 100%;
-  background: rgb(55, 123, 168, 0.9);
+  background: rgba(34, 204, 240, 0.9);
 }
 .divTableRow {
   display: table-row;
-  background: rgb(55, 123, 168, 0.95);
+  background: rgba(34, 204, 240, 0.95);
 }
 .divTableHeading {
   background: #628CA8;
@@ -158,10 +186,10 @@ th.score_cell > div > span {
   display: table-cell;
   padding: 3px 10px;
   text-align: left;
-  font-family: "Open Sans", Arial, sans-serif;
+  font-family: "Ubuntu", Helvetica, sans-serif;
 }
 .divTableHeading {
-  background: rgb(55, 123, 168, 0.9);
+  background: rgba(34, 204, 240, 0.9);
   display: table-header-group;
   font-weight: bold;
 }
@@ -169,12 +197,18 @@ th.score_cell > div > span {
   display: table-row-group;
 }
 
+.tab{
+  margin-left: 1px;
+  padding: 1px 1px;
+  transition: 0.3s;
+}
+
 
 /* Arrow style tab menu */
 .breadcrumb { 
   list-style: none; 
   overflow: hidden; 
-  font: 18px "Open Sans", Helvetica, sans-serif;
+  font: 20px "Ubuntu Condensed", Helvetica, sans-serif;
 }
 .breadcrumb li { 
   float: left; 
@@ -238,3 +272,15 @@ th.score_cell > div > span {
 .breadcrumb li a:hover:after { 
   border-left-color: hsla(46, 78%, 80%, 1) !important; 
 }
+
+
+/* Contributers table */
+#contributortable tbody{
+  font-size: 14px;
+  vertical-align: middle; 
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+  padding: 0px;
+}
+
+

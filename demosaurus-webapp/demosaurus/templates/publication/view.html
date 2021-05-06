@@ -144,7 +144,7 @@
                 </label>
               </fieldset>
             </div>
-            <button type="button" class="btn btn-primary" id="get-suggestions">Ophalen</button>
+            <button type="button" class="fas fa-file-medical-alt" id="get-suggestions" title="Analyseer tekst en suggereer trefwoorden"></button>
           </div>
         </div>
       </div>
@@ -154,12 +154,12 @@
 
   <!-- Auteurs blok. -->
   <div id="contributors" class="tabcontent">
-    <table id="contributortable" class="fixed_header" margin = 0>
+    <table id="contributortable" margin = 0>
       <thead>
         <tr>
-          <th>&#10007;</th>
-          <th>&#8679;</th>
-          <th>&#8681;</th>
+          <th><!--i class="fas fa-trash-alt"></i--></th>
+          <th><!--i class="fas fa-arrow-up"></i--></th>
+          <th><!--i class="fas fa-arrow-down"></i--></th>
           <th class="name_cell"> Naam </th>
           <th class="name_cell"> Rol </th>
           <th class="name_cell"> PPN </th>
@@ -169,7 +169,7 @@
       <!-- This is where contributors may be pre-filled and/ or manually added (client-side)-->
       <tfoot>  
         <tr align="right">
-          <td><input type="button" value="Voeg naam toe" onclick="add_contributor_row()" /></td>
+          <td><input type="button" title="Voeg naam toe" value="&#xf234" class="fas fa-user-plus" onclick="add_contributor_row()" /></td>
         </tr>
       </tfoot>
     </table>
@@ -196,7 +196,7 @@
 
 <div style="width:100%;float:left;">
     
-  <div class='bottomcontent' id="contributors">
+  <div class='bottomcontent' id="contributors_content" style="display: block;">
     <h2 id=thesaureer_title></h2>
     <div id='placeholder'></div>
       <table id="candidate_list" class="fixed_header">
@@ -251,7 +251,7 @@
 
 
   <!-- Annif Suggestions - bottom area. -->
-  <div id="subject" class="bottomcontent">
+  <div id="subject_content" class="bottomcontent" style="display: block;">
     <h2 id="suggestions" data-i18n="suggestions">Suggested subjects</h2>
     <div class="d-flex justify-content-center">
       <div id="results-spinner" class="spinner-border m-2" role="status">
@@ -262,6 +262,10 @@
     <ul class="list-group" id="no-results">
       <li class="list-group-item p-0" data-i18n="no-results">Geen resultaten gevonden.</li>
     </ul>
+  </div>
+
+  <!-- KMC block. -->
+  <div class="bottomcontent" id="export_content" style="display: block;">
   </div>
 
 </div>

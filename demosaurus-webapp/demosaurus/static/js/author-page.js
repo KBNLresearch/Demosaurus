@@ -47,12 +47,12 @@ function add_to_publication_list(publications){
       //console.log( 'hovering on' , publications[$(this).data("rij")]);
       var tooltip = $("<div class='tooltip'>" + $('#authorMatchHover').html() + "</div>")
         .css({
-          'color': '#fff',
+          'color': '#363838',
           'position': 'absolute',
           'zIndex': '99999',
           'width': '200px',
           'height': '150px',
-          'background-color': 'rgba(255, 99, 132, 0)',
+          'background-color': 'rgba(34, 204, 240, 0)',
         });
       $(this).append(tooltip);
       $(document).on('mousemove', function(e) {

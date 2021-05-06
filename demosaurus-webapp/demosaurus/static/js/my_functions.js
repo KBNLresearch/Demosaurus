@@ -28,6 +28,7 @@ function openTab(evt, tabName){
   for (i = 0; i < tabcontent.length; i++) {
     tabcontent[i].style.display = "none";
   }
+  document.getElementById(tabName).style.display = "block";
   
   // When switching tabs, also show the corresponding results (2nd half of page).
   // FIX: doesn't show back after hiding, .style.display = "block"; ?
@@ -43,7 +44,7 @@ function openTab(evt, tabName){
   }
 
   // Show the current tab, and add an "active" class to the button that opened the tab
-  document.getElementById(tabName).style.display = "block";
+  document.getElementById(tabName + "_content").style.display = "block";
   evt.currentTarget.className += " active";
 
 }
