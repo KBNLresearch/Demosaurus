@@ -198,9 +198,8 @@ th.score_cell > div > span {
 }
 
 .tab{
-  margin-left: 1px;
-  padding: 1px 1px;
-  transition: 0.3s;
+  left: 10px;
+  
 }
 
 
@@ -275,12 +274,66 @@ th.score_cell > div > span {
 
 
 /* Contributers table */
-#contributortable tbody{
-  font-size: 14px;
+#contributortable table {
+  font-size: 16px;
   vertical-align: middle; 
   overflow: hidden; 
   text-overflow: ellipsis; 
   padding: 0px;
 }
 
+#contributortable input {
+  font-size: 1.1rem;  
+}
 
+
+
+
+/* Annif 'kies model' selector en knop */
+.select-wrapper select, button {
+  font-size: 1.1rem;
+  font-family: "Ubuntu", Helvetica, sans-serif;
+}
+
+.form-control{
+  margin-top: 5px;
+  margin-bottom: 10px;
+  font-size: 1.05rem;
+}
+
+#candidate_list thead th, #annif-results-table thead th {
+  background: hsla(180, 1%, 21%, 0.75);
+  font-family: "Ubuntu", Helvetica, sans-serif;
+  color: white;
+
+}
+
+#annif-results-table {
+  margin-left: 0px;
+  margin-top: 0px;
+}
+
+#suggestions h2 {
+  margin-bottom: 0px;
+}
+
+#general table {
+  font-size: 1.1rem;
+  width: 55%;
+}
+
+
+#export {
+  font-size: 1.1rem;
+  margin-bottom: 50px;
+  font-weight: bold;
+  color: #363838;
+}
+#export i {
+  color: #646868;
+}
+
+#export_content {
+  font-size: 1.1rem;
+  color: #363838;
+}

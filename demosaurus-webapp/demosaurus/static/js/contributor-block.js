@@ -143,14 +143,14 @@ function export_info() {
     // Report about the completeness of the input
     if (! allroles) {
         $('#contributors_tab_flag').css("visibility","visible");
-        $('#export > #message').append('<br>Let op: niet bij alle auteurs is de rol ingevoerd!</br>');
+        $('#export > #message').append('<br><i>&#8226; Let op: niet bij alle auteurs is de rol ingevoerd!</i></br>');
       }
     if (! allppns) {
         $('#contributors_tab_flag').css("visibility","visible");
-        $('#export > #message').append('<br>Let op: niet alle auteurs zijn gethesaureerd!</br>');
+        $('#export > #message').append('<br><i>&#8226; Let op: niet alle auteurs zijn gethesaureerd!</i></br>');
       }
 
-      //$('#thesaureer_title').text('KMCS:');
+      $('#thesaureer_title').text('KMCS:');
       //$("#candidate_list > thead").empty();    
       //$("#candidate_list > tbody").empty();
 

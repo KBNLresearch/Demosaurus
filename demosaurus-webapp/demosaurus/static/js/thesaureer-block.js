@@ -20,7 +20,7 @@ function candidate_note(candidaterow){
           $('#placeholder').empty()
           if ($("#candidate_list > thead > tr").length<1){
               $("#candidate_list > thead").append($('<tr>')
-                .append($('<th scope="col" padding="0px">').html("&#10007;"))
+                .append($('<th scope="col" padding="0px">').html(""))
                 .append($('<th scope="col" class="ppn_cell">').text('PPN'))
                 .append($('<th scope="col" class="name_cell">').text('Naam'))
                 .append($('<th scope="col">').text('ISNI'))
@@ -46,12 +46,12 @@ function candidate_note(candidaterow){
               context['id']=response[i].author_ppn;
 
               $("#candidate_list > tbody").append($('<tr>')
-                .append($('<td>').append('<input onclick="delete_row(this);" type="button" value="&#10007;" padding="0px">'))
+                .append($('<td>').append('<input onclick="delete_row(this);" type="button" value="&#xf2ed;" class="fas fa-trash-alt" title="Verwijder naam" padding="0px">'))
                 .append($('<td class="ppn_cell" >')
-                  .append($('<a class="action" href="#" onclick="choose_ppn(\''+response[i].author_ppn+'\')"; return false;>')
+                  .append($('<a class="action" title="Selecteer naam" href="#" onclick="choose_ppn(\''+response[i].author_ppn+'\')"; return false;>')
                     .text(response[i].author_ppn)))
                 .append($('<td class="name_cell">')
-                  .append($('<a class="action"  href="#" onClick="open_popup(\''+Flask.url_for('contributor.authorpage', context)+'\')"; return false;>')
+                  .append($('<a class="action"  title="Details" href="#" onClick="open_popup(\''+Flask.url_for('contributor.authorpage', context)+'\')"; return false;>')
                     .text(response[i].foaf_name)))
                 .append($('<td>').html((response[i].isni?'&#10003;':'')))
                 .append($('<td class="name_cell" title="'+candidate_note(response[i])+'">').text(candidate_note(response[i])).tooltip())
@@ -94,7 +94,7 @@ function candidate_note(candidaterow){
               $('.tooltip').css({
                 // pageX, pageY need to relocate (ie subtract 325 and 635) because DataTabels.js does somethin weird.
                 left: e.pageX - 325,
-                top: e.pageY - 635
+                top: e.pageY - 475
               });
             });
           },
