@@ -2,13 +2,17 @@ import sqlite3
 import pandas as pd
 import os
 
-def create_view_for_feature(feature_name, db = '../data/demosaurus.sqlite'):
+def create_view_for_feature(feature_name, in_basicinfo = False,db = '../data/demosaurus.sqlite'):
 	"""Create or replace database view for feature_name (e.g. 'CBK_genre'
 	   As a relation between author (author_ppn), feature_id and count(publications)
+	   NB: only for training split of dataset
 	"""
 	view_name = 'author_'+feature_name+'s'
 	column_name = feature_name
-	table_name = 'publication_'+feature_name
+	if in_basicinfo:
+		table_name = 'publication_basicinfo'
+	else: 
+		table_name = 'publication_'+feature_name
 
 	statement = "CREATE VIEW IF NOT EXISTS %s AS " % view_name
 	statement += "\nSELECT author_ppn, %s, COUNT(authorship_ggc.publication_ppn) AS nPublications " % column_name
@@ -28,8 +32,9 @@ def create_view_for_feature(feature_name, db = '../data/demosaurus.sqlite'):
 
 
 def main():
-	for feature in ['CBK_genre','CBK_thema','NUGI_genre','NUR_rubriek', 'brinkman']:
-		create_view_for_feature(feature)
+	#for feature in ['CBK_genre','CBK_thema','NUGI_genre','NUR_rubriek', 'brinkman']:
+	for feature in ['jaar_van_uitgave']:
+		create_view_for_feature(feature, True)
 
 
 
