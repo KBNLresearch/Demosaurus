@@ -4,6 +4,7 @@ import sqlite3
 import random 
 import re
 import nltk
+import kpss_py3 as stemmer
 import csv
 from unidecode import unidecode
 import difflib
@@ -70,22 +71,26 @@ def content_features():
     rel_annotations = ['samenvatting_inhoudsopgave', 'analytisch_volw', 'analytisch_jeugd']
     bits = [annotations.loc[annotations.kind==k] for k in rel_annotations]
     # irrel_annotations = ['illustratie','deelvermelding','alg','alg2', 'editie', 'bibliografie', 'inhoud','taal','verschijningsfrequentie', 'karakteriserendegegevens']
-    # irrel_annotations are those that are not expected to contribute to a content represenation
+    # irrel_annotations are those that are not expected to contribute to a content representation
     
+
+
     
     table['annotation'] = None # mock column to make sure the added annotations are properly labeled
     for i, bit in enumerate(bits):
         table = table.merge(bits[i][['publication_ppn','annotation']], on='publication_ppn', how = 'outer', suffixes = ['','_'+rel_annotations[i]])
     table.drop(columns=['annotation'], inplace=True) # drop mock column
-    
+    table.fillna('', inplace=True) # make everything a string
+
     # text processing, also based on similarity-space code by Nizar
+    table.loc[:,'inhoudwoorden']=table[['annotation_'+kind for kind in rel_annotations]].apply(lambda x: process_text(' '.join(x)), axis=1)
 
     export_table('publication_contentfeatures', table)
     
 
 def main():
     #title_features()
-    content_features()
+    #content_features()
 
 
 if __name__ == "__main__":
