@@ -48,6 +48,9 @@ def create_app(test_config=None, SECRET_KEY='dev'):
     from . import link_thesaurus
     app.register_blueprint(link_thesaurus.bp)
 
+    from . import subject_headings
+    app.register_blueprint(subject_headings.bp)    
+
     from . import contributor
     app.register_blueprint(contributor.bp)
 

@@ -8,29 +8,34 @@ function clearResults() {
 }
 
 function fetchProjects() {
+    console.log('Fetching projects');
     $.ajax({
-        url: base_url + "projects",
-        method: 'GET',
-        success: function(data) {
-            $('#project').empty();
+        url: '/annif-projects',
+        success: function(data){
+        console.log(data);
+          $('#project').empty();
             $.each(data.projects, function(idx, value) {
                 $('#project').append(
                     $('<option>').attr('value',value.project_id).append(value.name)
                 );
             });
+
+        },
+        error: function(error) {
+          console.log(error);
         }
-    });
+      });
 }
 
 function getSuggestions() {
+    console.log($('#text').val());
     $('#suggestions').show();
-    //console.log($('input[name="limit"]:checked').val());
     $.ajax({
-        url: base_url + "projects/" + $('#project').val() + "/suggest",
-        method: 'POST',
+        url: '/annif-suggestions',
         data: {
           text: $('#text').val(),
-          limit: 20, //$('input[name="limit"]:checked').val(),
+          project: $('#project').val(), 
+          limit: 20, 
           threshold: 0.001
         },
         success: function(data) {
