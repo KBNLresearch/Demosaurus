@@ -12,6 +12,17 @@ from collections import Counter
 import pickle
 from fuzzywuzzy import process
 
+class ReflectDict(dict):
+    '''Subclass of dictionary which returns the key itself for missing keys.
+    Used for publisher mapping '''
+    def __init__(self, content = None):
+        if content is None:
+            super().__init__()
+        else:
+            super().__init__(content)
+    def __missing__(self, x):
+        return x
+
 def export_table(table_name, df):
     """Export dataframe <df> to a csv file in ../data/clean_csv/<table_name>.csv """
     assert len(df)>0    
@@ -147,6 +158,9 @@ def export_basic_info(ggc_data):
         publisher_map = publisher_mapping(list(ggc_data['uitgever'].dropna()) + list(ggc_data['uitgever_2'].dropna()))
         with open('publisher_map.pkl','wb') as f:
             pickle.dump(publisher_map, f)
+    publisher_map = ReflectDict(publisher_map) # Make the mapping return key itself for unknown key
+    # Because otherwise if the publisher is not in the mapping, it's deleted
+    # (see https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.map.html)
     ggc_data['uitgever'] = ggc_data['uitgever'].map(publisher_map)
     ggc_data['uitgever_2'] = ggc_data['uitgever_2'].map(publisher_map)
     print('After grouping:', len(ggc_data['uitgever'].unique()), 'publishers.')
@@ -262,12 +276,12 @@ def main():
 
     print('Basic info')
     export_basic_info(ggc_data)
-    print('Subject indexing')
-    export_subjects(ggc_data)
-    print('Author indexing')
-    export_authorship(ggc_data)
-    print('Annotations')
-    export_annotations(ggc_data)
+    # print('Subject indexing')
+    # export_subjects(ggc_data)
+    # print('Author indexing')
+    # export_authorship(ggc_data)
+    # print('Annotations')
+    # export_annotations(ggc_data)
 
 
 if __name__ == "__main__":
