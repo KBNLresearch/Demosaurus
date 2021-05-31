@@ -14,13 +14,15 @@ def create_view_for_feature(feature_name, in_basicinfo = False,db = '../data/dem
 	else: 
 		table_name = 'publication_'+feature_name
 
-	statement = "CREATE VIEW IF NOT EXISTS %s AS " % view_name
+	#statement = "CREATE VIEW IF NOT EXISTS %s AS " % view_name
+	statement = "CREATE VIEW %s AS " % view_name
 	statement += "\nSELECT author_ppn, %s, COUNT(authorship_ggc.publication_ppn) AS nPublications " % column_name
 	statement += "\nFROM authorship_ggc"
 	statement += "\nJOIN publication_datasplits ON publication_datasplits.publication_ppn = authorship_ggc.publication_ppn"
 	statement += "\nJOIN %s AS tt ON tt.publication_ppn = authorship_ggc.publication_ppn" % table_name
 	statement += "\nWHERE publication_datasplits.datasplit like \"train\""
 	statement += "\nAND author_ppn IS NOT NULL"
+	statement += "\nAND %s IS NOT NULL" % column_name
 	statement += "\nGROUP BY author_ppn, %s;" % column_name
 
 #	print(statement)
@@ -32,7 +34,8 @@ def create_view_for_feature(feature_name, in_basicinfo = False,db = '../data/dem
 
 
 def main():
-	#for feature in ['CBK_genre','CBK_thema','NUGI_genre','NUR_rubriek', 'brinkman']:
+	for feature in ['CBK_genre','CBK_thema','NUGI_genre','NUR_rubriek', 'brinkman']:
+		create_view_for_feature(feature, False)
 	for feature in ['jaar_van_uitgave']:
 		create_view_for_feature(feature, True)
 
