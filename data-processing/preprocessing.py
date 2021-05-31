@@ -258,7 +258,13 @@ def export_authorship(ggc_data):
         bit[['title','name','role','author_ppn']] = bit.apply(lambda x: match_authorparts(x[column]),axis=1)       
         bit['kmc'] = kmc
         table = table.append(bit.drop(columns=[column]), sort=False)
-        
+
+    # TODO: impute roles
+        #some preprocessing for role based on conversation with specialist
+        #voor missing values wordt de volgende heuristiek gevolgd:
+        ##primair: als het geen prentenboek is: aut
+        ##primair: als het wel een prentenboek is: aut of art -> 'creator' (omvat beide)
+        ##secundair of co: kan van alles zijn, geen imputation mogelijk -> onbekend
     export_table('authorship_ggc', table)
 
 
