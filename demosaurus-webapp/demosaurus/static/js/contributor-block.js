@@ -1,8 +1,8 @@
 var focus_index;
 var main_author = true;
 
-function init_contributors(){
-  //document.getElementById("contributors_tab").click();
+function init(){
+  document.getElementById("contributors_tab").click();
   if (contributors.length < 1){
     add_contributor_row();
   }
@@ -59,16 +59,7 @@ function thesaureer(index){
   var contributorname = $("#aut_name_" + index).val();
   try {var role = $('#role_'+index).val().match(/\[(.*?)\]/)[1];}
   catch(e) {var role = null; }
-  //var cbk_genres = ["110", "208"]; //Replace with actual genre IDs & extend with Brinkman subjects etc. 
-
-  var cbk_genres = [];
-  $(".cbk_genre").each(function(){
-      var genre = $(this).val();
-      var genre_id = genre.substring(genre.length -4, genre.length-1);
-      cbk_genres.push(genre_id);
-  })
-
-  console.log('Thesaureer name', contributorname, cbk_genres);
+  console.log('Thesaureer name', contributorname);
 
   activate_row(index);
 
@@ -79,10 +70,8 @@ function thesaureer(index){
     url: '/thesaureer',
     data: {'contributor_name' : contributorname,
           'contributor_role' : role,
-           'publication_title': $('#publication_title').val(),
-           'publication_CBK_genres': cbk_genres.join(',')
+           'publication_title': $('#publication_title').val()
          },
-    //traditional: true,
     dataType: 'json',
     context:this,
     success: function(response){
