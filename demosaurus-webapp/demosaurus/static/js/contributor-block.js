@@ -59,7 +59,6 @@ function thesaureer(index){
   var contributorname = $("#aut_name_" + index).val();
   try {var role = $('#role_'+index).val().match(/\[(.*?)\]/)[1];}
   catch(e) {var role = null; }
-  console.log('Thesaureer name', contributorname);
 
   activate_row(index);
 
@@ -70,7 +69,8 @@ function thesaureer(index){
     url: '/thesaureer',
     data: {'contributor_name' : contributorname,
           'contributor_role' : role,
-           'publication_title': $('#publication_title').val()
+           'publication_title': $('#publication_title').val(),
+           'publication_genres': JSON.stringify(genres)
          },
     dataType: 'json',
     context:this,
