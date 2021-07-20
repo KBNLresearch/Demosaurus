@@ -47,6 +47,53 @@
     {%endfor%}
 
     var maxIndex = 0;
+
+    var genres = {'CBK_genre':[], 'NUR_rubriek':[], 'NUGI_genre':[], 'brinkman':[]};
+    var topics = {'CBK_thema':[], 'brinkman':[]};
+    {% for subject in subjects %}
+      {% if subject['CBK_genre'] %}
+        genres['CBK_genre'].push({
+          rank: "{{subject['rank']}}",
+          identifier: "{{subject['CBK_genre_id']}}",
+          term: "{{subject['CBK_genre']}}"
+        });
+      {% endif %}
+      {% if subject['CBK_thema'] %}
+        topics['CBK_thema'].push({
+          rank: "{{subject['rank']}}",
+          term: "{{subject['CBK_thema']}}"
+        });
+      {% endif %}
+      {% if subject['brinkman_kind'] == 'vorm' %}
+          genres['brinkman'].push({
+            rank: "{{subject['rank']}}",
+            identifier: "{{subject['brinkman_id']}}",
+            term: "{{subject['brinkman']}}"
+          });
+      {% endif %}
+      {% if subject['brinkman_kind'] == 'zaak' %}
+          topics['brinkman'].push({
+            rank: "{{subject['rank']}}",
+            identifier: "{{subject['brinkman_id']}}",
+            term: "{{subject['brinkman']}}"
+          });
+      {% endif %}
+      {% if subject['NUGI_genre'] %}
+        genres['NUGI_genre'].push({
+          rank: "{{subject['rank']}}",
+          identifier: "{{subject['NUGI_genre']}}"
+        });
+      {% endif %}
+      {% if subject['NUR_rubriek'] %}
+        genres['NUR_rubriek'].push({
+          rank: "{{subject['rank']}}",
+          identifier: "{{subject['NUR_rubriek']}}"
+        });
+      {% endif %}
+    {% endfor %}
+    // console.log('Genres', genres);
+    // console.log('Topics', topics);
+
   </script>
 
 
