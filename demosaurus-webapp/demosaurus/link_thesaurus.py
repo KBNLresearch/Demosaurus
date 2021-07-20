@@ -12,13 +12,6 @@ import time
 
 bp = Blueprint('link_thesaurus', __name__)
 
-@bp.route('/_add_numbers')
-def add_numbers():
-    a = request.args.get('a', 0, type=int)
-    b = request.args.get('b', 0, type=int)
-    return jsonify(result=a + b)
-
-
 @bp.route('/thesaureer/')
 def thesaureer():
     author_name = request.args.get('contributor_name', '', type=str)
@@ -26,11 +19,14 @@ def thesaureer():
     publication_genres = json.loads(request.args.get('publication_genres', '', type=str))
 
     if not author_name:
-        author_options = pd.DataFrame()
+        author_options = pd.DataFrame() # Without name, cannot select candidates
     else:
         db = get_db()
         nameparts = author_name.split('@')
-        
+        familyname = nameparts[-1]
+        firstname = '' if len(nameparts)<2 else nameparts[0]
+        if len(nameparts)>2: print('More than two nameparts for', author_name, )
+
         start = time.time()
         author_options = pd.read_sql_query('''SELECT author_NTA.author_ppn, foaf_name, foaf_givenname, 
             foaf_familyname, skos_preflabel, birthyear, deathyear, 
@@ -38,28 +34,26 @@ def thesaureer():
             author_ISNI.identifier AS isni
             FROM author_NTA 
             LEFT JOIN author_ISNI ON author_NTA.author_ppn = author_ISNI.author_ppn 
-            WHERE foaf_name LIKE \'%'''+nameparts[-1]+'%\'', con = db)
+            WHERE foaf_name LIKE \'%'''+familyname+'%\'', con = db)
         end = time.time()
         print('Obtain candidates - time elapsed:', end-start)
 
-
+        # Add scores to the candidates
         if len(author_options)>0:
-            author_options=pd.concat((author_options, author_options.apply(lambda row: score_names(row, nameparts[0], nameparts[-1]), axis=1)), axis=1)
+            author_options=pd.concat((author_options, author_options.apply(lambda row: score_names(row, firstname, familyname), axis=1)), axis=1)
             #author_options=pd.concat((author_options, author_options.apply(lambda row: score_genre(row['author_ppn'], publication_CBK_genres), axis=1)), axis=1)
             author_options=pd.concat((author_options, author_options.apply(lambda row: score_class_based(row['author_ppn'], publication_genres, 'genre'), axis=1)), axis=1)
             author_options=pd.concat((author_options, author_options.apply(lambda row: score_topic(None,None), axis=1)), axis=1)
             author_options = pd.concat((author_options, author_options.apply(lambda row: score_style(None, None), axis=1)), axis=1)
             author_options=pd.concat((author_options, author_options.apply(lambda row: score_role(None,author_role), axis=1)), axis=1)
 
-
+            # Determine overall score for candidate: linear combination of scores, weighted by confidence
             features = ['name','genre','topic']
-
             scores = [feature+'_score' for feature in features]
             weights = [feature+'_confidence' for feature in features]
-
             author_options['score']= author_options.apply(lambda row: np.average(row.loc[scores], weights=row.loc[weights]), axis=1)
 
-
+            # Sort candidates by score
             author_options.sort_values(by='score', ascending=False, inplace=True)
 
     return author_options.to_json(orient = 'records')
@@ -72,16 +66,16 @@ def normalized_levenshtein(s1,s2):
     
 
 def score_names(authorshipItem, given_name, family_name):
-    familyNameScore =  normalized_levenshtein(authorshipItem['foaf_familyname'],family_name)   
+    # family name should be rather similar: check levenshtein distance and normalize by length
+    familyNameScore =  normalized_levenshtein(authorshipItem['foaf_familyname'],family_name)
+
     confidence = 1
     firstNameScore = 1
-    try: 
+    try: # convert given name(s) to list
+        # an for author name, cn for candidate name
         an,cn= [list(filter(None,re.split('\.|\s+', name))) for name in [authorshipItem['foaf_givenname'],given_name]]
-        firstNameScore *= 1 if len(an)==len(cn) else .8
-        confidence *= 0.8
-    except: 
-        #print ('Cant score firstname(s)')
-        #print (contributorItem, contributorItem.dtype)
+        firstNameScore *= 1 if len(an)==len(cn) else .8 # if number of given names differs, lower score
+    except: # no reliable first name(s)
         an, cn = [[],[]]
         firstNameScore=.5
         confidence *= 0.5
@@ -96,8 +90,9 @@ def score_names(authorshipItem, given_name, family_name):
 
 
 def obtain_similarity_data(author_ppn, features):
-    #print('features:', features)
-    #try: 
+    # obtain accumulated data for author
+    # from author views (see repo/data-processing/author_views.py)
+    #try:
     query = ''
     for i, feature_i in enumerate(features):
         if i > 0: query += ' UNION '
@@ -132,7 +127,7 @@ def score_class_based(author_ppn, publication_classes, name):
         score = 0
         confidence = 0 
     else: 
-        #Obtain a list of known publication counts from the database
+        # Obtain a list of known publication counts from the database
         known_info = obtain_similarity_data(author_ppn, publication_classes.keys())
         if len(known_info) == 0:
             # no information available to make a sane comparison
