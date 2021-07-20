@@ -29,14 +29,11 @@ function candidate_note(candidaterow){
                 .append($('<th scope="col" class="match_cell">').text('Match'))
               );
             }
-            
-          console.log('Creating context for publication');
+
+          // Determine context for display on contributor page           
           try {var role = $('#role_'+contributor_row).val().match(/\[(.*?)\]/)[1];}
-          catch(e) {var role = null; }
-          console.log('Role:', role)
-          
+          catch(e) {var role = null; }        
           var context = {'Title':$('#publication_title').val(), 'Role':role};
-          console.log('Context is nu:', context);
 
           for(var i = 0; i<response.length; i++){
             //add_to_candidate_list(response[i], context);
