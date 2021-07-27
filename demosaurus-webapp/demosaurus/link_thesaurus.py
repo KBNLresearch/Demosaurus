@@ -16,7 +16,9 @@ bp = Blueprint('link_thesaurus', __name__)
 def thesaureer():
     author_name = request.args.get('contributor_name', '', type=str)
     author_role = request.args.get('contributor_role', '', type=str)
+    publiction_title = request.args.get('publication_title', '', type=str)
     publication_genres = json.loads(request.args.get('publication_genres', '', type=str))
+    publication_year = {'jaar_van_uitgave': [request.args.get('publication_year', '', type=str)]}
 
     if not author_name:
         author_options = pd.DataFrame() # Without name, cannot select candidates
@@ -40,12 +42,19 @@ def thesaureer():
 
         # Add scores to the candidates
         if len(author_options)>0:
-            author_options=pd.concat((author_options, author_options.apply(lambda row: score_names(row, firstname, familyname), axis=1)), axis=1)
+            author_options=pd.concat((author_options, author_options.apply(
+                lambda row: score_names(row, firstname, familyname), axis=1)), axis=1)
             #author_options=pd.concat((author_options, author_options.apply(lambda row: score_genre(row['author_ppn'], publication_CBK_genres), axis=1)), axis=1)
-            author_options=pd.concat((author_options, author_options.apply(lambda row: score_class_based(row['author_ppn'], publication_genres, 'genre'), axis=1)), axis=1)
-            author_options=pd.concat((author_options, author_options.apply(lambda row: score_topic(None,None), axis=1)), axis=1)
-            author_options = pd.concat((author_options, author_options.apply(lambda row: score_style(None, None), axis=1)), axis=1)
-            author_options=pd.concat((author_options, author_options.apply(lambda row: score_role(None,author_role), axis=1)), axis=1)
+            author_options=pd.concat((author_options, author_options.apply(
+                lambda row: score_class_based(row['author_ppn'], publication_genres, 'genre'), axis=1)), axis=1)
+            author_options = pd.concat((author_options, author_options.apply(
+                lambda row: score_class_based(row['author_ppn'], publication_year, 'jvu'), axis=1)), axis=1)
+            author_options=pd.concat((author_options, author_options.apply(
+                lambda row: score_topic(None,None), axis=1)), axis=1)
+            author_options = pd.concat((author_options, author_options.apply(
+                lambda row: score_style(None, None), axis=1)), axis=1)
+            author_options=pd.concat((author_options, author_options.apply(
+                lambda row: score_role(None,author_role), axis=1)), axis=1)
 
             # Determine overall score for candidate: linear combination of scores, weighted by confidence
             features = ['name','genre','topic']
@@ -137,8 +146,12 @@ def score_class_based(author_ppn, publication_classes, name):
             # Add a column with the new publication to compare with
             for c,l in publication_classes.items():
                 for v in l:
-                    try: known_info.loc[known_info[c]==v['identifier'],'newPublication']=1
-                    except: print('Cannot add publication info to dataframe for comparison')
+                    if type(v)== dict:
+                        try: known_info.loc[known_info[c]==v['identifier'],'newPublication']=1
+                        except: print('Cannot add publication info to dataframe for comparison')
+                    else:
+                        try: known_info.loc[known_info[c]==v,'newPublication']=1
+                        except: print('Cannot add publication info to dataframe for comparison')
             # score = 1- cosine distance between array of known publications and new publication
             # intuition:
             # if there are no overlapping genres, distance = 1 so score is 0
