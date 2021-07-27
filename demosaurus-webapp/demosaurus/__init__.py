@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, send_from_directory
 from flask_jsglue import JSGlue
 from flask_login import login_required, current_user, login_user, logout_user
 from demosaurus.models import UserModel, db_users
@@ -60,6 +60,11 @@ def create_app(test_config=None, SECRET_KEY='dev'):
     @app.route('/hello')
     def hello():
         return 'Hello, World!'
+
+    @app.route('/favicon.ico')
+    def favicon():
+        return send_from_directory(os.path.join(app.root_path, 'static'),
+                                   'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
     # User login stuff.
     @app.before_first_request

@@ -1,6 +1,7 @@
 
 {% extends 'base.html' %}
 
+<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 
 <!-- Title of publicationor "Demosaurus" as Header -->
 {% block header %}
@@ -115,7 +116,7 @@
       <tbody>
         <tr>
           <td>Titel, subtitel</td>
-          <td>{{ publication['titelvermelding']}}</td>
+          <td id="publication_title">{{ publication['titelvermelding']}}</td>
         </tr>
         <tr>
             <td>ISBN</td>
@@ -123,7 +124,7 @@
         </tr>
         <tr>
           <td>Jaar van uitgave</td>
-          <td>{{ publication['jaar_van_uitgave']}}</td>
+          <td id="publication_year">{{ publication['jaar_van_uitgave']}}</td>
         </tr>
         <tr>
           <td>Uitgever</td>
@@ -232,7 +233,7 @@
 
 
   <script type=text/javascript> 
-    init();
+    init_contributors();
   </script>
 
 </div>
@@ -328,6 +329,11 @@
   <!-- KMC block. -->
   <div class="bottomcontent" id="export_content" style="display: block;">
   </div>
+
+  <!-- KMC block. -->
+  <div class="bottomcontent" id="general_content" style="display: block;">
+  </div>
+
 
 </div>
 
