@@ -15,13 +15,13 @@ function init(){
 
 function add_contributor_row(name="", role="") {
   $("#contributortable > tbody").append($('<tr id="row_' + maxIndex+'">')
-    .append($('<td>').append('<input onclick="delete_row(this);" type="button" value="&#10007;">'))
-    .append($('<td>').append('<input onclick="move_row(this,1); top_main_author();" type="button" value="&#8679;">'))
-    .append($('<td>').append('<input onclick="move_row(this,0); top_main_author();" type="button" value="&#8681;">'))
+    .append($('<td>').append('<input onclick="delete_row(this);" type="button" value="&#xf2ed" class="fas fa-trash-alt" title="Verwijder naam">'))
+    .append($('<td>').append('<input onclick="move_row(this,1); top_main_author();" type="button" value="&#xf062" class="fas fa-arrow-up" title="Verplaats omhoog">'))
+    .append($('<td>').append('<input onclick="move_row(this,0); top_main_author();" type="button" value="&#xf063" class="fas fa-arrow-down" title="Verplaats omlaag">'))
     .append($('<td class="name_cell">').append('<input id="aut_name_' + maxIndex + '" type="text" placeholder="Voornaam @Achternaam" value="'+ name+'">'))
-    .append($('<td class="name_cell">').append('<input class="role" id="role_' + maxIndex + '" value="'+ (role? '['+role+']' :'' )+ '">'))
-    .append($('<td class="name_cell">').append('<input class="ppn" id="ppn_' + maxIndex + '">'))
-    .append($('<td>').append('<input onclick="thesaureer('+maxIndex+');" type="button" value="&#128269;" id="thesaureerButton_'+maxIndex+'">'))
+    .append($('<td class="name_cell">').append('<input type="text" class="role" id="role_' + maxIndex + '" value="'+ (role? '['+role+']' :'' )+ '">'))
+    .append($('<td class="name_cell">').append('<input type="text" class="ppn" id="ppn_' + maxIndex + '">'))
+    .append($('<td>').append('<input onclick="thesaureer('+maxIndex+');" type="button" value="&#xf002" class="fas fa-search" title="Thesaureer naam" id="thesaureerButton_'+maxIndex+'">'))
     .append($('<td class="check_main_author">').append('<input  type="checkbox" value="Primair" checked id="main_'+maxIndex+'">').append('<span>Hoofdauteur</span>'))
     )
   $('input[id="role_' + maxIndex + '"]').autocomplete({
@@ -107,7 +107,7 @@ function export_info() {
 
 
     if (i==0 && $('#main_'+id).is(':checked')){
-      all_kmcs += "<p>3000\t";
+      all_kmcs += '<p>3000\t';
     }
     else {
       all_kmcs += "<p>"+at_kmc+"\t";
@@ -143,25 +143,27 @@ function export_info() {
     // Report about the completeness of the input
     if (! allroles) {
         $('#contributors_tab_flag').css("visibility","visible");
-        $('#export > #message').append('<br>Let op: niet bij alle auteurs is de rol ingevoerd!</br>');
+        $('#export > #message').append('<br><i>&#8226; Let op: niet bij alle auteurs is de rol ingevoerd!</i></br>');
       }
     if (! allppns) {
         $('#contributors_tab_flag').css("visibility","visible");
-        $('#export > #message').append('<br>Let op: niet alle auteurs zijn gethesaureerd!</br>');
+        $('#export > #message').append('<br><i>&#8226; Let op: niet alle auteurs zijn gethesaureerd!</i></br>');
       }
 
       $('#thesaureer_title').text('KMCS:');
-      $("#candidate_list > thead").empty();    
-      $("#candidate_list > tbody").empty();
+      //$("#candidate_list > thead").empty();    
+      //$("#candidate_list > tbody").empty();
 
     
     // Serve collected information in the web application
     // NB todo: export primary author (if they exist) to KMC 3000 rather than 3011
-    $('#placeholder').html(all_kmcs);
+    $('#export_content').html(all_kmcs);
   }
 
+  /*
   function suggest_topics() {
     console.log('Annif button clicked')
     $("#candidate_lis").empty();    
     $('#placeholder').html('Annif API not connected');
   }
+  */

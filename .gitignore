@@ -1,7 +1,13 @@
 demosaurus-webapp/demosaurus/static/covers/*
 data/
 Surfdrive/
+<<<<<<< HEAD
+_old/
+
+
+=======
 demosaurus-webapp/config.txt
+>>>>>>> origin/master
 
 
 # Byte-compiled / optimized / DLL files
@@ -115,6 +121,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+venv-demosaurus/
 
 # Spyder project settings
 .spyderproject
@@ -133,3 +140,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# sqllite users
+*.db

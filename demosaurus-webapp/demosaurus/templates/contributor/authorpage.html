@@ -8,27 +8,161 @@
 {% block content %}
 
 <script type=text/javascript src="{{url_for('static', filename='js/author-page.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js" integrity="sha512-d9xgZrVZpmmQlfonhQUvTR7lMPtO7NkZMkA0ABN3PHCbKA5nqylQ/yWlFAyY6hYgdF1Qh6nYiuADWwKB4C2WSw==" crossorigin="anonymous"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.css">
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.js"></script>
 
- <table width="100%">
-<tr> <td style="white-space:nowrap">PPN: </td>
-    <td>{{author['ppn']}}</td></tr>
+
+<table class="tbinfo">
+<tr> <td>PPN: </td>
+    <td>{{author['author_ppn']}}</td></tr>
 <!--<tr> <td>VIAF: </td><td>{{author['ppn']}}</td></tr>-->
-<tr> <td style="white-space:nowrap">Leefjaren: </td>
+<tr> <td>Leefjaren: </td>
     <td>{{author['birthyear'] or ''}}-{{author['deathyear'] or ''}}</td></tr>
-<tr> <td style="white-space:nowrap">Editorial Note(s):</td>
+<tr> <td>Editorial Note(s):</td>
     <td> {{author['editorial'] or ''}}  {{author['editorial_nl'] or ''}}</td></tr>
-<tr> <td style="white-space:nowrap">VIAF record:</td>
+<tr> <td>VIAF record:</td>
     <td><a class="action" href="http://viaf.org/viaf/{{author['viaf']}}" target="_blank">{{author['viaf']}}</a> </td></tr>
-<tr> <td style="white-space:nowrap">ISNI record:</td>
+<tr> <td>ISNI record:</td>
     <td><a class="action" href="http://isni.org/isni/{{author['isni']}}" target="_blank">{{author['isni'] or ''}}</a> </td></tr>
-<tr> <td style="white-space:nowrap">Wikipedia:</td>
+<tr> <td>Wikipedia:</td>
     <td><a class="action" href="{{author['wiki']}}" target="_blank">{{author['wiki'] or ''}}</a> </td></tr>
-<tr> <td style="white-space:nowrap">Zoek op Google:</td>
+<tr> <td>Zoek op Google:</td>
     <td> <a class="action" href="https://google.com/?q={{author['foaf_name']}}" target="_blank">Zoek </a></td></tr>
 </table>
 
- <h1>Relevante publicaties in vergelijking met {{title}}</h1>
- <hr/>
+
+<!-- authorpage scores tooltip table.-->
+<div class="divTable" id="authorMatchHover" style="display: none;">
+<div class="divTableHeading">
+<div class="divTableRow">
+<div class="divTableHead"></div>
+<div class="divTableHead">Score</div>
+<div class="divTableHead">Confidence</div>
+</div>
+</div>
+<div class="divTableBody">
+<div class="divTableRow">
+<div class="divTableCell" id="tttb1"><b>Rol</b></div>
+<div class="divTableCell" id="tttb2">&nbsp;</div>
+<div class="divTableCell" id="tttb3">&nbsp;</div>
+</div>
+<div class="divTableRow">
+<div class="divTableCell" id="tttb4"><b>Genre</b></div>
+<div class="divTableCell" id="tttb5">&nbsp;</div>
+<div class="divTableCell" id="tttb6">&nbsp;</div>
+</div>
+<div class="divTableRow">
+<div class="divTableCell" id="tttb7"><b>Onderwerp</b></div>
+<div class="divTableCell" id="tttb8">&nbsp;</div>
+<div class="divTableCell" id="tttb9">&nbsp;</div>
+</div>
+<div class="divTableRow">
+<div class="divTableCell" id="tttb10"><b>Stijl</b></div>
+<div class="divTableCell" id="tttb11">&nbsp;</div>
+<div class="divTableCell" id="tttb12">&nbsp;</div>
+</div>
+</div>
+</div>
+
+
+<!-- productive years bar chart-->
+{% if publications|length >1 %}
+<canvas id="chart_py" width="200" height="50"></canvas>
+
+<script type="text/javascript">
+    var publications = JSON.parse({{publications|tojson}});
+
+    // Query all 'jaar_van_uitgave' and put in array.
+    var pub_years = publications.map(({jaar_van_uitgave:actualValue})=>actualValue);
+    //console.log(pub_years);
+
+    // Convert year to decade.
+    function decSlice(pub_years){
+        var year_abs = []
+        for (var i = 0; i < pub_years.length ;i++) {
+            var year_dec = parseInt(pub_years[i].toString().replace(/\d{1}$/i, 0));
+            year_abs.push(year_dec);
+        }
+        return year_abs
+    }
+    decades = decSlice(pub_years);
+
+    // Create list with unique years and list with frequencies (value counts).
+    function value_counts_py(decades) {
+        var a = [],
+        b = [],
+        prev;
+        decades.sort();
+        for (var i = 0; i < decades.length; i++) {
+            if (decades[i] !== prev) {
+                a.push(decades[i]);
+                b.push(1);
+            } else {
+                b[b.length - 1]++;
+            }
+            prev = decades[i];
+        }
+    return [a, b];
+    }
+
+    var decades_uniq_freq = value_counts_py(decades);
+    // var years_uniq_freq = value_counts_py(pub_years);
+    var ctx = document.getElementById('chart_py');
+    var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: decades_uniq_freq[0],
+        datasets: [{
+            label: 'Aantal uitgaves',
+            data: decades_uniq_freq[1],
+            backgroundColor: 'rgb(55, 123, 168, 0.2)',
+            borderColor: 'rgb(55, 123, 168, 0.9)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true,
+                    display: true,
+                    precision: 0
+                }
+            }],
+            xAxes: [{
+                ticks: {
+                    display: true
+                }
+            }]
+        },
+        hover: {
+            intersect: false
+        },
+        title: {
+            display: true,
+            text: 'Aantal uitgaves per decennium',
+            position: 'top'
+        },
+        legend: {
+            display: false
+        },
+        tooltips: {
+            enabled: true,
+            xPadding: 8,
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            displayColors: false
+        } 
+    }
+  })
+</script>
+
+
+{% endif %}
+
+<h2>Relevante publicaties in vergelijking met {{title}}</h2>
+ 
 {% if publications|length <1 %}
 <div>No matches</div>
 {% else %}
@@ -37,16 +171,15 @@
     <tbody class="zebra"/>
     <tfoot/>
 </table>
+<br/><br/><br/><br/><br/>
 
  <script type="text/javascript">
     var publications = JSON.parse({{publications|tojson}});
-    console.log(publications);
+    //console.log(publications);
     add_to_publication_list(publications);
     </script>
 
 {% endif %}
 
-    
 
- 
 {% endblock %}

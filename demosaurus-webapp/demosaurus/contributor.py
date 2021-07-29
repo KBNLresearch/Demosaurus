@@ -31,7 +31,7 @@ def authorpage(id):
 
     # Fetch all publications that this author has contributed to
     publications = pd.read_sql_query('SELECT publication_basicinfo.publication_ppn, role, kmc, titelvermelding, verantwoordelijkheidsvermelding,' 
-    ' \"taal-publicatie\", \"taal-origineel\", \"land-van-uitgave\", isbn, isbn_2, \"jaar-van-uitgave\", uitgever, uitgever_2,'
+    ' \"taal_publicatie\", \"taal_origineel\", \"land_van_uitgave\", isbn, isbn_2, \"jaar_van_uitgave\", \"uitgever\", uitgever_2,'
     ' authorship_ggc.author_ppn    '
     ' FROM authorship_ggc LEFT JOIN publication_basicinfo'
     ' ON authorship_ggc.publication_ppn = publication_basicinfo.publication_ppn'

@@ -1,31 +1,61 @@
+/*
+Used color scheme: https://color.adobe.com/Gutim-color-theme-16708150
 
-html { font-family: sans-serif; background: #eee; padding: 1rem; height: 95% }
-body { max-width: 1500px; margin: 0 auto; background: white; min-height: 100%}
-h1 { font-family: serif; color: #377ba8; margin: 1rem 0; }
+.Gutim-1-hex { color: #22CCF0; }
+.Gutim-2-hex { color: #363838; }
+.Gutim-3-hex { color: #E0B31B; }
+.Gutim-4-hex { color: #FA761B; }
+.Gutim-5-hex { color: #E8EAEC; }
 
+.Gutim-1-rgba { color: rgba(33, 204, 239, 1); }
+.Gutim-2-rgba { color: rgba(54, 56, 56, 1); }
+.Gutim-3-rgba { color: rgba(223, 179, 26, 1); }
+.Gutim-4-rgba { color: rgba(249, 117, 26, 1); }
+.Gutim-5-rgba { color: rgba(232, 233, 235, 1); }
+
+.Gutim-1-hsla { color: hsla(190, 87, 53, 1); }
+.Gutim-2-hsla { color: hsla(180, 1, 21, 1); }
+.Gutim-3-hsla { color: hsla(46, 78, 49, 1); }
+.Gutim-4-hsla { color: hsla(24, 95, 54, 1); }
+.Gutim-5-hsla { color: hsla(210, 9, 91, 1); }
+
+Main font is Google fonts: "Ubuntu" and "Ubuntu Condensed" for tabs;
+*/
+
+html { font-family: "Ubuntu", Helvetica, sans-serif; background: #E8EAEC; padding: 1rem; height: 95% }
+body { max-width: 1500px; margin: 0 auto; background: #E8EAEC; min-height: 100%}
+h1 { font-family: "Ubuntu", Helvetica, sans-serif; color: #FA761B; margin: 1rem 0; font-size: 30px; }
+
+h2, h3, h4, p, td, th, input, label, legend {
+  font-family: "Ubuntu", Helvetica, sans-serif;
+  color: #363838;
+}
 
 a { color: #377ba8; } /* clickables */
 
 hr { border: none; border-top: 1px solid lightgray; } /* horizontal rule */
 
-nav { background: lightgray; display: flex; align-items: center; padding: 0 0.5rem; }
+/*
+nav { background: black; display: flex; align-items: center; padding: 0 0.5rem; }
 nav h1 { flex: auto; margin: 0; }
-nav h1 a { text-decoration: none; padding: 0.25rem 0.5rem; }
+nav h1 a { text-decoration: none; padding: 0.3rem 0.5rem; }
 nav ul  { display: flex; list-style: none; margin: 0; padding: 0; }
 nav ul li a, nav ul li span, header .action { display: block; padding: 0.5rem; }
+*/
 
 section {clear: both;}
 .content { padding: 0 1rem 1rem; }
-.content > header { border-bottom: 1px solid lightgray; display: flex; align-items: flex-end; }
+.content > header { display: flex; align-items: flex-end; }
 .content > header h1 { flex: auto; margin: 1rem 0 0.25rem 0; }
 .content:last-child { margin-bottom: 0; }
 .content form { margin: 1em 0; display: flex; flex-direction: column; }
 .content label { font-weight: bold; margin-bottom: 0.5em; }
 
 input.danger { color: #cc2f2e; }
-input[type=submit] { align-self: start; min-width: 10em; padding: 0;}
-input[type=button] {padding: 2px; border: 1px solid #ccc; background: #eee;}
-input[type=button]:hover {background-color: #ddd;}
+input[type=submit] { align-self: start; min-width: 10em; padding: 0; color: #363838;}
+input[type=button] {padding: 2px; border: 1px solid lightgrey; background: #E8EAEC; color: #363838;, font-size: 16px;}
+input[type=button]:hover {background-color: #b9bfc6; color: #363838;}
+input[type=text] { align-self: start; min-width: 10em; padding: 0; color: #363838; font-size: 16px;}
 
 
 textarea {
@@ -34,40 +64,48 @@ textarea {
   resize: none;
 }
 
-.zebra tr:nth-child(odd){background: #eee;}
-.zebra tr:nth-child(even){background: #dae5f4;}
+/*#table_author {} white-space:nowrap*/
+
+.zebra tr:nth-child(odd){background: #d5d9dd;}
+.zebra tr:nth-child(even){background: #c6ccd2;}
+
+/* Table with extra info author and publication on 'authorpage.html' and 'view.html' */
+.tbinfo td:first-child { font-weight: bold; white-space: nowrap; padding-right: 20px; width: 1em; }
+.tbinfo { width: "100%"; text-align: left}
 
 
 /* class fixed_header: body is scrollable */
 .fixed_header tbody{
-  display:block;
+  /* display:block; */
   padding:0px;
   overflow:auto;
   width:100%;
   border-spacing: 0px;
 }
-.fixed_header thead tr{display:block;}
-.fixed_header thead th{vertical-align:bottom; text-align:center; padding: 0px}
+/*.fixed_header thead tr{display:block;}*/
+/*.fixed_header thead th{vertical-align:bottom; text-align:center; padding: 0px}*/
 
 .fixed_header tbody td{border: 1px solid white; vertical-align: middle; overflow: hidden; text-overflow: ellipsis; padding: 0px }
 
 
 
 /* table listing NTA-entries: specified column widths*/
-
 .ppn_cell {width:100px; max-width: 100px; }
-.title_cell {width:300px; max-width: 300px; }
-.name_cell {width:200px; max-width: 200px; white-space:nowrap;}
+.title_cell {width:200px; max-width: 200px; }
+.name_cell {width:350px; max-width: 350px; white-space:nowrap;}
 .name_cell > input {width: 95%}
-.years_cell {width:100px; max-width: 100px; text-align:center; }
+.years_cell {width:100px; max-width: 100px; text-align:left; }
 .match_cell {width:100px; max-width: 100px; height: 100%; text-align:center; }
-.match_cell div {height: 100%; width: 100%; } /* border: 1px solid black;*/
+.match_cell div {height: 100%; width: 100%; } 
 
+
+/*
 .fixed_header td.score_cell {text-align:right;  width: 50px; background-color: white; height: 100%; border-style: none solid none none; border-color: #ccc; padding: 2px 0px 2px 2px;}
 .fixed_header td.score_cell div {display: inline-block; padding: 30% 0px 0px 0px;  vertical-align: middle;}
+*/
 
 
-/* score-cell header: rotate and translate a bit, to save space*/
+/* score-cell header: rotate and translate a bit, to save space
 th.score_cell {height:50px; white-space: nowrap; padding: 0px}
 th.score_cell > div {
   text-align: left;
@@ -78,16 +116,17 @@ th.score_cell > div > span {
   border-bottom: 1px solid #ccc;
   padding: 3px 5px;
 }
+*/
 
-
-/* Style the tab */
+/* Style the tab 
 .tab {
   overflow: hidden;
   border: 1px solid #ccc;
   background-color: #f1f1f1;
 }
+*/
 
-/* Style the buttons that are used to open the tab content */
+/* Style the buttons that are used to open the tab content 
 .tab button {
   background-color: inherit;
   float: left;
@@ -96,17 +135,19 @@ th.score_cell > div > span {
   cursor: pointer;
   padding: 14px 16px;
   transition: 0.3s;
-}
+}*/
 
-/* Change background color of buttons on hover */
+/* Change background color of buttons on hover 
 .tab button:hover {
   background-color: #ddd;
 }
+*/
 
-/* Create an active/current tablink class */
+/* Create an active/current tablink class 
 .tab button.active {
   background-color: #ccc;
 }
+*/
 
 .flag {
   visibility: hidden;
@@ -117,10 +158,182 @@ th.score_cell > div > span {
   visibility: hidden;
 }
 
-/* Style the tab content */
+/* Style the tab content 
 .tabcontent {
   display: none;
-  padding: 6px 12px;
+  padding: 0px 0px;
   border: 1px solid #ccc;
   border-top: none;
+}
+*/
+
+/* Hover with sub-scores styling */
+.divTable{
+  display: table;
+  width: 100%;
+  background: rgba(34, 204, 240, 0.9);
+}
+.divTableRow {
+  display: table-row;
+  background: rgba(34, 204, 240, 0.95);
+}
+.divTableHeading {
+  background: #628CA8;
+  display: table-header-group;
+}
+.divTableCell, .divTableHead {
+  border: 0px;
+  display: table-cell;
+  padding: 3px 10px;
+  text-align: left;
+  font-family: "Ubuntu", Helvetica, sans-serif;
+}
+.divTableHeading {
+  background: rgba(34, 204, 240, 0.9);
+  display: table-header-group;
+  font-weight: bold;
+}
+.divTableBody {
+  display: table-row-group;
+}
+
+.tab{
+  left: 10px;
+  
+}
+
+
+/* Arrow style tab menu */
+.breadcrumb { 
+  list-style: none; 
+  overflow: hidden; 
+  font: 20px "Ubuntu Condensed", Helvetica, sans-serif;
+}
+.breadcrumb li { 
+  float: left; 
+}
+.breadcrumb li a {
+  color: #363838;
+  font-weight: bold;
+  text-decoration: none; 
+  padding: 10px 0 10px 60px;
+  background: brown; /* fallback color */
+  background: hsla(46, 78%, 75%, 1);
+  position: relative; 
+  display: block;
+  float: left;
+}
+
+.breadcrumb li a::after { 
+  content: " "; 
+  display: block; 
+  width: 0; 
+  height: 0;
+  border-top: 50px solid transparent; /* Go big on the size, and let overflow hide */
+  border-bottom: 50px solid transparent;
+  border-left: 30px solid hsla(46, 78%, 75%, 1);
+  position: absolute;
+  top: 50%;
+  margin-top: -50px; 
+  left: 100%;
+  z-index: 2; 
+}
+
+.breadcrumb li a::before { 
+  content: " "; 
+  display: block; 
+  width: 0; 
+  height: 0;
+  border-top: 50px solid transparent;       
+  border-bottom: 50px solid transparent;
+  border-left: 30px solid white;
+  position: absolute;
+  top: 50%;
+  margin-top: -50px; 
+  margin-left: 1px;
+  left: 100%;
+  z-index: 1; 
+}
+
+.breadcrumb li:first-child a {
+  padding-left: 30px;
+}
+.breadcrumb li:nth-child(2) a       { background:        hsla(46, 78%, 70%, 1); }
+.breadcrumb li:nth-child(2) a:after { border-left-color: hsla(46, 78%, 70%, 1); }
+.breadcrumb li:nth-child(3) a       { background:        hsla(46, 78%, 60%, 1); }
+.breadcrumb li:nth-child(3) a:after { border-left-color: hsla(46, 78%, 60%, 1); }
+.breadcrumb li:nth-child(4) a       { background:        hsla(46, 78%, 50%, 1); }
+.breadcrumb li:nth-child(4) a:after { border-left-color: hsla(46, 78%, 50%, 1); }
+
+.breadcrumb li a:hover { 
+  background: hsla(46, 78%, 80%, 1); 
+}
+.breadcrumb li a:hover:after { 
+  border-left-color: hsla(46, 78%, 80%, 1) !important; 
+}
+
+
+/* Contributers table */
+#contributortable table {
+  font-size: 16px;
+  vertical-align: middle; 
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+  padding: 0px;
+}
+
+#contributortable input {
+  font-size: 1.1rem;  
+}
+
+
+
+
+/* Annif 'kies model' selector en knop */
+.select-wrapper select, button {
+  font-size: 1.1rem;
+  font-family: "Ubuntu", Helvetica, sans-serif;
+}
+
+.form-control{
+  margin-top: 5px;
+  margin-bottom: 10px;
+  font-size: 1.05rem;
+}
+
+#candidate_list thead th, #annif-results-table thead th {
+  background: hsla(180, 1%, 21%, 0.75);
+  font-family: "Ubuntu", Helvetica, sans-serif;
+  color: white;
+
+}
+
+#annif-results-table {
+  margin-left: 0px;
+  margin-top: 0px;
+}
+
+#suggestions h2 {
+  margin-bottom: 0px;
+}
+
+#general table {
+  font-size: 1.1rem;
+  width: 55%;
+}
+
+
+#export {
+  font-size: 1.1rem;
+  margin-bottom: 50px;
+  font-weight: bold;
+  color: #363838;
+}
+#export i {
+  color: #646868;
+}
+
+#export_content {
+  font-size: 1.1rem;
+  color: #363838;
 }
