@@ -29,14 +29,11 @@ function candidate_note(candidaterow){
                 .append($('<th scope="col" class="match_cell">').text('Match'))
               );
             }
-            
-          console.log('Creating context for publication');
-          try {var role = $('#role_'+contributor_row).val().match(/\[(.*?)\]/)[1];}
-          catch(e) {var role = null; }
-          console.log('Role:', role)
-          
+
+          // Determine context for display on contributor page           
+      //    try {var role = $('#role_'+contributor_row).val().match(/\[(.*?)\]/)[1];}
+      //    catch(e) {var role = null; }
           var context = {'Title':$('#publication_title').val(), 'Role':role};
-          console.log('Context is nu:', context);
 
           for(var i = 0; i<response.length; i++){
             //add_to_candidate_list(response[i], context);
@@ -64,21 +61,22 @@ function candidate_note(candidaterow){
           // Hover div on Match with sub-scores. 
           $('.match_cell').hover(
           function() {
+
+
+
             var tooltipValues = [];
-            $('#tttb2').text(Math.round(response[$(this).data("rij")]["role_score"]*100) + '%');
-            $('#tttb3').text(Math.round(response[$(this).data("rij")]["role_confidence"]*100) + '%');
+            //$('#tttb2').text(Math.round(response[$(this).data("rij")]["role_score"]*100) + '%');
+            //$('#tttb3').text(Math.round(response[$(this).data("rij")]["role_confidence"]*100) + '%');
             
             $('#tttb5').text(Math.round(response[$(this).data("rij")]["genre_score"]*100) + '%');
             $('#tttb6').text(Math.round(response[$(this).data("rij")]["genre_confidence"]*100) + '%');
-            
-            $('#tttb8').text(Math.round(response[$(this).data("rij")]["topic_score"]*100) + '%');
-            $('#tttb9').text(Math.round(response[$(this).data("rij")]["topic_confidence"]*100) + '%');
-
-            $('#tttb11').text(Math.round(response[$(this).data("rij")]["style_score"]*100) + '%');
-            $('#tttb12').text(Math.round(response[$(this).data("rij")]["style_confidence"]*100) + '%');
 
             $('#tttb14').text(Math.round(response[$(this).data("rij")]["name_score"]*100) + '%');
             $('#tttb15').text(Math.round(response[$(this).data("rij")]["name_confidence"]*100) + '%');
+
+            $('#tttb8').text(Math.round(response[$(this).data("rij")]["jvu_score"]*100) + '%');
+            $('#tttb9').text(Math.round(response[$(this).data("rij")]["jvu_confidence"]*100) + '%');
+
 
             var tooltip = $("<div class='tooltip'>" + $('#thesMatchHover').html() + "</div>")
               .css({
@@ -90,13 +88,13 @@ function candidate_note(candidaterow){
                 'background-color': 'rgba(34, 204, 240, 0)',
               });
             $(this).append(tooltip);
-            $(document).on('mousemove', function(e) {
-              $('.tooltip').css({
-                // pageX, pageY need to relocate (ie subtract 325 and 635) because DataTabels.js does somethin weird.
-                left: e.pageX - 325,
-                top: e.pageY - 475
-              });
-            });
+//            $(document).on('mousemove', function(e) {
+//              $('.tooltip').css({
+//                // pageX, pageY need to relocate (ie subtract 325 and 635) because DataTabels.js does somethin weird.
+//                left: e.pageX - 325,
+//                top: e.pageY - 475
+//              });
+//            });
           },
           function() {
             $('.tooltip').remove();

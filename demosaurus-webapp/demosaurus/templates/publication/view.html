@@ -1,15 +1,13 @@
 
 {% extends 'base.html' %}
 
+<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 
 <!-- Title of publicationor "Demosaurus" as Header -->
 {% block header %}
 
 <h1>{% block title %}Demosaurus{% endblock %}</h1>
 {% endblock %}
-
-
-
 
 {% block content %}
 
@@ -26,7 +24,7 @@
 
 {# Status tabs #}
 <div>
-  <script type=text/javascript src="{{url_for('static', filename='js/contributor-block.js') }}"></script>
+
   <script type=text/javascript> 
 
     // initialize vars holding the role options and contributors 
@@ -47,13 +45,60 @@
     {%endfor%}
 
     var maxIndex = 0;
+
+    var genres = {'CBK_genre':[], 'NUR_rubriek':[], 'NUGI_genre':[], 'brinkman':[]};
+    var topics = {'CBK_thema':[], 'brinkman':[]};
+    {% for subject in subjects %}
+      {% if subject['CBK_genre'] %}
+        genres['CBK_genre'].push({
+          rank: "{{subject['rank']}}",
+          identifier: "{{subject['CBK_genre_id']}}",
+          term: "{{subject['CBK_genre']}}"
+        });
+      {% endif %}
+      {% if subject['CBK_thema'] %}
+        topics['CBK_thema'].push({
+          rank: "{{subject['rank']}}",
+          term: "{{subject['CBK_thema']}}"
+        });
+      {% endif %}
+      {% if subject['brinkman_kind'] == 'vorm' %}
+          genres['brinkman'].push({
+            rank: "{{subject['rank']}}",
+            identifier: "{{subject['brinkman_id']}}",
+            term: "{{subject['brinkman']}}"
+          });
+      {% endif %}
+      {% if subject['brinkman_kind'] == 'zaak' %}
+          topics['brinkman'].push({
+            rank: "{{subject['rank']}}",
+            identifier: "{{subject['brinkman_id']}}",
+            term: "{{subject['brinkman']}}"
+          });
+      {% endif %}
+      {% if subject['NUGI_genre'] %}
+        genres['NUGI_genre'].push({
+          rank: "{{subject['rank']}}",
+          identifier: "{{subject['NUGI_genre']}}"
+        });
+      {% endif %}
+      {% if subject['NUR_rubriek'] %}
+        genres['NUR_rubriek'].push({
+          rank: "{{subject['rank']}}",
+          identifier: "{{subject['NUR_rubriek']}}"
+        });
+      {% endif %}
+    {% endfor %}
+    // console.log('Genres', genres);
+    // console.log('Topics', topics);
+
   </script>
 
 
   <!-- Horizontal Arrow style menu. -->
   <div class="tab">
     <ul class="breadcrumb">
-      <li><a href="#" onclick="openTab(event, 'general')" class="tablinks" id="basic_tab">Titelinformatie<span class="flag" id="basic_tab_flag">&#10071;</span></a></li>
+      <li><a href="#" onclick="openTab(event, 'general')" class="tablinks" id="general_tab">Titelinformatie<span class="flag" id="general_tab_flag">&#10071;</span></a></li>
       <li><a href="#" onclick="openTab(event, 'subject')" class="tablinks" id="subject_tab">Onderwerp<span class="flag" id="subject_tab_flag">&#10071;</span></a></li>
       <li><a href="#" onclick="openTab(event, 'contributors')" class="tablinks" id="contributors_tab">Auteurs<span class="flag" id="contributors_tab_flag">&#10071;</span></a></li>
       <li><a href="#" onclick="openTab(event, 'export'); export_info()" class="tablinks" id="export_tab">Exporteer<span class="flag" id="export_tab_flag">&#10071;</span></a></li>
@@ -68,7 +113,7 @@
       <tbody>
         <tr>
           <td>Titel, subtitel</td>
-          <td>{{ publication['titelvermelding']}}</td>
+          <td id="publication_title">{{ publication['titelvermelding']}}</td>
         </tr>
         <tr>
             <td>ISBN</td>
@@ -76,7 +121,7 @@
         </tr>
         <tr>
           <td>Jaar van uitgave</td>
-          <td>{{ publication['jaar_van_uitgave']}}</td>
+          <td id="publicationYear">{{ publication['jaar_van_uitgave']}}</td>
         </tr>
         <tr>
           <td>Uitgever</td>
@@ -184,10 +229,6 @@
   </div>
 
 
-  <script type=text/javascript> 
-    init();
-  </script>
-
 </div>
 
 
@@ -225,27 +266,20 @@
         <div class="divTableCell" id="tttb14">&nbsp;</div>
         <div class="divTableCell" id="tttb15">&nbsp;</div>
       </div>
-    </div>
-    <div class="divTableBody">
-      <div class="divTableRow">
-        <div class="divTableCell" id="tttb1"><b>Rol</b></div>
-        <div class="divTableCell" id="tttb2">&nbsp;</div>
-        <div class="divTableCell" id="tttb3">&nbsp;</div>
-      </div>
+<!--      <div class="divTableRow">-->
+<!--        <div class="divTableCell" id="tttb1"><b>Rol</b></div>-->
+<!--        <div class="divTableCell" id="tttb2">&nbsp;</div>-->
+<!--        <div class="divTableCell" id="tttb3">&nbsp;</div>-->
+<!--      </div>-->
       <div class="divTableRow">
         <div class="divTableCell" id="tttb4"><b>Genre</b></div>
         <div class="divTableCell" id="tttb5">&nbsp;</div>
         <div class="divTableCell" id="tttb6">&nbsp;</div>
       </div>
       <div class="divTableRow">
-        <div class="divTableCell" id="tttb7"><b>Onderwerp</b></div>
+        <div class="divTableCell" id="tttb7"><b>JvU</b></div>
         <div class="divTableCell" id="tttb8">&nbsp;</div>
         <div class="divTableCell" id="tttb9">&nbsp;</div>
-      </div>
-      <div class="divTableRow">
-        <div class="divTableCell" id="tttb10"><b>Stijl</b></div>
-        <div class="divTableCell" id="tttb11">&nbsp;</div>
-        <div class="divTableCell" id="tttb12">&nbsp;</div>
       </div>
     </div>
   </div>
@@ -282,6 +316,17 @@
   <div class="bottomcontent" id="export_content" style="display: block;">
   </div>
 
+  <!-- KMC block. -->
+  <div class="bottomcontent" id="general_content" style="display: block;">
+  </div>
+
+
 </div>
+<script type=text/javascript src="{{url_for('static', filename='js/contributor-block.js') }}"></script>
+<script type=text/javascript src="{{url_for('static', filename='js/export.js') }}"></script>
+  <script type=text/javascript>
+    init_contributors();
+    document.getElementById("contributors_tab").click();
+  </script>
 
 {% endblock %}
