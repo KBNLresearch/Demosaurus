@@ -59,6 +59,7 @@ function thesaureer(index){
   activate_row(index);
   try {var role = $('#role_'+index).val().match(/\[(.*?)\]/)[1];}
   catch(e) {var role = null; }
+
   var contributor_name =  $("#aut_name_" + index).val();
   var data = {
            'contributor_name' : contributor_name,
