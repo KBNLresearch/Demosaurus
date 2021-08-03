@@ -15,11 +15,8 @@ function export_info() {
   var at_kmc = 3011;
   for (var i=0; i < rows.length; i++) {
     var id = rows[i].id.split('_')[1];
-    console.log('row', id);
 
-    console.log($('#main_'+id).is(':checked'));
-
-
+    //console.log($('#main_'+id).is(':checked'));
 
     if (i==0 && $('#main_'+id).is(':checked')){
       all_kmcs += '<p>3000\t';

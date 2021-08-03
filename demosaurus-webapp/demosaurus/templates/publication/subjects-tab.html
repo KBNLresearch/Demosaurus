@@ -1,0 +1,87 @@
+
+
+<table id="brinkman-table" style="float: left; padding: 10px" >
+  <thead>
+    <tr>
+      <th><!--i class="fas fa-trash-alt"></i--></th>
+      <th><!--i class="fas fa-arrow-up"></i--></th>
+      <th><!--i class="fas fa-arrow-down"></i--></th>
+      <th class="name_cell"> Brinkman-trefwoorden (KMC 520X) </th>
+    </tr>
+  </thead>
+  <tbody >
+    <!-- This is where subjects may be pre-filled and/ or added (client-side)-->
+  </tbody>
+
+  <tfoot>
+    <tr align="center">
+      <td> &nbsp;</td>
+      <td> &nbsp;</td>
+      <td> &nbsp;</td>
+      <td><button type="button" title="Vind zaaktrefwoorden" onclick="getSuggestions('ensemble-brinkman-zaak','brinkman')">Suggesties zaaktrefwoorden</button>
+    </tr>
+    <tr align="center">
+        <td> &nbsp;</td>
+        <td> &nbsp;</td>
+        <td> &nbsp;</td>
+        <td><button type="button" title="Vind vormtrefwoorden" onclick="getSuggestions('ensemble-brinkman-vorm','brinkman')">Suggesties vormtrefwoorden</button>
+    </tr>
+  </tfoot>
+</table>
+
+<table id="CBK_genre-table" style="float: left; padding: 10px" >
+  <thead>
+    <tr>
+      <th><!--i class="fas fa-trash-alt"></i--></th>
+      <th><!--i class="fas fa-arrow-up"></i--></th>
+      <th><!--i class="fas fa-arrow-down"></i--></th>
+      <th class="name_cell"> CBK-genres (KMC 556X) </th>
+    </tr>
+  </thead>
+  <tbody >
+    <!-- This is where subjects may be pre-filled and/ or added (client-side)-->
+  </tbody>
+
+  <tfoot>
+    <tr align="center">
+      <td> &nbsp;</td>
+      <td> &nbsp;</td>
+      <td> &nbsp;</td>
+      <td><button type="button" id="suggestCBKGenre" title="Vind trefwoorden" onclick="getSuggestions('ensemble-cbk2','CBK_genre')">Suggesties</button>
+    </tr>
+  </tfoot>
+</table>
+
+<br style="clear:both" />
+
+<!-- Annif Suggestions - bottom area. -->
+<div id="subject_content" class="bottomcontent" >
+  <div id="annif-in" class="form-group" style="float: left;">
+    <h2 >Input tekst</h2>
+    <div id="text-box-wrapper">
+      <textarea class="form-control" rows="20" name="text" id="text"
+      placeholder='Plak hier de samenvatting van een publicatie.'>{{publication['titelvermelding']}} {{publication['annotations']}}</textarea>
+      <button id="button-clear" type="button" title="Verwijder input tekst" class="fas fa-trash-alt"></button>
+    </div>
+  </div>
+  <div style="float: left; padding-top:100px; padding-right:20px;" > <img src={{'/static/annif-RGB.svg'}} alt="annif-logo" width="100px"></div>
+  <div id="annif-out" style="float: left;">
+    <h2 id="suggestions" data-i18n="suggestions">Voorgestelde trefwoorden</h2>
+    <table class="fixed_header" id="annif-results-table">
+      <thead>
+        <tr>
+          <th>Identifier</th>
+          <th>Trefwoord</th>
+          <th>Score</th>
+        </tr>
+      </thead>
+      <tbody class="zebra"/>
+      <tfoot/>
+    </table>
+    <ul class="list-group" id="no-results">
+      <li class="list-group-item p-0" data-i18n="no-results">Geen resultaten gevonden.</li>
+    </ul>
+  </div>
+</div>
+
+<script type=text/javascript src="{{url_for('static', filename='js/subjects-block.js') }}"></script>

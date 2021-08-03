@@ -1,7 +1,7 @@
 var focus_index;
 var main_author = true;
 
-function init_contributors(){
+$(document).ready(function() {
 
   if (contributors.length < 1){
     add_contributor_row();
@@ -11,7 +11,7 @@ function init_contributors(){
     add_contributor_row(name=contributors[i].name, role=contributors[i].role);
   }
   top_main_author();
-}
+});
 
 function add_contributor_row(name="", role="") {
   $("#contributortable > tbody").append($('<tr id="row_' + maxIndex+'">')

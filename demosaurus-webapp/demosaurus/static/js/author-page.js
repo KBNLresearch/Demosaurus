@@ -38,8 +38,8 @@ function add_to_publication_list(publications){
       $('#tttb5').text(Math.round(publications[$(this).data("rij")]["genre_score"]*100) + '%');
       $('#tttb6').text(Math.round(publications[$(this).data("rij")]["genre_confidence"]*100) + '%');
       
-      $('#tttb8').text(Math.round(publications[$(this).data("rij")]["topic_score"]*100) + '%');
-      $('#tttb9').text(Math.round(publications[$(this).data("rij")]["topic_confidence"]*100) + '%');
+      $('#tttb8').text(Math.round(publications[$(this).data("rij")]["subject_score"]*100) + '%');
+      $('#tttb9').text(Math.round(publications[$(this).data("rij")]["subject_confidence"]*100) + '%');
 
       $('#tttb11').text(Math.round(publications[$(this).data("rij")]["style_score"]*100) + '%');
       $('#tttb12').text(Math.round(publications[$(this).data("rij")]["style_confidence"]*100) + '%');
