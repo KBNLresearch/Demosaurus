@@ -52,6 +52,7 @@ function getSuggestions(project, category) {
 
 function displayResults(resultList, category) {
     $('#no-results').hide();
+    $('#suggestions').text('Voorgestelde trefwoorden ('+category+')');
     $('#suggestions').show();
     $('#annif-results-table').show();
     $.each(resultList, function(idx, value) {
