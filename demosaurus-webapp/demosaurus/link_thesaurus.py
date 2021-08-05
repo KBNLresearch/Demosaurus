@@ -44,7 +44,6 @@ def thesaureer():
         if len(author_options)>0:
             author_options=pd.concat((author_options, author_options.apply(
                 lambda row: score_names(row, firstname, familyname), axis=1)), axis=1)
-            #author_options=pd.concat((author_options, author_options.apply(lambda row: score_genre(row['author_ppn'], publication_CBK_genres), axis=1)), axis=1)
             author_options=pd.concat((author_options, author_options.apply(
                 lambda row: score_class_based(row['author_ppn'], publication_genres, 'genre'), axis=1)), axis=1)
             author_options = pd.concat((author_options, author_options.apply(
@@ -170,61 +169,12 @@ def score_class_based(author_ppn, publication_classes, name):
 
     return pd.Series([score, confidence], index = [name+'_score', name+'_confidence'])
     
-
-def score_genre(author_ppn, publication_CBK_genres):  
-    """
-    Determine score (0-1) for an author given the genre of the publication and their known publications
-    TODO: now implemented for CBK genre, maybe extend to genres in general? e.g. Brinkman vormtrefwoord, ...
-    >> see score_class_based (generalization)
-    """
-    if len(publication_CBK_genres) == 0:
-        # Nothing to base score on. Return zero or something else?
-        score = 0
-        confidence = 0 
-    else: 
-        #Obtain a list of genres + known publication counts from the database
-        known_genres = obtain_similarity_data(author_ppn, ['CBK_genre'])
-        if len(publication_CBK_genres) == 0 or len(known_genres) ==0:
-            # no information available to make a sane comparison
-            score = 0
-            confidence = 0
-        else: 
-            # Add a column with the new publication to compare with
-            for genre in publication_CBK_genres:
-                known_genres.loc[genre,'newPublication']=1
-            # score = 1- cosine distance between array of known publications and new publication
-            # intuition:
-            # if there are no overlapping genres, distance = 1 so score is 0
-            # if there is little overlap, the score is close to 0
-            # if the new publication is very similar to known publications, the score is close to 1       
-            known_genres = known_genres.fillna(0)
-            score=1-spatial_distance.cosine(known_genres.knownPublications, known_genres.newPublication)
-            try:
-                assert not np.isnan(score)
-                confidence=1-1/known_genres.knownPublications.sum() # Temporary fix to get some estimate on reliability    
-            except:
-                print('CBK genre score is undefined for', author_ppn)
-                score = 0
-                confidence = 0
-
-            
-      
-    return pd.Series([score, confidence], index = ['genre_score', 'genre_confidence'])
-
 def score_style(author_record, author_context):
     #score=max(min(np.random.normal(0.5,0.1),1),0)
     #confidence=max(min(np.random.normal(0.4, 0.1),0.9),0.1)
     score = 0
     confidence = 0 
     return pd.Series([score, confidence], index = ['style_score', 'style_confidence'])
-
-def score_topic(author_record, author_context):
-    # score=max(min(np.random.normal(0.6, 0.1),1),0)
-    # confidence=max(min(np.random.normal(0.4, 0.1),0.9),0.1)
-    score = 0
-    confidence = 0 
-
-    return pd.Series([score, confidence], index = ['topic_score', 'topic_confidence'])
 
 
 def score_role(author_record, author_context):
@@ -237,3 +187,16 @@ def score_role(author_record, author_context):
         # score=max(min(np.random.normal(0.7, 0.1),1),0)
         # confidence=max(min(np.random.normal(0.4, 0.1),0.9),0.1)
     return pd.Series([score, confidence], index = ['role_score', 'role_confidence'])
+
+def score_year(author_ppn, publication_year):
+    known_info = obtain_similarity_data(author_ppn,['jaar_van_uitgave'])
+    if len(known_info) == 0:
+        # no information available to make a sane comparison
+        score = 0
+        confidence = 0
+    else:
+        score = 0
+        confidence = 0
+
+    return pd.Series([score, confidence], index=['jvu_score', 'jvu_confidence'])
+
