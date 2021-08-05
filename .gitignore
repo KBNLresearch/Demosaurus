@@ -1,13 +1,8 @@
 demosaurus-webapp/demosaurus/static/covers/*
 data/
 Surfdrive/
-<<<<<<< HEAD
-_old/
-
-
-=======
 demosaurus-webapp/config.txt
->>>>>>> origin/master
+ignore-files/
 
 
 # Byte-compiled / optimized / DLL files
