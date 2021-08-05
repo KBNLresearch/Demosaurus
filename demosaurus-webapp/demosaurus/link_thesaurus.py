@@ -7,6 +7,7 @@ from nltk.metrics import distance as nl_distance
 import re
 import numpy as np
 from scipy.spatial import distance as spatial_distance
+from scipy import stats
 import json
 import time
 
@@ -46,17 +47,17 @@ def thesaureer():
                 lambda row: score_names(row, firstname, familyname), axis=1)), axis=1)
             author_options=pd.concat((author_options, author_options.apply(
                 lambda row: score_class_based(row['author_ppn'], publication_genres, 'genre'), axis=1)), axis=1)
-            author_options = pd.concat((author_options, author_options.apply(
-                lambda row: score_class_based(row['author_ppn'], publication_year, 'jvu'), axis=1)), axis=1)
+            #author_options = pd.concat((author_options, author_options.apply(
+#                lambda row: score_class_based(row['author_ppn'], publication_year, 'jvu'), axis=1)), axis=1)
             author_options=pd.concat((author_options, author_options.apply(
-                lambda row: score_topic(None,None), axis=1)), axis=1)
+                lambda row: score_year(row['author_ppn'], publication_year), axis=1)), axis=1)
             author_options = pd.concat((author_options, author_options.apply(
                 lambda row: score_style(None, None), axis=1)), axis=1)
             author_options=pd.concat((author_options, author_options.apply(
                 lambda row: score_role(None,author_role), axis=1)), axis=1)
 
             # Determine overall score for candidate: linear combination of scores, weighted by confidence
-            features = ['name','genre','topic']
+            features = ['name','genre', 'jvu']
             scores = [feature+'_score' for feature in features]
             weights = [feature+'_confidence' for feature in features]
             author_options['score']= author_options.apply(lambda row: np.average(row.loc[scores], weights=row.loc[weights]), axis=1)
@@ -161,7 +162,9 @@ def score_class_based(author_ppn, publication_classes, name):
             try:
                 score = 1 - spatial_distance.cosine(known_info.knownPublications, known_info.newPublication)
                 assert not np.isnan(score)
-                confidence=1-1/known_info.knownPublications.sum() # Temporary fix to get some estimate on reliability
+                known = known_info.knownPublications.sum()
+                confidence= known/(known+20) # need approx. 20 datapoints to make a somewhat reliable estimate (50% sure)
+                # Temporary fix to get some estimate on reliability
             except:
                 #print('class based score is undefined for', author_ppn, publication_classes)
                 score = 0
@@ -189,14 +192,26 @@ def score_role(author_record, author_context):
     return pd.Series([score, confidence], index = ['role_score', 'role_confidence'])
 
 def score_year(author_ppn, publication_year):
-    known_info = obtain_similarity_data(author_ppn,['jaar_van_uitgave'])
+
+    try:
+        year = int (publication_year['jaar_van_uitgave'][0])
+        known_info = obtain_similarity_data(author_ppn, publication_year)
+    except:
+        known_info = pd.DataFrame([])
+
     if len(known_info) == 0:
         # no information available to make a sane comparison
         score = 0
         confidence = 0
     else:
-        score = 0
-        confidence = 0
+        # fit a normal distribution to the data points
+        mu, sigma = stats.norm.fit(np.repeat(known_info.jaar_van_uitgave, known_info.knownPublications))
+        sigma = max(sigma, 5) # sigma should be at least 5: publications are still likely (70%) 5 years from any known publication
+        top = stats.norm.pdf(mu, mu, sigma) # determine top
+        score = stats.norm.pdf(year, mu, sigma)/top # normalize by top: we want a score of 1 for the mean
+        # estimate confidence:
+        known = known_info.knownPublications.sum()
+        confidence= known/(known+20) # need approx. 20 datapoints to make a somewhat reliable estimate (50% sure)
 
     return pd.Series([score, confidence], index=['jvu_score', 'jvu_confidence'])
 
