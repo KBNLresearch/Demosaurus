@@ -27,8 +27,6 @@ def view(id):
         (id,id)
     ).fetchone()
 
-    print(publication.keys())
-
     contributors = db.execute(
         ' SELECT *'
         ' FROM authorship_ggc'
@@ -78,7 +76,6 @@ def view(id):
         ,
         {'ppn':id}
         ).fetchall()
-    print(subjects[0].keys())
 
     # Serve the list to the client: render the template with the obtained data
     return render_template('publication/view.html', publication = publication, cover = cover_location, contributors=contributors, subjects = subjects, role_list=roles_options)
