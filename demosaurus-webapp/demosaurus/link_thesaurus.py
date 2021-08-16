@@ -31,13 +31,10 @@ def thesaureer():
         if len(nameparts)>2: print('More than two nameparts for', author_name, )
 
         start = time.time()
-        author_options = pd.read_sql_query('''SELECT author_NTA.author_ppn, foaf_name, foaf_givenname, 
-            foaf_familyname, skos_preflabel, birthyear, deathyear, 
-            editorial_nl, editorial, skopenote_nl, related_entry_ppn,
-            author_ISNI.identifier AS isni
-            FROM author_NTA 
-            LEFT JOIN author_ISNI ON author_NTA.author_ppn = author_ISNI.author_ppn 
-            WHERE foaf_name LIKE \'%'''+familyname+'%\'', con = db)
+        author_options = pd.read_sql_query("""
+        WITH candidates AS (SELECT author_ppn FROM author_fts5 WHERE foaf_name MATCH :name)
+        SELECT author_NTA.* FROM candidates JOIN author_NTA ON candidates.author_ppn = author_NTA.author_ppn;
+        """, params={'name':'\"'+familyname+'\"'}, con = db)
         end = time.time()
         print('Obtain candidates - time elapsed:', end-start)
 
