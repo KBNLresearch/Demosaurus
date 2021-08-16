@@ -33,6 +33,16 @@ def create_view_for_feature(feature_name, in_basicinfo = False,db = '../data/dem
 		c.execute(statement)	
 
 
+def set_fts5(db = '../data/demosaurus.sqlite'):
+    with sqlite3.connect(db) as con:
+		print('Creating virtual table with FTS5..')
+		# Create virtual author table for high-performance text search (obtain candidates)
+		con.execute("DROP TABLE IF EXISTS `author_fts5`;")
+		con.execute("CREATE VIRTUAL TABLE IF NOT EXISTS author_fts5 USING FTS5(author_ppn, foaf_name);")
+		con.execute("INSERT INTO author_fts5 SELECT author_ppn, foaf_name FROM author_NTA ;")
+		print('Done. ')
+    return
+
 def main():
 	for feature in ['CBK_genre','CBK_thema','NUGI_genre','NUR_rubriek', 'brinkman']:
 		create_view_for_feature(feature, False)
