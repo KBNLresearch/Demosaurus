@@ -9,6 +9,7 @@ function candidate_note(candidaterow){
   function thesaureer_response(response, contributor_row) {
         // console.log(response);
         // console.log(contributor_row);
+        $("body").css("cursor", "default");
 
         if (response.length<1) {
           $('#placeholder').text('Geen records gevonden');

@@ -56,7 +56,9 @@ function deactivate_rows() {
 }
 
 function thesaureer(index){
+  $("#candidate_list > tbody").empty()
   activate_row(index);
+  $("body").css("cursor", "progress");
   try {var role = $('#role_'+index).val().match(/\[(.*?)\]/)[1];}
   catch(e) {var role = null; }
 
@@ -72,16 +74,13 @@ function thesaureer(index){
   console.log('Thesaureer');
   console.log(data);
 
-
-  $("#candidate_list > tbody").empty()
-  $('#thesaureer_title').text('NTA-records voor '+contributor_name);
-
   $.ajax({
     url: '/thesaureer',
     data: data,
     dataType: 'json',
     context:this,
     success: function(response){
+      $('#thesaureer_title').text('NTA-records voor '+contributor_name);
       thesaureer_response(response,index);
     },
     error: function(error) {
