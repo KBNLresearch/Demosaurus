@@ -28,11 +28,13 @@ def annif_suggestions():
     params = dict(request.args) # turn into a mutable dictionary
     
     project = params.pop('project')
-    print(params)
+    project_options =  [proj['project_id'] for proj in annif_projects()['projects']]
+    print(project_options)
+    if project not in project_options:
+        print("Annif was called with non-existing project parameter:", project)
 
     url =  base_url + "projects/" + project + "/suggest"
-    #print(url)
-    response = requests.post(url, data = params) # Hier gaat iets mis?! Geeft error 400 "Bad request" dus er is iets malformed
+    response = requests.post(url, data = params)
     if response.status_code == 200:
         return response.json()
     else:

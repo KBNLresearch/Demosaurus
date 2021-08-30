@@ -19,7 +19,7 @@ function open_popup (url, width=700, height=400) {
 function openTab(evt, tabName){
     // Declare all variables
 
-  console.log(tabName)
+  console.log('Open tab', tabName)
 
   var i, tabcontent, tablinks;
 
@@ -106,7 +106,6 @@ var getColorForPercentage = function(this_perc, saturation=1.0, low=0.5) {
       ],
       fixedColumns: true,
       select: true
-      
     } );
     $('#annif-results-table').parents('div.dataTables_wrapper').first().hide();
 } );

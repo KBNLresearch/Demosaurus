@@ -50,14 +50,14 @@ def thesaureer():
             author_options = pd.concat((author_options, author_options.apply(
                 lambda row: score_class_based(row['author_ppn'], publication_year, 'jvu'), axis=1)), axis=1)
             author_options=pd.concat((author_options, author_options.apply(
-                lambda row: score_topic(None,None), axis=1)), axis=1)
+                lambda row: score_subject(None,None), axis=1)), axis=1)
             author_options = pd.concat((author_options, author_options.apply(
                 lambda row: score_style(None, None), axis=1)), axis=1)
             author_options=pd.concat((author_options, author_options.apply(
                 lambda row: score_role(None,author_role), axis=1)), axis=1)
 
             # Determine overall score for candidate: linear combination of scores, weighted by confidence
-            features = ['name','genre','topic']
+            features = ['name','genre','subject']
             scores = [feature+'_score' for feature in features]
             weights = [feature+'_confidence' for feature in features]
             author_options['score']= author_options.apply(lambda row: np.average(row.loc[scores], weights=row.loc[weights]), axis=1)
@@ -123,7 +123,7 @@ def obtain_similarity_data(author_ppn, features):
 def score_class_based(author_ppn, publication_classes, name):
     """
     Determine score (0-1) and confidence (0-1) for an author given the publication and their known publications
-    Based on information in fields corresponding to items in publication_classes (e.g. genres, topics, ...)
+    Based on information in fields corresponding to items in publication_classes (e.g. genres, subjects, ...)
     author_ppn: the pica identifier of the candidate author (string)
     publication_classes: the information of the publication to be compared to
                          a dictionary of lists: 
@@ -218,13 +218,13 @@ def score_style(author_record, author_context):
     confidence = 0 
     return pd.Series([score, confidence], index = ['style_score', 'style_confidence'])
 
-def score_topic(author_record, author_context):
+def score_subject(author_record, author_context):
     # score=max(min(np.random.normal(0.6, 0.1),1),0)
     # confidence=max(min(np.random.normal(0.4, 0.1),0.9),0.1)
     score = 0
     confidence = 0 
 
-    return pd.Series([score, confidence], index = ['topic_score', 'topic_confidence'])
+    return pd.Series([score, confidence], index = ['subject_score', 'subject_confidence'])
 
 
 def score_role(author_record, author_context):
