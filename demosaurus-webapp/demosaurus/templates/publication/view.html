@@ -47,7 +47,7 @@
     var maxIndex = 0;
 
     var genres = {'CBK_genre':[], 'NUR_rubriek':[], 'NUGI_genre':[], 'brinkman':[]};
-    var topics = {'CBK_thema':[], 'brinkman':[]};
+    var subjects = {'CBK_thema':[], 'brinkman':[]};
     {% for subject in subjects %}
       {% if subject['CBK_genre'] %}
         genres['CBK_genre'].push({
@@ -57,7 +57,7 @@
         });
       {% endif %}
       {% if subject['CBK_thema'] %}
-        topics['CBK_thema'].push({
+        subjects['CBK_thema'].push({
           rank: "{{subject['rank']}}",
           term: "{{subject['CBK_thema']}}"
         });
@@ -70,7 +70,7 @@
           });
       {% endif %}
       {% if subject['brinkman_kind'] == 'zaak' %}
-          topics['brinkman'].push({
+          subjects['brinkman'].push({
             rank: "{{subject['rank']}}",
             identifier: "{{subject['brinkman_id']}}",
             term: "{{subject['brinkman']}}"
@@ -90,7 +90,7 @@
       {% endif %}
     {% endfor %}
     // console.log('Genres', genres);
-    // console.log('Topics', topics);
+    // console.log('subjects', subjects);
 
   </script>
 
@@ -109,7 +109,7 @@
   <!-- Titelinformatie blok. Moet nog COVER IMAGE in! -->
   <div id="general" class="tabcontent">  
     <table id="publicationinfo" class="tbinfo">
-      <thead/>        
+
       <tbody>
         <tr>
           <td>Titel, subtitel</td>
@@ -144,63 +144,19 @@
           <td>{{publication['annotations'] or "Inhoudelijke omschrijving (bv. KMC 4207)"}}</td>
         </tr>
       </tbody>
-      <tfoot/>  
     </table>
   </div>
 
 
   <!-- Annif block. -->
   <div id="subject" class="tabcontent">
-    <div id="form">
-      <div class="container">
-        <div class="row pb-4">
-          <div class="col-md-8 mr-auto">
-            <div id="text-box" class="form-group">
-              <label for="text">Input tekst</label>
-              <div id="text-box-wrapper">
-                <textarea class="form-control" rows="20" name="text" id="text"
-                placeholder='Plak hier de samenvatting van een publicatie.'>{{publication['titelvermelding']}} {{publication['annotations']}}</textarea>
-                <button id="button-clear" type="button" title="Verwijder input tekst" class="fas fa-trash-alt"></button>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="form-group">
-              <label for="project">Kies backend</label>
-              <div class="select-wrapper">
-                <select class="form-control" id="project">
-                </select>
-                <button type="button" class="fas fa-file-medical-alt" id="get-suggestions" title="Vind trefwoorden"></button>
-              </div>
-            </div>
-            <!--div class="form-group">
-              <fieldset id="limit-buttons" class="btn-group btn-group-toggle" data-toggle="buttons">
-                <legend data-i18n="limit">Max # aantal vorm- of trefwoorden</legend>
-                <label class="btn btn-secondary">
-                  <input type="radio" name="limit" value="10" checked>
-                  10
-                </label>
-                <label class="btn btn-secondary">
-                  <input type="radio" name="limit" value="15">
-                  15
-                </label>
-                <label class="btn btn-secondary">
-                  <input type="radio" name="limit" value="20">
-                  20
-                </label>
-              </fieldset>
-            </div-->
-            
-          </div>
-        </div>
-      </div>
-    </div>
+    {% include 'publication/subjects-tab.html' %}
   </div>
 
 
   <!-- Auteurs blok. -->
   <div id="contributors" class="tabcontent">
-    <table id="contributortable" margin = 0>
+    <table id="contributortable" >
       <thead>
         <tr>
           <th><!--i class="fas fa-trash-alt"></i--></th>
@@ -234,7 +190,7 @@
 
 {# Area for thesauring, subject indexing etc #}
 
-<p id='thesaureervak'/>
+
 
 <div style="width:100%;float:left;">
     
@@ -285,31 +241,7 @@
   </div>
 
 
-  <!-- Annif Suggestions - bottom area. -->
-  <div id="subject_content" class="bottomcontent" style="display: none;">
-    <h2 id="suggestions" data-i18n="suggestions">Voorgestelde onderwerpen</h2>
-    <!--div class="d-flex justify-content-center">
-      <div id="results-spinner" class="spinner-border m-2" role="status">
-        <span class="sr-only">Loading...</span>
-      </div>
-    </div-->
-    <!--ul class="list-group" id="results"></ul-->
-    <table class="fixed_header" id="annif-results-table">
-      <thead>
-        <tr>
-          <th>Trefwoord</th>
-          <th>Score</th>
-        </tr>
-      </thead>
-      <tbody class="zebra"/>
-      <tfoot/>
-    </table>
 
-
-    <ul class="list-group" id="no-results">
-      <li class="list-group-item p-0" data-i18n="no-results">Geen resultaten gevonden.</li>
-    </ul>
-  </div>
 
 
   <!-- KMC block. -->
@@ -324,9 +256,9 @@
 </div>
 <script type=text/javascript src="{{url_for('static', filename='js/contributor-block.js') }}"></script>
 <script type=text/javascript src="{{url_for('static', filename='js/export.js') }}"></script>
-  <script type=text/javascript>
-    init_contributors();
-    document.getElementById("contributors_tab").click();
-  </script>
 
+
+<script type=text/javascript>
+document.getElementById("general_tab").click();
+</script>
 {% endblock %}

@@ -120,7 +120,7 @@ def obtain_similarity_data(author_ppn, features):
 def score_class_based(author_ppn, publication_classes, name):
     """
     Determine score (0-1) and confidence (0-1) for an author given the publication and their known publications
-    Based on information in fields corresponding to items in publication_classes (e.g. genres, topics, ...)
+    Based on information in fields corresponding to items in publication_classes (e.g. genres, subjects, ...)
     author_ppn: the pica identifier of the candidate author (string)
     publication_classes: the information of the publication to be compared to
                          a dictionary of lists: 

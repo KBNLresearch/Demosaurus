@@ -286,7 +286,11 @@ th.score_cell > div > span {
   font-size: 1.1rem;  
 }
 
-
+.subjectbox {
+  background-color: hsla(46, 78%, 70%, 1);
+  padding: 8px ;
+  border: 1px hsla(46, 78%, 70%, 1) ;
+}
 
 
 /* Annif 'kies model' selector en knop */
