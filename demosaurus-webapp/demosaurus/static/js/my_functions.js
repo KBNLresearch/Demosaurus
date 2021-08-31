@@ -97,6 +97,7 @@ var getColorForPercentage = function(this_perc, saturation=1.0, low=0.5) {
   // DataTabel.js init interactive tables.
   $(document).ready( function () {
     $('#publication_list').DataTable();
+    //$('#candidate_list').DataTable();
     var ann_results = $('#annif-results-table').DataTable( {
       paging: false,
       searching: false,
@@ -105,7 +106,7 @@ var getColorForPercentage = function(this_perc, saturation=1.0, low=0.5) {
         {width: 500, targets: 0 }
       ],
       fixedColumns: true,
-      select: true
+      ordering: false
     } );
     $('#annif-results-table').parents('div.dataTables_wrapper').first().hide();
 } );

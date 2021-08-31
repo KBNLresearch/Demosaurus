@@ -102,7 +102,7 @@ function candidate_note(candidaterow){
             }
           );
 
-          var cl = $('#candidate_list').DataTable();
+          var cl = $('#candidate_list').DataTable({ordering: false});
           }
     };
 
