@@ -55,22 +55,12 @@
 <br style="clear:both" />
 
 <!-- Annif Suggestions - bottom area. -->
-<div id="subject_content" class="bottomcontent" >
-  <div id="annif-in" class="form-group" style="float: left;">
-    <h2 >Input tekst</h2>
-    <div id="text-box-wrapper">
-      <textarea class="form-control" rows="20" name="text" id="text"
-      placeholder='Plak hier de samenvatting van een publicatie.'>{{publication['titelvermelding']}} {{publication['annotations']}}</textarea>
-      <button id="button-clear" type="button" title="Verwijder input tekst" class="fas fa-trash-alt"></button>
-    </div>
-  </div>
-  <div style="float: left; padding-top:100px; padding-right:20px;" > <img src={{'/static/annif-RGB.svg'}} alt="annif-logo" width="100px"></div>
-  <div id="annif-out" style="float: left;">
-    <h2 id="suggestions" data-i18n="suggestions"></h2>
+<div id="subject_content" >
+  <div id="annif-out" style="float: left; width: 40%">
+    <h2 id="suggestions" data-i18n="suggestions" >Trefwoordsuggesties</h2>
     <table class="fixed_header" id="annif-results-table">
       <thead>
         <tr>
-          <th>Identifier</th>
           <th>Trefwoord</th>
           <th>Score</th>
         </tr>
@@ -78,10 +68,17 @@
       <tbody class="zebra"/>
       <tfoot/>
     </table>
-    <ul class="list-group" id="no-results">
-      <li class="list-group-item p-0" data-i18n="no-results">Geen resultaten gevonden.</li>
-    </ul>
+  </div>
+  <div style="float: left; width: 35% margin-left:10px;" >
+  <h2 >  Powered by</h2>
+    <div  class="info" >
+
+      <img id="annif-logo" src={{'/static/annif-RGB.svg'}} alt="annif-logo" width="130px">
+      <span class="extra-info">
+        Annif is de tool die suggesties doet voor trefwoorden. De modellen zijn getraind op basis van GGC-metadata van kinderboeken.<br>
+        Suggesties worden gegenereerd op basis van de publicatietitel en samenvatting (tab <a href="#" onclick="openTab(event, 'general')">Titelinformatie</a>).
+      </span>
+    </div>
   </div>
 </div>
-
 <script type=text/javascript src="{{url_for('static', filename='js/subjects-block.js') }}"></script>

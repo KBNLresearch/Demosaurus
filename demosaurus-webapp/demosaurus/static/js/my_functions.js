@@ -108,4 +108,7 @@ var getColorForPercentage = function(this_perc, saturation=1.0, low=0.5) {
       select: true
     } );
     $('#annif-results-table').parents('div.dataTables_wrapper').first().hide();
+
 } );
+
+

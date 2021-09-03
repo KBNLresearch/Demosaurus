@@ -3,8 +3,7 @@ var base_url = 'https://kbresearch.nl/annif/v1/';
 
 function clearResults() {
     $("#annif-results-table > tbody").empty();
-    $('#suggestions').hide();
-    $('#annif-results-table').hide();
+    $('#annif-results-table').css('visibility', 'hidden');
 }
 
 function fetchProjects() {
@@ -27,11 +26,14 @@ function fetchProjects() {
 }
 
 function getSuggestions(project, category) {
-    console.log($('#text').val());
+    inputtext = $('#publication_title').text();
+    inputtext += $('#publication_summary').text();
+
+    console.log('inputtext: ', inputtext);
     $.ajax({
         url: '/annif-suggestions',
         data: {
-          text: $('#text').val(),
+          text: inputtext,
           project: project,
           limit: 20, 
           threshold: 0.001
@@ -40,7 +42,8 @@ function getSuggestions(project, category) {
         clearResults();
         console.log(data.results);
         if (data.results.length == 0) {
-            $('#no-results').show();
+            $('#suggestions').text('Geen resultaten gevonden');
+            $('#suggestions').css('visibility', 'visible');
         }
         else {
             displayResults(data.results, category);
@@ -51,10 +54,10 @@ function getSuggestions(project, category) {
 
 
 function displayResults(resultList, category) {
-    $('#no-results').hide();
+    $('#no-results').css('visibility', 'hidden');
     $('#suggestions').text('Voorgestelde trefwoorden ('+category+')');
-    $('#suggestions').show();
-    $('#annif-results-table').show();
+    $('#suggestions').css('visibility', 'visible');
+    $('#annif-results-table').css('visibility', 'visible');
     $.each(resultList, function(idx, value) {
       identifier = value.uri.split('/').slice(-1);
       term = value.label;     
@@ -62,9 +65,8 @@ function displayResults(resultList, category) {
         $('<tr>')
         .append($('<td>')
             .append($('<a class="action" title="Selecteer term" href="#" onclick="addSubjectRow(\''+category+'\',\''+ term+'\',\''+ identifier+'\')">')
-                .text(identifier)
+                .text(term)
                 ))
-        .append($('<td>').append($('<a target="_blank">').attr('href',value.uri).append(term)))
         .append($('<td class="match_cell">').append($('<div>').css("background-color",getColorForPercentage(value.score)).text(Math.round(value.score * 1000)/10)))
         );
   });

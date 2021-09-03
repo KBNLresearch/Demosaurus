@@ -341,3 +341,28 @@ th.score_cell > div > span {
   font-size: 1.1rem;
   color: #363838;
 }
+
+.extra-info {
+  display: none;
+  line-height: 30px;
+  font-size: 16px;
+  padding:5px;
+}
+
+.info:hover .extra-info {
+  display: block;
+}
+
+.info {
+  font-size: 20px;
+  padding-left: 5px;
+  width: 20px;
+  border-radius: 15px;
+}
+
+.info:hover {
+  background-color: white;
+  padding: 0 0 0 5px;
+  width: 450px;
+  text-align: left !important;
+}
