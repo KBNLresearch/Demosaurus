@@ -19,8 +19,7 @@ Now you can install the dependencies in your virtual environment.
 
 ## Run
 
-Start Demosaurus software by navigating to the Demosaurus directory and typing: `bash start-demosaurus.sh`<br/>
-Note: Check if the path to the data (on surfdrive) needs to be modified in _start-demosaurus.sh_ before running.
-
-When finished, stop the Flask server by pressing `Ctrl+C` and exit the virtual environment by typing `deactivate`
+With an activated virtual environment, run `demosaurus-webapp/main.py`. 
+- It requires a file `demosaurus-webapp/config.txt` that specifies a _SECRET_KEY_, _host_ (IP address to serve the webapp on) and _port_. Set the configuration variables as _\<variable_name\> \<value\>_, each on a new line.
+- It requires a pre-filled database with bibliographical metadata.
 
