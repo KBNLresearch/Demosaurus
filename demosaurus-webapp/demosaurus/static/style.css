@@ -1,3 +1,9 @@
+:root {
+    --main-color:#363838;
+    --h1-color:#FA761B;
+    --background-color:#E8EAEC;
+}
+
 /*
 Used color scheme: https://color.adobe.com/Gutim-color-theme-16708150
 
@@ -22,16 +28,22 @@ Used color scheme: https://color.adobe.com/Gutim-color-theme-16708150
 Main font is Google fonts: "Ubuntu" and "Ubuntu Condensed" for tabs;
 */
 
-html { font-family: "Ubuntu", Helvetica, sans-serif; background: #E8EAEC; padding: 1rem; height: 95% }
-body { max-width: 1500px; margin: 0 auto; background: #E8EAEC; min-height: 100%}
-h1 { font-family: "Ubuntu", Helvetica, sans-serif; color: #FA761B; margin: 1rem 0; font-size: 30px; }
+html { font-family: "Ubuntu", Helvetica, sans-serif; background: var(--background-color); padding: 1rem; height: 95% }
+body { max-width: 1500px; margin: 0 auto; background: var(--background-color); min-height: 100%}
+h1 { font-family: "Ubuntu", Helvetica, sans-serif; color: var(--h1-color); margin: 1rem 0; font-size: 30px; }
 
 h2, h3, h4, p, td, th, input, label, legend {
   font-family: "Ubuntu", Helvetica, sans-serif;
   color: #363838;
 }
 
-a { color: #377ba8; } /* clickables */
+a:link { color: #FA761B; } /* clickables */
+a:visited {
+  color: #363838;
+}
+a:hover, a:active {
+  color: yellow;
+}
 
 hr { border: none; border-top: 1px solid lightgray; } /* horizontal rule */
 
