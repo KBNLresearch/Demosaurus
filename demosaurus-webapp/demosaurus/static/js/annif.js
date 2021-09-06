@@ -60,14 +60,14 @@ function displayResults(resultList, category) {
     $('#annif-results-table').css('visibility', 'visible');
     $.each(resultList, function(idx, value) {
       identifier = value.uri.split('/').slice(-1);
-      term = value.label;     
+      term = value.label;
+      color=getColorForPercentage(value.score);
       $('#annif-results-table > tbody').append(
-        $('<tr>')
-        .append($('<td>')
-            .append($('<a class="action" title="Selecteer term" href="#" onclick="addSubjectRow(\''+category+'\',\''+ term+'\',\''+ identifier+'\')">')
-                .text(term)
-                ))
-        .append($('<td class="match_cell">').append($('<div>').css("background-color",getColorForPercentage(value.score)).text(Math.round(value.score * 1000)/10)))
+        $('<tr onclick="addSubjectRow(\''+category+'\',\''+ term+'\',\''+ identifier+'\')" title="Selecteer term">')
+        .append($('<td >')
+                 .text(term)
+                )
+        .append($('<td class="match_cell" style="background-color:'+color+'">').text(Math.round(value.score * 1000)/10))
         );
   });
     $('#annif-results-table').parents('div.dataTables_wrapper').first().show();
