@@ -1,5 +1,6 @@
 function export_info() {
   console.log('Export button')
+  export_keywords();
 
   deactivate_rows();
   $("#export > #message").empty();
@@ -71,3 +72,36 @@ function export_info() {
     // NB todo: export primary author (if they exist) to KMC 3000 rather than 3011
     $('#export_content').html(all_kmcs);
   }
+
+
+function export_keywords() {
+  var br_kmc = 5200
+
+  // Get Brinkman and CBK data from tables.
+  var br_keywords = []
+  var cbk_keywords = []
+
+  $('#brinkman-table .subjectbox').each(function(i, elem) {
+    br_keywords.push($(this).text())
+  });
+  $('#CBK_genre-table .subjectbox').each(function(i, elem) {
+    cbk_keywords.push($(this).text())
+  });
+
+  // Create KMC lines for WinIBW.
+  if (br_keywords) {
+    $('#general_content').css("display","block");
+    let text = "";
+    br_keywords.forEach(gen_kmc_line);
+    
+    function gen_kmc_line(val, index) {
+      br_kmc += index;
+      var i = val.lastIndexOf('-');
+      br_id = val.substring(i+2);
+      br_desc = val.substring(0, i);
+      text += "<p>" + br_kmc + "\t!" + br_id + "!" + br_desc + "</p>";
+    }
+    $('#general_content').html(text);
+
+  };
+};
