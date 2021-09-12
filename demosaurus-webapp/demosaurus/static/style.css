@@ -337,7 +337,7 @@ th.score_cell > div > span {
   color: #646868;
 }
 
-#export_content {
+#export_content, #general_content {
   font-size: 1.1rem;
   color: #363838;
 }

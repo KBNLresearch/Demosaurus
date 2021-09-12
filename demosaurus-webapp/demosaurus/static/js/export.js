@@ -115,11 +115,11 @@ function export_keywords() {
     
     $('#general_content').html(text);
   };
-  console.log(br_keywords.length)
+
   if (br_keywords.length === 0){
     //text += "<p>Let op: Geen Brinkman trefwoorden gekozen!</p>";
     $('#subject_tab_flag').css("visibility","visible");
-    $('#message').append('</br><i>&#8226; Let op: Geen Brinkman trefwoorden gekozen!</i></br>');
+    $('#export > #message').append('</br><i>&#8226; Let op: Geen Brinkman trefwoorden gekozen!</i></br>');
   };
   if (cbk_keywords.length === 0){
     //text += "<p>Let op: Geen CBK trewoorden gekozen!</p>"
