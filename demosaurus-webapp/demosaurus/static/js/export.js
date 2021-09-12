@@ -1,6 +1,5 @@
 function export_info() {
   console.log('Export button')
-  export_keywords();
 
   deactivate_rows();
   $("#export > #message").empty();
@@ -71,11 +70,13 @@ function export_info() {
     // Serve collected information in the web application
     // NB todo: export primary author (if they exist) to KMC 3000 rather than 3011
     $('#export_content').html(all_kmcs);
+    export_keywords();
   }
 
 
 function export_keywords() {
   var br_kmc = 5200
+  var cbk_kmc = 5560
 
   // Get Brinkman and CBK data from tables.
   var br_keywords = []
@@ -89,19 +90,41 @@ function export_keywords() {
   });
 
   // Create KMC lines for WinIBW.
-  if (br_keywords) {
+  let text = "";
+  if (br_keywords || cbk_keyword) {
     $('#general_content').css("display","block");
-    let text = "";
-    br_keywords.forEach(gen_kmc_line);
     
-    function gen_kmc_line(val, index) {
+    br_keywords.forEach(br_kmc_html);
+    cbk_keywords.forEach(cbr_kmc_html)
+    
+    function br_kmc_html(val, index, array) {
       br_kmc += index;
       var i = val.lastIndexOf('-');
       br_id = val.substring(i+2);
       br_desc = val.substring(0, i);
       text += "<p>" + br_kmc + "\t!" + br_id + "!" + br_desc + "</p>";
     }
-    $('#general_content').html(text);
 
+    function cbr_kmc_html(val, index) {
+      cbk_kmc += index;
+      var i = val.lastIndexOf('-');
+      cbk_id = val.substring(i+2);
+      cbk_desc = val.substring(0, i);
+      text += "<p>" + cbk_kmc + "\t!" + cbk_id + "!" + cbk_desc + "</p>";
+    }
+    
+    $('#general_content').html(text);
   };
+  console.log(br_keywords.length)
+  if (br_keywords.length === 0){
+    //text += "<p>Let op: Geen Brinkman trefwoorden gekozen!</p>";
+    $('#subject_tab_flag').css("visibility","visible");
+    $('#message').append('</br><i>&#8226; Let op: Geen Brinkman trefwoorden gekozen!</i></br>');
+  };
+  if (cbk_keywords.length === 0){
+    //text += "<p>Let op: Geen CBK trewoorden gekozen!</p>"
+    $('#subject_tab_flag').css("visibility","visible");
+    $('#export > #message').append('</br><i>&#8226; Let op: Geen CBK trefwoorden gekozen!</i></br>');
+  };
+
 };
