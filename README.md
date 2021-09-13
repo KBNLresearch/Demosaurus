@@ -1,6 +1,6 @@
 # Demosaurus
 
-Demo application: automated support for author attribution (thesaureren)
+Demo web application: automated support for author attribution (thesaureren) and subject indexing
 
 
 ## Installation
