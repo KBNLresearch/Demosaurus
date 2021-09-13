@@ -13,11 +13,23 @@ function candidate_note(candidaterow){
 
         if (response.length<1) {
           $('#placeholder').text('Geen records gevonden');
-          $("#candidate_list > thead").empty()
-          if (cl != null) {cl.destroy();}
+          //$("#candidate_list > thead").empty()
+          if ( $.fn.dataTable.isDataTable('#candidate_list') ) {
+            $('#candidate_list').DataTable().destroy();
+            $('#candidate_list tr').remove();
+            $('#candidate_list th').remove();
+          }
 
         }
         else {
+
+          // Destroy datatable if exists, reset #candidate_list table.
+          if ( $.fn.dataTable.isDataTable('#candidate_list') ) {
+            $('#candidate_list').DataTable().destroy();
+            $('#candidate_list tr').remove();
+            $('#candidate_list th').remove();
+          }
+
           $('#placeholder').empty()
           if ($("#candidate_list > thead > tr").length<1){
               $("#candidate_list > thead").append($('<tr>')
@@ -44,7 +56,7 @@ function candidate_note(candidaterow){
               context['id']=response[i].author_ppn;
 
               $("#candidate_list > tbody").append($('<tr>')
-                .append($('<td>').append('<input onclick="delete_row(this);" type="button" value="&#xf2ed;" class="fas fa-trash-alt" title="Verwijder naam" padding="0px">'))
+                .append($('<td>').append('<button value="&#xf2ed;" class="fas fa-trash-alt" title="Verwijder naam"/>'))
                 .append($('<td class="ppn_cell" >')
                   .append($('<a class="action" title="Selecteer naam" href="#" onclick="choose_ppn(\''+response[i].author_ppn+'\')"; return false;>')
                     .text(response[i].author_ppn)))
@@ -102,8 +114,17 @@ function candidate_note(candidaterow){
             }
           );
 
-          var cl = $('#candidate_list').DataTable();
-          }
+
+          $('#candidate_list').DataTable({ordering: false});
+          
+          $('#candidate_list').on('click', '.fas.fa-trash-alt', function(){
+            var cl = $('#candidate_list').DataTable();
+            cl
+              .row($(this).parents('tr'))
+              .remove()
+              .draw();
+          });
+        }
     };
 
 function choose_ppn(ppn) {
