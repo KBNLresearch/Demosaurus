@@ -32,8 +32,11 @@ def thesaureer():
 
         start = time.time()
         author_options = pd.read_sql_query("""
-        WITH candidates AS (SELECT author_ppn FROM author_fts5 WHERE foaf_name MATCH :name)
-        SELECT author_NTA.* FROM candidates JOIN author_NTA ON candidates.author_ppn = author_NTA.author_ppn;
+        WITH candidates AS (SELECT author_ppn FROM author_fts5 WHERE foaf_name MATCH :name)         
+        SELECT author_NTA.* FROM candidates 
+        JOIN authorship_ggc_train t2 ON t2.author_ppn = candidates.author_ppn  -- only authors that we have training data for
+        JOIN author_NTA ON candidates.author_ppn = author_NTA.author_ppn 
+        GROUP BY author_NTA.author_ppn;
         """, params={'name':'\"'+familyname+'\"'}, con = db)
         end = time.time()
         print('Obtain candidates - time elapsed:', end-start)
