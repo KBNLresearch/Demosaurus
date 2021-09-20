@@ -78,8 +78,11 @@ textarea {
 
 /*#table_author {} white-space:nowrap*/
 
-.zebra tr:nth-child(odd){background: #d5d9dd;}
-.zebra tr:nth-child(even){background: #c6ccd2;}
+.zebra tr:nth-child(odd){background: hsla(46, 78%, 90%, 1);}
+.zebra tr:nth-child(even){background: hsla(46, 78%, 80%, 1);}
+.zebra tr:hover {
+  background: hsla(46, 78%, 70%, 1);
+}
 
 /* Table with extra info author and publication on 'authorpage.html' and 'view.html' */
 .tbinfo td:first-child { font-weight: bold; white-space: nowrap; padding-right: 20px; width: 1em; }
@@ -352,4 +355,29 @@ th.score_cell > div > span {
 #export_content {
   font-size: 1.1rem;
   color: #363838;
+}
+
+.extra-info {
+  display: none;
+  line-height: 30px;
+  font-size: 16px;
+  padding:5px;
+}
+
+.info:hover .extra-info {
+  display: block;
+}
+
+.info {
+  font-size: 20px;
+  padding-left: 5px;
+  width: 20px;
+  border-radius: 15px;
+}
+
+.info:hover {
+  background-color: white;
+  padding: 0 0 0 5px;
+  width: 450px;
+  text-align: left !important;
 }

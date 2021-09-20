@@ -63,9 +63,9 @@ function score_span(score,confidence){
 
 var getColorForPercentage = function(this_perc, saturation=1.0, low=0.5) {
     var percentColors = [
-    { pct: 0.0, color: { r: 0xff, g: 0x00, b: 0 } },
-    { pct: low, color: { r: 0xff, g: 0xff, b: 0 } },
-    { pct: 1.0, color: { r: 0x00, g: 0xff, b: 0 } } ];
+    { pct: 0.0, color: { r: 255, g: 255, b: 255 } },
+    { pct: low, color: { r: 247, g: 233, b: 187 } },
+    { pct: 1.0, color: { r: 233, g: 195, b: 73 } } ];
 
     this_perc = Number(this_perc) ;
     for (var i = 1; i < percentColors.length - 1; i++) {
@@ -126,4 +126,3 @@ var getColorForPercentage = function(this_perc, saturation=1.0, low=0.5) {
       });
     $('#annif-results-table').parents('div.dataTables_wrapper').first().hide();
   });
-
