@@ -13,11 +13,23 @@ function candidate_note(candidaterow){
 
         if (response.length<1) {
           $('#placeholder').text('Geen records gevonden');
-          $("#candidate_list > thead").empty()
-          if (cl != null) {cl.destroy();}
+          //$("#candidate_list > thead").empty()
+          if ( $.fn.dataTable.isDataTable('#candidate_list') ) {
+            $('#candidate_list').DataTable().destroy();
+            $('#candidate_list tr').remove();
+            $('#candidate_list th').remove();
+          }
 
         }
         else {
+
+          // Destroy datatable if exists, reset #candidate_list table.
+          if ( $.fn.dataTable.isDataTable('#candidate_list') ) {
+            $('#candidate_list').DataTable().destroy();
+            $('#candidate_list tr').remove();
+            $('#candidate_list th').remove();
+          }
+
           $('#placeholder').empty()
           if ($("#candidate_list > thead > tr").length<1){
               $("#candidate_list > thead").append($('<tr>')
@@ -104,8 +116,17 @@ function candidate_note(candidaterow){
             }
           );
 
-          var cl = $('#candidate_list').DataTable();
-          }
+
+          $('#candidate_list').DataTable({ordering: false});
+          
+          $('#candidate_list').on('click', '.fas.fa-trash-alt', function(){
+            var cl = $('#candidate_list').DataTable();
+            cl
+              .row($(this).parents('tr'))
+              .remove()
+              .draw();
+          });
+        }
     };
 
 function choose_ppn(ppn) {

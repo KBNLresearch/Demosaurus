@@ -7,10 +7,12 @@ function move_row(e, up) {
       row.next().after(row);
   }
 
+
 function delete_row(e) {
     var row = $(e).closest('tr');
     row.remove();
   }
+
 
 function open_popup (url, width=700, height=400) {
     window.open(url,"_blank","width=700,height=400") ;
@@ -96,7 +98,22 @@ var getColorForPercentage = function(this_perc, saturation=1.0, low=0.5) {
 
   // DataTabel.js init interactive tables.
   $(document).ready( function () {
+    $('#publications_overview').DataTable( {
+      "paging": true,
+      "pageLength":20,
+      "searching": true
+    } );
+  // Table on authorpage.html (table w all publications of a selected author).
     $('#publication_list').DataTable();
+    $('#publication_list').on('click', '.fas.fa-trash-alt', function() {
+      var table = $('#publication_list').DataTable();
+      table
+        .row($(this).parents('tr'))
+        .remove()
+        .draw();
+    });
+
+    //$('#candidate_list').DataTable();
     var ann_results = $('#annif-results-table').DataTable( {
       paging: false,
       searching: false,
@@ -105,10 +122,7 @@ var getColorForPercentage = function(this_perc, saturation=1.0, low=0.5) {
         {width: 500, targets: 0 }
       ],
       fixedColumns: true,
-      select: true
-    } );
+      ordering: false
+      });
     $('#annif-results-table').parents('div.dataTables_wrapper').first().hide();
-
-} );
-
-
+  });
