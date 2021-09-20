@@ -16,7 +16,7 @@ function add_to_publication_list(publications){
             console.log('add publication', row);
 
     $("#publication_list > tbody").append($('<tr>')
-      .append($('<td>').append('<input onclick="delete_row(this);" type="button" value="&#xf2ed;" class="fas fa-trash-alt" title="Verwijder publicatie" padding="0px">'))
+      .append($('<td>').append('<button value="&#xf2ed;" class="fas fa-trash-alt" title="Verwijder publicatie"/>'))
       .append($('<td class="ppn_cell" >').text(row.publication_ppn))
       .append($('<td class="title_cell" >').text(row.titelvermelding))
       //.append($('<td class="match_cell">').append($('<div>')
