@@ -75,8 +75,8 @@ function export_info() {
 
 
 function export_keywords() {
-  var br_kmc = 5200
-  var cbk_kmc = 5560
+  var br_kmc = 5201
+  var cbk_kmc = 5571
 
   // Get Brinkman and CBK data from tables.
   var br_keywords = []
@@ -98,19 +98,23 @@ function export_keywords() {
     cbk_keywords.forEach(cbr_kmc_html)
     
     function br_kmc_html(val, index, array) {
-      br_kmc += index;
-      var i = val.lastIndexOf('-');
-      br_id = val.substring(i+2);
-      br_desc = val.substring(0, i);
-      text += "<p>" + br_kmc + "\t!" + br_id + "!" + br_desc + "</p>";
-    }
+      if (index < 9) {
+        br_kmc_ = br_kmc + index;
+        var i = val.lastIndexOf('-');
+        br_id = val.substring(i+2);
+        br_desc = val.substring(0, i);
+        text += "<p>" + br_kmc_ + "\t!" + br_id + "!" + br_desc + "</p>";
+      };
+    };
 
     function cbr_kmc_html(val, index) {
-      cbk_kmc += index;
-      var i = val.lastIndexOf('-');
-      cbk_id = val.substring(i+2);
-      cbk_desc = val.substring(0, i);
-      text += "<p>" + cbk_kmc + "\t!" + cbk_id + "!" + cbk_desc + "</p>";
+      if (index < 9) {
+        cbk_kmc_ = cbk_kmc + index;
+        var i = val.lastIndexOf('-');
+        cbk_id = val.substring(i+2);
+        cbk_desc = val.substring(0, i);
+        text += "<p>" + cbk_kmc_ + "\t" + cbk_desc + "</p>";
+      }
     }
     
     $('#general_content').html(text);
@@ -120,11 +124,20 @@ function export_keywords() {
     //text += "<p>Let op: Geen Brinkman trefwoorden gekozen!</p>";
     $('#subject_tab_flag').css("visibility","visible");
     $('#export > #message').append('</br><i>&#8226; Let op: Geen Brinkman trefwoorden gekozen!</i></br>');
+  } else if (br_keywords.length > 9) {
+    $('#subject_tab_flag').css("visibility","visible");
+    $('#export > #message').append('</br><i>&#8226; Let op: Teveel Brinkman trefwoorden gekozen, max 9!</i></br>');
   };
   if (cbk_keywords.length === 0){
     //text += "<p>Let op: Geen CBK trewoorden gekozen!</p>"
     $('#subject_tab_flag').css("visibility","visible");
     $('#export > #message').append('</br><i>&#8226; Let op: Geen CBK trefwoorden gekozen!</i></br>');
+  } else if (cbk_keywords.length > 9) {
+    $('#subject_tab_flag').css("visibility","visible");
+    $('#export > #message').append('</br><i>&#8226; Let op: Teveel CBK trefwoorden gekozen, max 9!</i></br>');
+  };
+  if (br_keywords.length > 0 && cbk_keywords.length > 0 && br_keywords.length < 10 && cbk_keywords.length < 10) {
+    $('#subject_tab_flag').css("visibility","hidden"); 
   };
 
 };
