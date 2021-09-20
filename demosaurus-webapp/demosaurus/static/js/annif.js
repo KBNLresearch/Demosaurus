@@ -25,7 +25,7 @@ function fetchProjects() {
   });
 }
 
-function getSuggestions(project, category) {
+function getSuggestions(project, category, subcategory) {
     inputtext = $('#publication_title').text();
     inputtext += $('#publication_summary').text();
 
@@ -46,14 +46,14 @@ function getSuggestions(project, category) {
             $('#suggestions').css('visibility', 'visible');
         }
         else {
-            displayResults(data.results, category);
+            displayResults(data.results, category, subcategory);
         }
     }
 });
 }
 
 
-function displayResults(resultList, category) {
+function displayResults(resultList, category, subcategory) {
     $('#no-results').css('visibility', 'hidden');
     $('#suggestions').text('Voorgestelde trefwoorden ('+category+')');
     $('#suggestions').css('visibility', 'visible');
@@ -63,7 +63,7 @@ function displayResults(resultList, category) {
       term = value.label;
       color=getColorForPercentage(value.score);
       $('#annif-results-table > tbody').append(
-        $('<tr onclick="addSubjectRow(\''+category+'\',\''+ term+'\',\''+ identifier+'\')" title="Selecteer term">')
+        $('<tr onclick="addSubjectRow(\''+category+'\',\''+subcategory+'\',\''+ term+'\',\''+ identifier+'\')" title="Selecteer term">')
         .append($('<td >')
                  .text(term)
                 )
