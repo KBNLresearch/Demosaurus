@@ -44,8 +44,8 @@ function candidate_note(candidaterow){
             }
 
           // Determine context for display on contributor page           
-      //    try {var role = $('#role_'+contributor_row).val().match(/\[(.*?)\]/)[1];}
-      //    catch(e) {var role = null; }
+          try {var role = $('#role_'+contributor_row).val().match(/\[(.*?)\]/)[1];}
+          catch(e) {var role = null; }
           var context = {'Title':$('#publication_title').val(), 'Role':role};
 
           for(var i = 0; i<response.length; i++){
