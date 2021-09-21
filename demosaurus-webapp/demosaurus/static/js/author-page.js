@@ -18,7 +18,7 @@ function add_to_publication_list(publications, authorname, role){
       .append($('<td class="title_cell" >').text(row.verantwoordelijkheidsvermelding))
       .append($('<td id="role_'+i+'" class="title_cell" >').text(row.role)));
       if (row.role!=role){
-        $('#role_'+i).css("background-color",getColorForPercentage(100));
+        $('#role_'+i).css("background-color",getColorForPercentage(1.0));
       }
   }
 
