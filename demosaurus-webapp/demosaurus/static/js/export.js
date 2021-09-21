@@ -4,6 +4,7 @@ function export_info() {
   deactivate_rows();
   $("#export > #message").empty();
 
+  var allnames = true;
   var allroles = true;
   var allppns = true;
 
@@ -13,9 +14,17 @@ function export_info() {
   // build up kmc contents for contributors: contributorname$role$!ppn!viafname
   var rows = $('#contributortable > tbody > tr');
   var at_kmc = 3011;
-  for (var i=0; i < rows.length; i++) {
-    var id = rows[i].id.split('_')[1];
 
+  for (var i=0; i < rows.length; i++) {
+
+    var id = rows[i].id.split('_')[1];
+    if ($('#aut_name_'+id).val()=='') {
+        $('#aut_name_'+id).css("backgroundColor",getColorForPercentage(1));
+        $('#role_'+id).css("backgroundColor",getColorForPercentage(1));
+        $('#ppn_'+id).css("backgroundColor",getColorForPercentage(1));
+        allnames = false;
+    }
+    else {
     //console.log($('#main_'+id).is(':checked'));
 
     if (i==0 && $('#main_'+id).is(':checked')){
@@ -49,13 +58,14 @@ function export_info() {
       }
       all_kmcs += "</p>";
     }
+    }
 
     $('#contributors_tab_flag').css("visibility","hidden");
 
     // Report about the completeness of the input
-    if (i==0) {
+    if (! allnames) {
         $('#contributors_tab_flag').css("visibility","visible");
-        $('#export > #message').append('<br><i>&#8226; Let op: geen auteurs ingevoerd!</i></br>');
+        $('#export > #message').append('<br><i>&#8226; Let op: niet bij alle auteurs is de naam ingevoerd (of helemaal geen auteurs ingevoerd)!</i></br>');
     }
     if (! allroles) {
         $('#contributors_tab_flag').css("visibility","visible");
