@@ -63,6 +63,20 @@ function deactivate_rows() {
 }
 
 function thesaureer(index){
+
+  var assignedGenres = {'brinkman':[], 'CBK_genre':[]};
+
+  $('#brinkman-table .subjectbox.vorm').each(function(i, elem) {
+    assignedGenres['brinkman'].push($(this).text())
+  });
+  $('#CBK_genre-table .subjectbox ').each(function(i, elem) {
+    assignedGenres['CBK_genre'].push($(this).text())
+  });
+
+  console.log(genres)
+  console.log(assignedGenres)
+
+
   $("#candidate_list > tbody").empty()
   activate_row(index);
   $("body").css("cursor", "progress");
