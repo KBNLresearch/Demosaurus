@@ -1,23 +1,27 @@
 $(document).ready(function() {
 
-  console.log(genres);
-
-  genreCategories = ['brinkman', 'CBK_genre'];
-  for (var category of genreCategories){
-    listOfsubjects = genres[category];
-    for (var subject of listOfsubjects){
-        addSubjectRow(category, 'vorm', subject['term'], subject['identifier']);
-    }
+  if (pilotMode) {
+  // Do not pre-fill the subject terms
   }
+  else{
+      console.log(genres);
 
-   subjectCategories = ['brinkman'];
-  for (var category of subjectCategories){
-    listOfsubjects = subjects[category];
-    for (var subject of listOfsubjects){
-        addSubjectRow(category, 'zaak', subject['term'], subject['identifier']);
+      genreCategories = ['brinkman', 'CBK_genre'];
+      for (var category of genreCategories){
+        listOfsubjects = genres[category];
+        for (var subject of listOfsubjects){
+            subjectString = subject['identifier']+' - '+subject['term'];
+            addSubjectRow(category, subject['term'], subject['identifier']);
+        }
+      }
+      subjectCategories = ['brinkman'];
+      for (var category of subjectCategories){
+        listOfsubjects = subjects[category];
+        for (var subject of listOfsubjects){
+            addSubjectRow(category, subject['term'], subject['identifier']);
+        }
+      }
     }
-  }
-
 });
 
 function addSubjectRow(category, kind, subjectTerm, identifier){

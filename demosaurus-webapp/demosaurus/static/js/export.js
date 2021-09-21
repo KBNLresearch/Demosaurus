@@ -35,7 +35,7 @@ function export_info() {
         all_kmcs += '$'+ role +'$';
       }
       else {
-        $('#role_'+id).css("backgroundColor","red");
+        $('#role_'+id).css("backgroundColor",getColorForPercentage(1));
         allroles = false;
       }
 
@@ -44,7 +44,7 @@ function export_info() {
         all_kmcs += '!'+ ppn +'!';
       }
       else {
-        $('#ppn_'+id).css("backgroundColor","red");
+        $('#ppn_'+id).css("backgroundColor",getColorForPercentage(1));
         allppns = false;
       }
       all_kmcs += "</p>";
@@ -72,7 +72,6 @@ function export_info() {
 
 
     // Serve collected information in the web application
-    // NB todo: export primary author (if they exist) to KMC 3000 rather than 3011
     $('#export_content').html(all_kmcs);
     export_keywords();
   }

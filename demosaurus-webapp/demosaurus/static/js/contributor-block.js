@@ -3,12 +3,18 @@ var main_author = true;
 
 $(document).ready(function() {
 
-  if (contributors.length < 1){
-    add_contributor_row();
+  if (pilotMode) {
+  console.log('in Pilot mode: create first empty row')
+  add_contributor_row(); // For pilot: do not pre-fill the authors
   }
-  for(var i = 0; i< contributors.length; i++){
-    console.log(contributors[i]);
-    add_contributor_row(name=contributors[i].name, role=contributors[i].role);
+  else{
+      if (contributors.length < 1){
+        add_contributor_row();
+      }
+      for(var i = 0; i< contributors.length; i++){
+        console.log(contributors[i]);
+        add_contributor_row(name=contributors[i].name, role=contributors[i].role);
+      }
   }
   top_main_author();
 });
@@ -19,7 +25,8 @@ function add_contributor_row(name="", role="") {
     .append($('<td>').append('<input onclick="move_row(this,1); top_main_author();" type="button" value="&#xf062" class="fas fa-arrow-up" title="Verplaats omhoog">'))
     .append($('<td>').append('<input onclick="move_row(this,0); top_main_author();" type="button" value="&#xf063" class="fas fa-arrow-down" title="Verplaats omlaag">'))
     .append($('<td class="name_cell">').append('<input id="aut_name_' + maxIndex + '" type="text" placeholder="Voornaam @Achternaam" value="'+ name+'">'))
-    .append($('<td class="name_cell">').append('<input type="text" class="role" id="role_' + maxIndex + '" value="'+ (role? '['+role+']' :'' )+ '">'))
+    .append($('<td class="name_cell">').append('<input type="text" class="role" id="role_' + maxIndex + '" value="'+ (role? '['+role+']' :'' )+ '">')) // pre-fill the role
+    //.append($('<td class="name_cell">').append('<input type="text" class="role" id="role_' + maxIndex + '" value="">')) // do not pre-fill the role
     .append($('<td class="name_cell">').append('<input type="text" class="ppn" id="ppn_' + maxIndex + '">'))
     .append($('<td>').append('<input onclick="thesaureer('+maxIndex+');" type="button" value="&#xf002" class="fas fa-search" title="Thesaureer naam" id="thesaureerButton_'+maxIndex+'">'))
     .append($('<td class="check_main_author">').append('<input  type="checkbox" value="Primair" checked id="main_'+maxIndex+'">').append('<span>Hoofdauteur</span>'))
