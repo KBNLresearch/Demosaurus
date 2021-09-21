@@ -86,10 +86,10 @@ function export_keywords() {
   var cbk_keywords = []
 
   $('#brinkman-table .subjectbox').each(function(i, elem) {
-    br_keywords.push($(this).text())
+    br_keywords.push([$(this).text(),$(this).data('identifier')]);
   });
   $('#CBK_genre-table .subjectbox').each(function(i, elem) {
-    cbk_keywords.push($(this).text())
+    cbk_keywords.push($(this).text());
   });
 
   // Create KMC lines for WinIBW.
@@ -100,12 +100,11 @@ function export_keywords() {
     br_keywords.forEach(br_kmc_html);
     cbk_keywords.forEach(cbr_kmc_html)
     
-    function br_kmc_html(val, index, array) {
+    function br_kmc_html(val, index) {
       if (index < 9) {
         br_kmc_ = br_kmc + index;
-        var i = val.lastIndexOf('-');
-        br_id = val.substring(i+2);
-        br_desc = val.substring(0, i);
+        br_id = val[1];
+        br_desc = val[0];
         text += "<p>" + br_kmc_ + "\t!" + br_id + "!" + br_desc + "</p>";
       };
     };
@@ -113,9 +112,7 @@ function export_keywords() {
     function cbr_kmc_html(val, index) {
       if (index < 9) {
         cbk_kmc_ = cbk_kmc + index;
-        var i = val.lastIndexOf('-');
-        cbk_id = val.substring(i+2);
-        cbk_desc = val.substring(0, i);
+        cbk_desc = val;
         text += "<p>" + cbk_kmc_ + "\t" + cbk_desc + "</p>";
       }
     }
