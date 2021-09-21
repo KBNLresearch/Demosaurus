@@ -53,6 +53,10 @@ function export_info() {
     $('#contributors_tab_flag').css("visibility","hidden");
 
     // Report about the completeness of the input
+    if (i==0) {
+        $('#contributors_tab_flag').css("visibility","visible");
+        $('#export > #message').append('<br><i>&#8226; Let op: geen auteurs ingevoerd!</i></br>');
+    }
     if (! allroles) {
         $('#contributors_tab_flag').css("visibility","visible");
         $('#export > #message').append('<br><i>&#8226; Let op: niet bij alle auteurs is de rol ingevoerd!</i></br>');
