@@ -13,11 +13,23 @@ function candidate_note(candidaterow){
 
         if (response.length<1) {
           $('#placeholder').text('Geen records gevonden');
-          $("#candidate_list > thead").empty()
-          if (cl != null) {cl.destroy();}
+          //$("#candidate_list > thead").empty()
+          if ( $.fn.dataTable.isDataTable('#candidate_list') ) {
+            $('#candidate_list').DataTable().destroy();
+            $('#candidate_list tr').remove();
+            $('#candidate_list th').remove();
+          }
 
         }
         else {
+
+          // Destroy datatable if exists, reset #candidate_list table.
+          if ( $.fn.dataTable.isDataTable('#candidate_list') ) {
+            $('#candidate_list').DataTable().destroy();
+            $('#candidate_list tr').remove();
+            $('#candidate_list th').remove();
+          }
+
           $('#placeholder').empty()
           if ($("#candidate_list > thead > tr").length<1){
               $("#candidate_list > thead").append($('<tr>')
@@ -42,12 +54,11 @@ function candidate_note(candidaterow){
             console.log(response[i])
               var years = [response[i].birthyear,'-',response[i].deathyear].join('');
               context['id']=response[i].author_ppn;
+              color = getColorForPercentage(response[i].score);
 
-              $("#candidate_list > tbody").append($('<tr>')
+              $("#candidate_list > tbody").append($('<tr onclick="choose_ppn(\''+response[i].author_ppn+'\')"; return false;>')
                 .append($('<td>').append('<input onclick="delete_row(this);" type="button" value="&#xf2ed;" class="fas fa-trash-alt" title="Verwijder naam" padding="0px">'))
-                .append($('<td class="ppn_cell" >')
-                  .append($('<a class="action" title="Selecteer naam" href="#" onclick="choose_ppn(\''+response[i].author_ppn+'\')"; return false;>')
-                    .text(response[i].author_ppn)))
+                .append($('<td class="ppn_cell" >').text(response[i].author_ppn))
                 .append($('<td class="name_cell">')
                   .append($('<a class="action"  title="Details" href="#" onClick="open_popup(\''+Flask.url_for('contributor.authorpage', context)+'\')"; return false;>')
                     .text(response[i].foaf_name)))
@@ -55,9 +66,12 @@ function candidate_note(candidaterow){
                 .append($('<td class="name_cell" title="'+candidate_note(response[i])+'">').text(candidate_note(response[i])).tooltip())
                 .append($('<td class="years_cell">')
                   .text(years))
-                .append($('<td class="match_cell" data-rij="' + i + '" id="thesMatchTt">').append($('<div>').css("background-color",getColorForPercentage(response[i].score))
-                  .text(Math.round(100*response[i].score))))
+                .append($('<td class="match_cell" data-rij="' + i + '" id="thesMatchTt" style="background-color:'+color+'">').text(Math.round(100*response[i].score)))
                 )
+
+
+                //        .append($('<td onclick="addSubjectRow(\''+category+'\',\''+ term+'\',\''+ identifier+'\')" title="Selecteer term">').text(term))
+
             };
           // Hover div on Match with sub-scores. 
           $('.match_cell').hover(
@@ -102,8 +116,17 @@ function candidate_note(candidaterow){
             }
           );
 
-          var cl = $('#candidate_list').DataTable();
-          }
+
+          $('#candidate_list').DataTable({ordering: false});
+          
+          $('#candidate_list').on('click', '.fas.fa-trash-alt', function(){
+            var cl = $('#candidate_list').DataTable();
+            cl
+              .row($(this).parents('tr'))
+              .remove()
+              .draw();
+          });
+        }
     };
 
 function choose_ppn(ppn) {

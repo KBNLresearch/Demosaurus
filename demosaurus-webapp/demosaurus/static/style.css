@@ -1,3 +1,9 @@
+:root {
+    --main-color:#363838;
+    --h1-color:#FA761B;
+    --background-color:#E8EAEC;
+}
+
 /*
 Used color scheme: https://color.adobe.com/Gutim-color-theme-16708150
 
@@ -22,16 +28,22 @@ Used color scheme: https://color.adobe.com/Gutim-color-theme-16708150
 Main font is Google fonts: "Ubuntu" and "Ubuntu Condensed" for tabs;
 */
 
-html { font-family: "Ubuntu", Helvetica, sans-serif; background: #E8EAEC; padding: 1rem; height: 95% }
-body { max-width: 1500px; margin: 0 auto; background: #E8EAEC; min-height: 100%}
-h1 { font-family: "Ubuntu", Helvetica, sans-serif; color: #FA761B; margin: 1rem 0; font-size: 30px; }
+html { font-family: "Ubuntu", Helvetica, sans-serif; background: var(--background-color); padding: 1rem; height: 95% }
+body { max-width: 1500px; margin: 0 auto; background: var(--background-color); min-height: 100%}
+h1 { font-family: "Ubuntu", Helvetica, sans-serif; color: var(--h1-color); margin: 1rem 0; font-size: 30px; }
 
 h2, h3, h4, p, td, th, input, label, legend {
   font-family: "Ubuntu", Helvetica, sans-serif;
   color: #363838;
 }
 
-a { color: #377ba8; } /* clickables */
+a:link { color: #FA761B; } /* clickables */
+a:visited {
+  color: #363838;
+}
+a:hover, a:active {
+  color: yellow;
+}
 
 hr { border: none; border-top: 1px solid lightgray; } /* horizontal rule */
 
@@ -66,8 +78,11 @@ textarea {
 
 /*#table_author {} white-space:nowrap*/
 
-.zebra tr:nth-child(odd){background: #d5d9dd;}
-.zebra tr:nth-child(even){background: #c6ccd2;}
+.zebra tr:nth-child(odd){background: hsla(46, 78%, 90%, 1);}
+.zebra tr:nth-child(even){background: hsla(46, 78%, 80%, 1);}
+.zebra tr:hover {
+  background: hsla(46, 78%, 70%, 1);
+}
 
 /* Table with extra info author and publication on 'authorpage.html' and 'view.html' */
 .tbinfo td:first-child { font-weight: bold; white-space: nowrap; padding-right: 20px; width: 1em; }
@@ -340,4 +355,29 @@ th.score_cell > div > span {
 #export_content {
   font-size: 1.1rem;
   color: #363838;
+}
+
+.extra-info {
+  display: none;
+  line-height: 30px;
+  font-size: 16px;
+  padding:5px;
+}
+
+.info:hover .extra-info {
+  display: block;
+}
+
+.info {
+  font-size: 20px;
+  padding-left: 5px;
+  width: 20px;
+  border-radius: 15px;
+}
+
+.info:hover {
+  background-color: white;
+  padding: 0 0 0 5px;
+  width: 450px;
+  text-align: left !important;
 }

@@ -3,18 +3,26 @@
 
 
 {% block header %}
-  <h1>{% block title %}Publications{% endblock %}</h1>
+  <h1>{% block title %}Publicaties{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
+<table class="zebra" id="publications_overview">
+<thead>
+    <th>PPN</th>
+    <th>Titelvermelding</th>
+    <th>Verantwoordelijkheidsvermelding</th>
+    </thead>
+    <tbody>
   {% for publication in publications %}
-      <header>
-        <div>
-          <h1>{{ publication['titelvermelding']}} (PPN: {{publication['publication_ppn']  }})</h1>
-          <div class="about"> {{ publication['verantwoordelijkheidsvermelding'] }} </div>
-        </div>
-          <a class="action" href="{{ url_for('publication.view', id=publication['publication_ppn']) }}">Thesaureer</a>
-          
-      </header>
+    <tr>
+        <td> <a class="action" href="{{ url_for('publication.view', id=publication['publication_ppn']) }}#{{range(2000)|random}}"
+                target="_blank"
+                onclick="Copy();" >{{publication['publication_ppn']}}</a> </td>
+        <td> {{ publication['titelvermelding']}}</td>
+        <td> {{ publication['verantwoordelijkheidsvermelding'] }} </td>
+        </tr>
   {% endfor %}
+    </tbody>
+    </table>
 {% endblock %}

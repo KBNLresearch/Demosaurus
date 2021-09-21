@@ -7,10 +7,12 @@ function move_row(e, up) {
       row.next().after(row);
   }
 
+
 function delete_row(e) {
     var row = $(e).closest('tr');
     row.remove();
   }
+
 
 function open_popup (url, width=700, height=400) {
     window.open(url,"_blank","width=700,height=400") ;
@@ -61,9 +63,9 @@ function score_span(score,confidence){
 
 var getColorForPercentage = function(this_perc, saturation=1.0, low=0.5) {
     var percentColors = [
-    { pct: 0.0, color: { r: 0xff, g: 0x00, b: 0 } },
-    { pct: low, color: { r: 0xff, g: 0xff, b: 0 } },
-    { pct: 1.0, color: { r: 0x00, g: 0xff, b: 0 } } ];
+    { pct: 0.0, color: { r: 255, g: 255, b: 255 } },
+    { pct: low, color: { r: 247, g: 233, b: 187 } },
+    { pct: 1.0, color: { r: 233, g: 195, b: 73 } } ];
 
     this_perc = Number(this_perc) ;
     for (var i = 1; i < percentColors.length - 1; i++) {
@@ -96,7 +98,22 @@ var getColorForPercentage = function(this_perc, saturation=1.0, low=0.5) {
 
   // DataTabel.js init interactive tables.
   $(document).ready( function () {
+    $('#publications_overview').DataTable( {
+      "paging": true,
+      "pageLength":20,
+      "searching": true
+    } );
+  // Table on authorpage.html (table w all publications of a selected author).
     $('#publication_list').DataTable();
+    $('#publication_list').on('click', '.fas.fa-trash-alt', function() {
+      var table = $('#publication_list').DataTable();
+      table
+        .row($(this).parents('tr'))
+        .remove()
+        .draw();
+    });
+
+    //$('#candidate_list').DataTable();
     var ann_results = $('#annif-results-table').DataTable( {
       paging: false,
       searching: false,
@@ -105,7 +122,7 @@ var getColorForPercentage = function(this_perc, saturation=1.0, low=0.5) {
         {width: 500, targets: 0 }
       ],
       fixedColumns: true,
-      select: true
-    } );
+      ordering: false
+      });
     $('#annif-results-table').parents('div.dataTables_wrapper').first().hide();
-} );
+  });
