@@ -89,8 +89,7 @@ def overview():
     publications = db.execute(
         ' SELECT publication_basicinfo.publication_ppn, titelvermelding, verantwoordelijkheidsvermelding'
         ' FROM publication_basicinfo'
-        ' JOIN publication_datasplits ON publication_datasplits.publication_ppn = publication_basicinfo.publication_ppn'
-        ' WHERE publication_datasplits.datasplit like \"test\"'
-        ' ORDER BY RANDOM() LIMIT 20'
-    ).fetchmany(20)
+        ' JOIN publication_pilotset ON publication_pilotset.publication_ppn = publication_basicinfo.publication_ppn'
+        ' WHERE publication_pilotset.pilotset_202109 = 1'
+    ).fetchall()
     return render_template('publication/overview.html', publications=publications)

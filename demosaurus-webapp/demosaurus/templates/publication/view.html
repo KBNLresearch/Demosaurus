@@ -108,42 +108,44 @@
 
 
   <!-- Titelinformatie blok. Moet nog COVER IMAGE in! -->
-  <div id="general" class="tabcontent">  
+  <div id="general" class="tabcontent">
     <table id="publicationinfo" class="tbinfo">
 
       <tbody>
-        <tr>
-          <td>Titel, subtitel</td>
-          <td id="publication_title">{{ publication['titelvermelding']}}</td>
-        </tr>
-        <tr>
-            <td>ISBN</td>
-            <td>{{ publication['isbn']}}</td>
-        </tr>
-        <tr>
-          <td>Jaar van uitgave</td>
-          <td id="publicationYear">{{ publication['jaar_van_uitgave']}}</td>
-        </tr>
-        <tr>
-          <td>Uitgever</td>
-          <td>{{ publication['uitgever'] or "-"}}</td>
-        </tr>
-        <tr>
-          <td>Taal publicatie</td>
-          <td>{{ publication['taal_publicatie']}}</td>
-        </tr>
-        <tr>
-          <td>Taal origineel</td>
-          <td>{{ publication['taal_origineel']}}</td>
-        </tr>
-        <tr>
-          <td>Land van uitgave</td>
-          <td>{{ publication['land_van_uitgave']}}</td>
-        </tr>
-        <tr>
-          <td valign="top">Samenvatting</td>
-          <td>{{publication['annotations'] or "Inhoudelijke omschrijving (bv. KMC 4207)"}}</td>
-        </tr>
+      <tr>
+        <td>Titel, subtitel</td>
+        <td id="publication_title" contenteditable="true">{{ publication['titelvermelding']}}</td>
+      </tr>
+      <tr>
+        <td>ISBN</td>
+        <td contenteditable="true">{{ publication['isbn']}}</td>
+      </tr>
+      <tr>
+        <td>Jaar van uitgave</td>
+        <td id="publicationYear" contenteditable="true"> {{ publication['jaar_van_uitgave']}}</td>
+      </tr>
+      <tr>
+        <td>Uitgever</td>
+        <td contenteditable="true">{{ publication['uitgever'] or "-"}}</td>
+      </tr>
+      <tr>
+        <td>Taal publicatie</td>
+        <td contenteditable="true">{{ publication['taal_publicatie']}}</td>
+      </tr>
+      <tr>
+        <td>Taal origineel</td>
+        <td contenteditable="true">{{ publication['taal_origineel']}}</td>
+      </tr>
+      <tr>
+        <td>Land van uitgave</td>
+        <td contenteditable="true">{{ publication['land_van_uitgave']}}</td>
+      </tr>
+      <tr>
+        <td valign="top">Samenvatting</td>
+        <td id="publication_summary" contenteditable="true">
+            {{publication['annotations'] or "Inhoudelijke omschrijving (bv. flaptekst)"}}
+          </td>
+      </tr>
       </tbody>
     </table>
   </div>
@@ -159,21 +161,21 @@
   <div id="contributors" class="tabcontent">
     <table id="contributortable" >
       <thead>
-        <tr>
-          <th><!--i class="fas fa-trash-alt"></i--></th>
-          <th><!--i class="fas fa-arrow-up"></i--></th>
-          <th><!--i class="fas fa-arrow-down"></i--></th>
-          <th class="name_cell"> Naam </th>
-          <th class="name_cell"> Rol </th>
-          <th class="name_cell"> PPN </th>
-        </tr> 
+      <tr>
+        <th><!--i class="fas fa-trash-alt"></i--></th>
+        <th><!--i class="fas fa-arrow-up"></i--></th>
+        <th><!--i class="fas fa-arrow-down"></i--></th>
+        <th class="name_cell"> Naam </th>
+        <th class="name_cell"> Rol </th>
+        <th class="name_cell"> PPN </th>
+      </tr>
       </thead>
       <tbody style="max-height: 120px"/>
       <!-- This is where contributors may be pre-filled and/ or manually added (client-side)-->
-      <tfoot>  
-        <tr align="right">
-          <td><input type="button" title="Voeg naam toe" value="&#xf234" class="fas fa-user-plus" onclick="add_contributor_row()" /></td>
-        </tr>
+      <tfoot>
+      <tr align="right">
+        <td><input type="button" title="Voeg naam toe" value="&#xf234" class="fas fa-user-plus" onclick="add_contributor_row()" /></td>
+      </tr>
       </tfoot>
     </table>
   </div>
@@ -181,8 +183,8 @@
 
   <!-- Exporteer blok. -->
   <div id="export" class="tabcontent">
-      Controleer KMC's hieronder, kopiëer en plak naar WinIBW
-      <div id="message"> Eventuele waarschuwingen </div>
+    Controleer KMC's hieronder, kopiëer en plak naar WinIBW
+    <div id="message"> Eventuele waarschuwingen </div>
   </div>
 
 
@@ -194,63 +196,64 @@
 
 
 <div style="width:100%;float:left;">
-    
+
   <div class='bottomcontent' id="contributors_content" style="display: block;">
     <h2 id=thesaureer_title></h2>
     <div id='placeholder'></div>
-      <table id="candidate_list" class="fixed_header">
-          <thead/>
-          <tbody class="zebra"/>
-          <tfoot/>
-      </table>
+    <table id="candidate_list" class="fixed_header">
+      <thead/>
+      <tbody class="zebra"/>
+      <tfoot/>
+    </table>
 
-      <script type="text/javascript" src="{{url_for('static', filename='js/thesaureer-block.js') }}"></script>
+    <script type="text/javascript" src="{{url_for('static', filename='js/thesaureer-block.js') }}"></script>
+  </div>
+</div>
+
+<!-- thesaureerblock sub-scores tooltip table.-->
+<div class="divTable" id="thesMatchHover" style="display: none;">
+  <div class="divTableHeading">
+    <div class="divTableRow">
+      <div class="divTableHead"></div>
+      <div class="divTableHead">Score</div>
+      <div class="divTableHead">Confidence</div>
     </div>
   </div>
-
-  <!-- thesaureerblock sub-scores tooltip table.-->
-  <div class="divTable" id="thesMatchHover" style="display: none;">
-    <div class="divTableHeading">
-      <div class="divTableRow">
-        <div class="divTableHead"></div>
-        <div class="divTableHead">Score</div>
-        <div class="divTableHead">Confidence</div>
-      </div>
+  <div class="divTableBody">
+    <div class="divTableRow">
+      <div class="divTableCell" id="tttb13"><b>Naam</b></div>
+      <div class="divTableCell" id="tttb14">&nbsp;</div>
+      <div class="divTableCell" id="tttb15">&nbsp;</div>
     </div>
-    <div class="divTableBody">
-      <div class="divTableRow">
-        <div class="divTableCell" id="tttb13"><b>Naam</b></div>
-        <div class="divTableCell" id="tttb14">&nbsp;</div>
-        <div class="divTableCell" id="tttb15">&nbsp;</div>
-      </div>
-<!--      <div class="divTableRow">-->
-<!--        <div class="divTableCell" id="tttb1"><b>Rol</b></div>-->
-<!--        <div class="divTableCell" id="tttb2">&nbsp;</div>-->
-<!--        <div class="divTableCell" id="tttb3">&nbsp;</div>-->
-<!--      </div>-->
-      <div class="divTableRow">
-        <div class="divTableCell" id="tttb4"><b>Genre</b></div>
-        <div class="divTableCell" id="tttb5">&nbsp;</div>
-        <div class="divTableCell" id="tttb6">&nbsp;</div>
-      </div>
-      <div class="divTableRow">
-        <div class="divTableCell" id="tttb7"><b>JvU</b></div>
-        <div class="divTableCell" id="tttb8">&nbsp;</div>
-        <div class="divTableCell" id="tttb9">&nbsp;</div>
-      </div>
+    <!--      <div class="divTableRow">-->
+    <!--        <div class="divTableCell" id="tttb1"><b>Rol</b></div>-->
+    <!--        <div class="divTableCell" id="tttb2">&nbsp;</div>-->
+    <!--        <div class="divTableCell" id="tttb3">&nbsp;</div>-->
+    <!--      </div>-->
+    <div class="divTableRow">
+      <div class="divTableCell" id="tttb4"><b>Genre</b></div>
+      <div class="divTableCell" id="tttb5">&nbsp;</div>
+      <div class="divTableCell" id="tttb6">&nbsp;</div>
+    </div>
+    <div class="divTableRow">
+      <div class="divTableCell" id="tttb7"><b>JvU</b></div>
+      <div class="divTableCell" id="tttb8">&nbsp;</div>
+      <div class="divTableCell" id="tttb9">&nbsp;</div>
     </div>
   </div>
+</div>
 
 
 
 
 
-  <!-- KMC block. -->
-  <div class="bottomcontent" id="export_content" style="display: block;">
-  </div>
+<!-- KMC block. -->
+<div class="bottomcontent" id="export_content" style="display: block;">
+</div>
 
   <!-- KMC block. -->
   <div class="bottomcontent" id="general_content" style="display: block;">
+    <!--p id="kmc_keywords"></p-->
   </div>
 
 
