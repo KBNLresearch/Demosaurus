@@ -6,7 +6,7 @@
 <!-- Title of publicationor "Demosaurus" as Header -->
 {% block header %}
 
-<h1>{% block title %}Demosaurus{% endblock %}</h1>
+<h1>{% block title %}Demosaurus - {{ publication['titelvermelding'].replace('@','',1)}}{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
