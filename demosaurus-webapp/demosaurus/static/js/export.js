@@ -127,7 +127,7 @@ function export_keywords() {
       }
     }
     
-    $('#general_content').html(text);
+    $('#export_content').html(text);
   };
 
   if (br_keywords.length === 0){
