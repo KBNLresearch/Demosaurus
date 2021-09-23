@@ -59,7 +59,7 @@ function displayResults(resultList, category, subcategory) {
     $('#suggestions').css('visibility', 'visible');
     $('#annif-results-table').css('visibility', 'visible');
     $.each(resultList, function(idx, value) {
-      identifier = value.uri.split('/').slice(-1);
+      identifier = value.uri.split('/p').slice(-1);
       term = value.label;
       color=getColorForPercentage(value.score);
       $('#annif-results-table > tbody').append(
