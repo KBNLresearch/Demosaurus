@@ -9,7 +9,7 @@ def get_db():
             current_app.config['DATABASE'],
             detect_types=sqlite3.PARSE_DECLTYPES
         )
-        g.db.set_trace_callback(print) # logs in print
+        #g.db.set_trace_callback(print) # logs in print
         g.db.row_factory = sqlite3.Row
     return g.db
 
