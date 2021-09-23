@@ -4,6 +4,7 @@ function export_info() {
   deactivate_rows();
   $("#export > #message").empty();
 
+  var allnames = true;
   var allroles = true;
   var allppns = true;
 
@@ -13,9 +14,17 @@ function export_info() {
   // build up kmc contents for contributors: contributorname$role$!ppn!viafname
   var rows = $('#contributortable > tbody > tr');
   var at_kmc = 3011;
-  for (var i=0; i < rows.length; i++) {
-    var id = rows[i].id.split('_')[1];
 
+  for (var i=0; i < rows.length; i++) {
+
+    var id = rows[i].id.split('_')[1];
+    if ($('#aut_name_'+id).val()=='') {
+        $('#aut_name_'+id).css("backgroundColor",getColorForPercentage(1));
+        $('#role_'+id).css("backgroundColor",getColorForPercentage(1));
+        $('#ppn_'+id).css("backgroundColor",getColorForPercentage(1));
+        allnames = false;
+    }
+    else {
     //console.log($('#main_'+id).is(':checked'));
 
     if (i==0 && $('#main_'+id).is(':checked')){
@@ -49,13 +58,14 @@ function export_info() {
       }
       all_kmcs += "</p>";
     }
+    }
 
     $('#contributors_tab_flag').css("visibility","hidden");
 
     // Report about the completeness of the input
-    if (i==0) {
+    if (! allnames) {
         $('#contributors_tab_flag').css("visibility","visible");
-        $('#export > #message').append('<br><i>&#8226; Let op: geen auteurs ingevoerd!</i></br>');
+        $('#export > #message').append('<br><i>&#8226; Let op: niet bij alle auteurs is de naam ingevoerd (of helemaal geen auteurs ingevoerd)!</i></br>');
     }
     if (! allroles) {
         $('#contributors_tab_flag').css("visibility","visible");
@@ -86,10 +96,10 @@ function export_keywords() {
   var cbk_keywords = []
 
   $('#brinkman-table .subjectbox').each(function(i, elem) {
-    br_keywords.push($(this).text())
+    br_keywords.push([$(this).text(),$(this).data('identifier')]);
   });
   $('#CBK_genre-table .subjectbox').each(function(i, elem) {
-    cbk_keywords.push($(this).text())
+    cbk_keywords.push($(this).text());
   });
 
   // Create KMC lines for WinIBW.
@@ -100,12 +110,11 @@ function export_keywords() {
     br_keywords.forEach(br_kmc_html);
     cbk_keywords.forEach(cbr_kmc_html)
     
-    function br_kmc_html(val, index, array) {
+    function br_kmc_html(val, index) {
       if (index < 9) {
         br_kmc_ = br_kmc + index;
-        var i = val.lastIndexOf('-');
-        br_id = val.substring(i+2);
-        br_desc = val.substring(0, i);
+        br_id = val[1];
+        br_desc = val[0];
         text += "<p>" + br_kmc_ + "\t!" + br_id + "!" + br_desc + "</p>";
       };
     };
@@ -113,9 +122,7 @@ function export_keywords() {
     function cbr_kmc_html(val, index) {
       if (index < 9) {
         cbk_kmc_ = cbk_kmc + index;
-        var i = val.lastIndexOf('-');
-        cbk_id = val.substring(i+2);
-        cbk_desc = val.substring(0, i);
+        cbk_desc = val;
         text += "<p>" + cbk_kmc_ + "\t" + cbk_desc + "</p>";
       }
     }

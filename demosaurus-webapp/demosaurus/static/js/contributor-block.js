@@ -24,7 +24,7 @@ function add_contributor_row(name="", role="") {
     .append($('<td>').append('<input onclick="delete_row(this);" type="button" value="&#xf2ed" class="fas fa-trash-alt" title="Verwijder naam">'))
     .append($('<td>').append('<input onclick="move_row(this,1); top_main_author();" type="button" value="&#xf062" class="fas fa-arrow-up" title="Verplaats omhoog">'))
     .append($('<td>').append('<input onclick="move_row(this,0); top_main_author();" type="button" value="&#xf063" class="fas fa-arrow-down" title="Verplaats omlaag">'))
-    .append($('<td class="name_cell">').append('<input id="aut_name_' + maxIndex + '" type="text" placeholder="Voornaam @Achternaam" value="'+ name+'">'))
+    .append($('<td class="name_cell">').append('<input class="aut_name" id="aut_name_' + maxIndex + '" type="text" placeholder="Voornaam @Achternaam" value="'+ name+'">'))
     .append($('<td class="name_cell">').append('<input type="text" class="role" id="role_' + maxIndex + '" value="'+ (role? '['+role+']' :'' )+ '">')) // pre-fill the role
     //.append($('<td class="name_cell">').append('<input type="text" class="role" id="role_' + maxIndex + '" value="">')) // do not pre-fill the role
     .append($('<td class="name_cell">').append('<input type="text" class="ppn" id="ppn_' + maxIndex + '">'))
@@ -58,7 +58,8 @@ function deactivate_rows() {
   focus_index = -1;
 
   $("#contributortable > tbody > tr").css("backgroundColor","");
-  $(".ppn").css("backgroundColor","");    
+  $(".aut_name").css("backgroundColor","");
+  $(".ppn").css("backgroundColor","");
   $(".role").css("backgroundColor","");    
 }
 
