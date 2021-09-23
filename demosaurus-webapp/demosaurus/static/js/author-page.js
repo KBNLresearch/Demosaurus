@@ -11,13 +11,13 @@ function add_to_publication_list(publications, authorname, role){
 
   for(var i = 0; i< publications.length; i++){
             var row = publications[i];
-
+    console.log(row);
     $("#publication_list > tbody").append($('<tr>')
       .append($('<td class="ppn_cell" >').text(row.publication_ppn))
       .append($('<td class="title_cell" >').text(row.titelvermelding))
       .append($('<td class="title_cell" >').text(row.verantwoordelijkheidsvermelding))
       .append($('<td id="role_'+i+'" class="title_cell" >').text(row.role)));
-      if (row.role!=role){
+      if (row.role!=role && row.role!=null){
         $('#role_'+i).css("background-color",getColorForPercentage(1.0));
       }
   }

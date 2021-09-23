@@ -140,6 +140,12 @@
         <td>Land van uitgave</td>
         <td contenteditable="true">{{ publication['land_van_uitgave']}}</td>
       </tr>
+       <tr>
+        <td valign="top">NUR-rubriek</td>
+        <td id="publication_NUR" contenteditable="true">
+            {{subjects[0]['NUR_rubriek'] or ""}}
+          </td>
+      </tr>
       <tr>
         <td valign="top">Samenvatting</td>
         <td id="publication_summary" contenteditable="true">

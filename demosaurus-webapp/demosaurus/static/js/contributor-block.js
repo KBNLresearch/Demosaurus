@@ -3,7 +3,8 @@ var main_author = true;
 
 $(document).ready(function() {
 
-  if (pilotMode) {
+  //if (pilotMode) {
+  if (false){
   console.log('in Pilot mode: create first empty row')
   add_contributor_row(); // For pilot: do not pre-fill the authors
   }
