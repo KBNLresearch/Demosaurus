@@ -26,7 +26,7 @@ function fetchProjects() {
 }
 
 function getSuggestions(project, category, subcategory) {
-    inputtext = $('#publication_title').text();
+    inputtext = $('#publication_title').text().replace('@','');
     inputtext += $('#publication_summary').text();
 
     console.log('inputtext: ', inputtext);
