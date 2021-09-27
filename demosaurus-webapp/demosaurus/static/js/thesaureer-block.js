@@ -99,6 +99,7 @@ function candidate_note(candidaterow){
                 'position': 'absolute',
                 'zIndex': '99999',
                 'width': '200px',
+                'right':'150px',
                 'height': '150px',
                 'background-color': 'rgba(34, 204, 240, 0)',
               });
