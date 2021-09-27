@@ -1,9 +1,20 @@
 function export_info() {
   console.log('Export button')
-
   deactivate_rows();
   $("#export > #message").empty();
 
+//        $('#thesaureer_title').text('KMCS:');
+       // Serve collected information in the web application
+    authors = export_authors();
+    subjects = export_keywords();
+
+    $('#export_content').html(authors+subjects);
+
+
+  }
+
+
+function export_authors(){
   var allnames = true;
   var allroles = true;
   var allppns = true;
@@ -13,9 +24,11 @@ function export_info() {
 
   // build up kmc contents for contributors: contributorname$role$!ppn!viafname
   var rows = $('#contributortable > tbody > tr');
+  console.log(rows)
   var at_kmc = 3011;
 
   for (var i=0; i < rows.length; i++) {
+  console.log('export author ',i)
 
     var id = rows[i].id.split('_')[1];
     if ($('#aut_name_'+id).val()=='') {
@@ -76,14 +89,8 @@ function export_info() {
         $('#export > #message').append('<br><i>&#8226; Let op: niet alle auteurs zijn gethesaureerd!</i></br>');
       }
 
-      $('#thesaureer_title').text('KMCS:');
-      //$("#candidate_list > thead").empty();
-      //$("#candidate_list > tbody").empty();
 
-
-    // Serve collected information in the web application
-    $('#export_content').html(all_kmcs);
-    export_keywords();
+    return(all_kmcs)
   }
 
 
@@ -126,8 +133,7 @@ function export_keywords() {
         text += "<p>" + cbk_kmc_ + "\t" + cbk_desc + "</p>";
       }
     }
-    
-    $('#export_content').html(text);
+
   };
 
   if (br_keywords.length === 0){
@@ -149,5 +155,5 @@ function export_keywords() {
   if (br_keywords.length > 0 && cbk_keywords.length > 0 && br_keywords.length < 10 && cbk_keywords.length < 10) {
     $('#subject_tab_flag').css("visibility","hidden"); 
   };
-
+  return(text);
 };
