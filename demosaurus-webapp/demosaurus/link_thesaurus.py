@@ -16,17 +16,20 @@ bp = Blueprint('link_thesaurus', __name__)
 @bp.route('/thesaureer/')
 def thesaureer():
     author_name = request.args.get('contributor_name', '', type=str)
-    author_role = request.args.get('contributor_role', '', type=str)
-    publiction_title = request.args.get('publication_title', '', type=str)
-    publication_genres = json.loads(request.args.get('publication_genres', '', type=str))
-    publication_year = {'jaar_van_uitgave': [request.args.get('publication_year', '', type=str)]}
-
     if not author_name:
         author_options = pd.DataFrame() # Without name, cannot select candidates
     else:
+        author_role = request.args.get('contributor_role', '', type=str)
+        publication_title = request.args.get('publication_title', '', type=str)
+        publication_genres = json.loads(request.args.get('publication_genres', '', type=str))
+        publication_year = {'jaar_van_uitgave': [request.args.get('publication_year', '', type=str)]}
+        author_options = thesaureer_this(author_name, author_role, publication_title, publication_genres, publication_year)
+    return author_options.to_json(orient='records')
+
+def thesaureer_this(author_name, author_role, publication_title, publication_genres, publication_year):
         db = get_db()
         nameparts = author_name.split('@')
-        familyname = nameparts[-1]
+        familyname = nameparts[-1].strip('"')
         firstname = '' if len(nameparts)<2 else nameparts[0]
         if len(nameparts)>2: print('More than two nameparts for', author_name, )
 
@@ -38,13 +41,14 @@ def thesaureer():
         JOIN author_NTA ON candidates.author_ppn = author_NTA.author_ppn 
         GROUP BY author_NTA.author_ppn;
         """, params={'name':'\"'+familyname+'\"'}, con = db)
-        end = time.time()
-        print('Obtain candidates - time elapsed:', end-start)
+        print('Obtain candidates - time elapsed:', time.time()-start)
 
         # Add scores to the candidates
         if len(author_options)>0:
+            start = time.time()
             author_options=pd.concat((author_options, author_options.apply(
                 lambda row: score_names(row, firstname, familyname), axis=1)), axis=1)
+            print('Obtain candidates - time elapsed:', time.time() - start)
             author_options=pd.concat((author_options, author_options.apply(
                 lambda row: score_class_based(row['author_ppn'], publication_genres, 'genre'), axis=1)), axis=1)
             #author_options = pd.concat((author_options, author_options.apply(
@@ -65,7 +69,7 @@ def thesaureer():
             # Sort candidates by score
             author_options.sort_values(by='score', ascending=False, inplace=True)
 
-    return author_options.to_json(orient = 'records')
+        return author_options
 
 
 def normalized_levenshtein(s1,s2):
@@ -114,7 +118,7 @@ def obtain_similarity_data(author_ppn, features):
         query += 'nPublications as knownPublications '
         query += 'FROM ' + 'author_' + feature_i + 's '
         query += 'WHERE author_ppn = :author_ppn'
-    data = pd.read_sql_query(query, params={'author_ppn':author_ppn}, con = get_db())       
+    data = pd.read_sql_query(query, params={'author_ppn':author_ppn}, con = get_db())
     #except e:
     #    print('PROBLEM', e) 
     #TODO: proper exception handling (return exception to caller!)
