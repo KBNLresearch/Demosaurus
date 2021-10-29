@@ -1,5 +1,59 @@
+$(document).ready(function() {
 
-var base_url = 'https://kbresearch.nl/annif/v1/';
+  if (pilotMode) {
+  // Do not pre-fill the subject terms
+  }
+  else{
+      console.log(genres);
+
+      genreCategories = ['brinkman', 'CBK_genre'];
+      for (var category of genreCategories){
+        listOfsubjects = genres[category];
+        for (var subject of listOfsubjects){
+            subjectString = subject['identifier']+' - '+subject['term'];
+            addSubjectRow(category, subject['term'], subject['identifier']);
+        }
+      }
+      subjectCategories = ['brinkman'];
+      for (var category of subjectCategories){
+        listOfsubjects = subjects[category];
+        for (var subject of listOfsubjects){
+            addSubjectRow(category, subject['term'], subject['identifier']);
+        }
+      }
+    }
+
+  $('#no-results').hide();
+  clearResults();
+  $('#button-clear').click(function() {
+    $('#text').val('');
+    $('#text').focus();
+    });
+
+    var ann_results = $('#annif-results-table').DataTable( {
+      paging: false,
+      searching: false,
+      info: false,
+      columnDefs: [
+        {width: 500, targets: 0 }
+      ],
+      fixedColumns: true,
+      ordering: false
+      });
+    $('#annif-results-table').parents('div.dataTables_wrapper').first().hide();
+
+});
+
+function addSubjectRow(category, kind, subjectTerm, identifier){
+  $("#"+category+"-table > tbody").append($('<tr align=center>')
+    .append($('<td>').append('<input onclick="delete_row(this);" type="button" value="&#xf2ed" class="fas fa-trash-alt" title="Verwijder onderwerp">'))
+    .append($('<td>').append('<input onclick="move_row(this,1);" type="button" value="&#xf062" class="fas fa-arrow-up" title="Verplaats omhoog">'))
+    .append($('<td>').append('<input onclick="move_row(this,0);" type="button" value="&#xf063" class="fas fa-arrow-down" title="Verplaats omlaag">'))
+    .append($('<td class="name_cell">').append('<div class="subjectbox '+kind+'" data-identifier="'+identifier+'">'+subjectTerm+'</div>')));
+}
+
+
+var annif_url = 'https://kbresearch.nl/annif/v1/';
 
 function clearResults() {
     $("#annif-results-table > tbody").empty();
@@ -35,7 +89,7 @@ function getSuggestions(project, category, subcategory) {
         data: {
           text: inputtext,
           project: project,
-          limit: 20, 
+          limit: 20,
           threshold: 0.001
       },
       success: function(data) {
@@ -72,14 +126,3 @@ function displayResults(resultList, category, subcategory) {
   });
     $('#annif-results-table').parents('div.dataTables_wrapper').first().show();
 }
-
-$(document).ready(function() {
-    $('#no-results').hide();
-    clearResults();
-        //fetchProjects();
-
-        $('#button-clear').click(function() {
-            $('#text').val('');
-            $('#text').focus();
-        });
-    });

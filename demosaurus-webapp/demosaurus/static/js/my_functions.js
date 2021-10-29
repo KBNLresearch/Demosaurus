@@ -32,12 +32,12 @@ function openTab(evt, tabName){
   }
   document.getElementById(tabName).style.display = "block";
   
-  // When switching tabs, also show the corresponding results (2nd half of page).
-  // FIX: doesn't show back after hiding, .style.display = "block"; ?
-  bottomcontent = document.getElementsByClassName("bottomcontent");
-  for (i = 0; i < bottomcontent.length; i++) {
-    bottomcontent[i].style.display = "none";
-  }
+//  // When switching tabs, also show the corresponding results (2nd half of page).
+//  // FIX: doesn't show back after hiding, .style.display = "block"; ?
+//  bottomcontent = document.getElementsByClassName("bottomcontent");
+//  for (i = 0; i < bottomcontent.length; i++) {
+//    bottomcontent[i].style.display = "none";
+//  }
 
   // Get all elements with class="tablinks" and remove the class "active"
   tablinks = document.getElementsByClassName("tablinks");
@@ -50,16 +50,6 @@ function openTab(evt, tabName){
   evt.currentTarget.className += " active";
 
 }
-
-/*
-function score_span(score,confidence){
-  hovertext = "".concat('Score: ',String(Math.round(100*score)), '&#37; Confidence: ', String(Math.round(100*confidence)),'&#37;');
-  return $('<div title="'+hovertext+'" data-html="true">')
-        .css("background-color",getColorForPercentage(score))
-        .css("width",Math.round(50*confidence))
-        .tooltip({})
-}
-*/
 
 var getColorForPercentage = function(this_perc, saturation=1.0, low=0.5) {
     var percentColors = [
@@ -87,14 +77,6 @@ var getColorForPercentage = function(this_perc, saturation=1.0, low=0.5) {
     return 'rgba(' + [color.r, color.g, color.b, saturation].join(',') + ')';
   };
   
-  // Hover over Match column shows scores.
-  $(function() {
-      $('#authorMatchTt').tooltip({ content: $('#authorMatchHover').html() });
-  });
-
-  $(function() {
-      $('#thesMatchTt').tooltip({ content: $('#thesMatchHover').html() });
-  });
 
   // DataTabel.js init interactive tables.
   $(document).ready( function () {
@@ -103,26 +85,6 @@ var getColorForPercentage = function(this_perc, saturation=1.0, low=0.5) {
       "pageLength":20,
       "searching": true
     } );
-  // Table on authorpage.html (table w all publications of a selected author).
-    $('#publication_list').DataTable();
-    $('#publication_list').on('click', '.fas.fa-trash-alt', function() {
-      var table = $('#publication_list').DataTable();
-      table
-        .row($(this).parents('tr'))
-        .remove()
-        .draw();
-    });
 
-    //$('#candidate_list').DataTable();
-    var ann_results = $('#annif-results-table').DataTable( {
-      paging: false,
-      searching: false,
-      info: false,
-      columnDefs: [
-        {width: 500, targets: 0 }
-      ],
-      fixedColumns: true,
-      ordering: false
-      });
-    $('#annif-results-table').parents('div.dataTables_wrapper').first().hide();
+
   });

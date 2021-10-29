@@ -5,30 +5,16 @@
 
 <!-- Title of publicationor "Demosaurus" as Header -->
 {% block header %}
-
 <h1>{% block title %}Demosaurus - {{ publication['titelvermelding'].replace('@','',1)}}{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
 
-<!--
-{# Display cover #}
-<div style="width:15%;float:left">
-    Cover-image
-    {#<img src={{'/static/'+cover['location']}} alt="Front cover" style="max-width:90%;max-height:230px;width:auto;height:auto;padding: 10px;">
-    todo: locate cover (publication.py, first create and fill table in db)
-    todo: make into slideshow with other covers, maybe titlepage, option to enlarge image, etc.#}
-</div>
--->
-
-
-{# Status tabs #}
-<div>
-
-  <script type=text/javascript> 
+<!-- The following script instantiates js variables holding genre info etc > still necessary? -->
+  <script type=text/javascript>
       var pilotMode = true;
 
-    // initialize vars holding the role options and contributors 
+    // initialize vars holding the role options and contributors
     console.log('Initializing variables')
     var role_options = [];
     {% for role in role_list %}
@@ -95,177 +81,39 @@
 
   </script>
 
-
+{# Status tabs #}
+<div>
   <!-- Horizontal Arrow style menu. -->
   <div class="tab">
     <ul class="breadcrumb">
-      <li><a href="#" onclick="openTab(event, 'general')" class="tablinks" id="general_tab">Titelinformatie<span class="flag" id="general_tab_flag">&#10071;</span></a></li>
-      <li><a href="#" onclick="openTab(event, 'subject')" class="tablinks" id="subject_tab">Onderwerp<span class="flag" id="subject_tab_flag">&#10071;</span></a></li>
-      <li><a href="#" onclick="openTab(event, 'contributors')" class="tablinks" id="contributors_tab">Auteurs<span class="flag" id="contributors_tab_flag">&#10071;</span></a></li>
-      <li><a href="#" onclick="openTab(event, 'export'); export_info()" class="tablinks" id="export_tab">Exporteer<span class="flag" id="export_tab_flag">&#10071;</span></a></li>
+      <li><a href="#" onclick="openTab(event, 'general_tab')" class="tablinks" id="general_tab">Titelinformatie<span class="flag" id="general_tab_flag">&#10071;</span></a></li>
+      <li><a href="#" onclick="openTab(event, 'subjects_tab')" class="tablinks" id="subjects_tab">Onderwerp<span class="flag" id="subjects_tab_flag">&#10071;</span></a></li>
+      <li><a href="#" onclick="openTab(event, 'contributors_tab')" class="tablinks" id="contributors_tab">Auteurs<span class="flag" id="contributors_tab_flag">&#10071;</span></a></li>
+      <li><a href="#" onclick="openTab(event, 'export_tab'); export_info()" class="tablinks" id="export_tab">Exporteer<span class="flag" id="export_tab_flag">&#10071;</span></a></li>
     </ul>
   </div>
 
+{# Tab content for status tabs #}
 
-  <!-- Titelinformatie blok. Moet nog COVER IMAGE in! -->
-  <div id="general" class="tabcontent">
-    <table id="publicationinfo" class="tbinfo">
-
-      <tbody>
-      <tr>
-        <td>Titel, subtitel</td>
-        <td id="publication_title" contenteditable="true">{{ publication['titelvermelding']}}</td>
-      </tr>
-      <tr>
-        <td>ISBN</td>
-        <td contenteditable="true">{{ publication['isbn']}}</td>
-      </tr>
-      <tr>
-        <td>Jaar van uitgave</td>
-        <td id="publicationYear" contenteditable="true"> {{ publication['jaar_van_uitgave']}}</td>
-      </tr>
-      <tr>
-        <td>Uitgever</td>
-        <td contenteditable="true">{{ publication['uitgever'] or "-"}}</td>
-      </tr>
-      <tr>
-        <td>Taal publicatie</td>
-        <td contenteditable="true">{{ publication['taal_publicatie']}}</td>
-      </tr>
-      <tr>
-        <td>Taal origineel</td>
-        <td contenteditable="true">{{ publication['taal_origineel']}}</td>
-      </tr>
-      <tr>
-        <td>Land van uitgave</td>
-        <td contenteditable="true">{{ publication['land_van_uitgave']}}</td>
-      </tr>
-       <tr>
-        <td valign="top">NUR-rubriek</td>
-        <td id="publication_NUR" contenteditable="true">
-            {{subjects[0]['NUR_rubriek'] or ""}}
-          </td>
-      </tr>
-      <tr>
-        <td valign="top">Samenvatting</td>
-        <td id="publication_summary" contenteditable="true">
-            {{publication['annotations'] or "Inhoudelijke omschrijving (bv. flaptekst)"}}
-          </td>
-      </tr>
-      </tbody>
-    </table>
+  <div id="general_tab_content" class="tabcontent">
+    {% include 'publication/general-tab.html' %}
   </div>
 
-
-  <!-- Annif block. -->
-  <div id="subject" class="tabcontent">
+  <div id="subjects_tab_content" class="tabcontent">
     {% include 'publication/subjects-tab.html' %}
   </div>
 
-
-  <!-- Auteurs blok. -->
-  <div id="contributors" class="tabcontent">
-    <table id="contributortable" >
-      <thead>
-      <tr>
-        <th><!--i class="fas fa-trash-alt"></i--></th>
-        <th><!--i class="fas fa-arrow-up"></i--></th>
-        <th><!--i class="fas fa-arrow-down"></i--></th>
-        <th class="name_cell"> Naam </th>
-        <th class="name_cell"> Rol </th>
-        <th class="name_cell"> PPN </th>
-      </tr>
-      </thead>
-      <tbody style="max-height: 120px"/>
-      <!-- This is where contributors may be pre-filled and/ or manually added (client-side)-->
-      <tfoot>
-      <tr align="right">
-        <td><input type="button" title="Voeg naam toe" value="&#xf234" class="fas fa-user-plus" onclick="add_contributor_row()" /></td>
-      </tr>
-      </tfoot>
-    </table>
+  <div id="contributors_tab_content" class="tabcontent">
+    {% include 'publication/contributors-tab.html' %}
   </div>
 
-
-  <!-- Exporteer blok. -->
-  <div id="export" class="tabcontent">
-    Controleer KMC's hieronder, kopiëer en plak naar WinIBW
-    <div id="message"> Eventuele waarschuwingen </div>
-  </div>
-
-
-</div>
-
-
-{# Area for thesauring, subject indexing etc #}
-
-
-
-<div style="width:100%;float:left;">
-
-  <div class='bottomcontent' id="contributors_content" style="display: block;">
-    <h2 id=thesaureer_title></h2>
-    <div id='placeholder'></div>
-    <table id="candidate_list" class="fixed_header">
-      <thead/>
-      <tbody class="zebra"/>
-      <tfoot/>
-    </table>
-
-    <script type="text/javascript" src="{{url_for('static', filename='js/thesaureer-block.js') }}"></script>
+  <div id="export_tab_content" class="tabcontent">
+    {% include 'publication/export-tab.html' %}
   </div>
 </div>
 
-<!-- thesaureerblock sub-scores tooltip table.-->
-<div class="divTable" id="thesMatchHover" style="display: none;">
-  <div class="divTableHeading">
-    <div class="divTableRow">
-      <div class="divTableHead"></div>
-      <div class="divTableHead">Score</div>
-      <div class="divTableHead">Confidence</div>
-    </div>
-  </div>
-  <div class="divTableBody">
-    <div class="divTableRow">
-      <div class="divTableCell" id="tttb13"><b>Naam</b></div>
-      <div class="divTableCell" id="tttb14">&nbsp;</div>
-      <div class="divTableCell" id="tttb15">&nbsp;</div>
-    </div>
-    <!--      <div class="divTableRow">-->
-    <!--        <div class="divTableCell" id="tttb1"><b>Rol</b></div>-->
-    <!--        <div class="divTableCell" id="tttb2">&nbsp;</div>-->
-    <!--        <div class="divTableCell" id="tttb3">&nbsp;</div>-->
-    <!--      </div>-->
-    <div class="divTableRow">
-      <div class="divTableCell" id="tttb4"><b>Genre</b></div>
-      <div class="divTableCell" id="tttb5">&nbsp;</div>
-      <div class="divTableCell" id="tttb6">&nbsp;</div>
-    </div>
-    <div class="divTableRow">
-      <div class="divTableCell" id="tttb7"><b>JvU</b></div>
-      <div class="divTableCell" id="tttb8">&nbsp;</div>
-      <div class="divTableCell" id="tttb9">&nbsp;</div>
-    </div>
-  </div>
-</div>
-
-
-
-
-
-<!-- KMC block. -->
-<div class="bottomcontent" id="export_content" style="display: block;">
-</div>
-
-  <!-- KMC block. -->
-  <div class="bottomcontent" id="general_content" style="display: block;">
-    <!--p id="kmc_keywords"></p-->
-  </div>
-
-
-</div>
-<script type=text/javascript src="{{url_for('static', filename='js/contributor-block.js') }}"></script>
-<script type=text/javascript src="{{url_for('static', filename='js/export.js') }}"></script>
+<script type=text/javascript src="{{url_for('static', filename='js/contributors-tab.js') }}"></script>
+<script type=text/javascript src="{{url_for('static', filename='js/export-tab.js') }}"></script>
 
 
 <script type=text/javascript>

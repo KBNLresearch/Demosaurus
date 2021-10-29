@@ -1,5 +1,17 @@
 // Fill HTML table on authorpage.html
 
+$(document).ready( function () {
+  $('#publication_list').DataTable();
+    $('#publication_list').on('click', '.fas.fa-trash-alt', function() {
+      var table = $('#publication_list').DataTable();
+      table
+        .row($(this).parents('tr'))
+        .remove()
+        .draw();
+    });
+
+}
+
 function add_to_publication_list(publications, authorname, role){
 
   $("#publication_list > thead").append($('<tr>')
