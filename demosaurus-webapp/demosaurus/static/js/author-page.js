@@ -10,7 +10,7 @@ $(document).ready( function () {
         .draw();
     });
 
-}
+});
 
 function add_to_publication_list(publications, authorname, role){
 
