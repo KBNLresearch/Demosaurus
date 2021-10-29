@@ -92,4 +92,4 @@ def overview():
         ' JOIN publication_pilotset ON publication_pilotset.publication_ppn = publication_basicinfo.publication_ppn'
         ' WHERE publication_pilotset.pilotset_202109 = 1'
     ).fetchall()
-    return render_template('publication/overview.html', publications=publications)
+    return render_template('index.html', publications=publications)

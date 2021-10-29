@@ -1,5 +1,4 @@
 
-
 <table id="brinkman-table" style="float: left; padding: 10px" >
   <thead>
     <tr>
@@ -15,16 +14,16 @@
 
   <tfoot>
     <tr align="center">
-      <td> &nbsp;</td>
-      <td> &nbsp;</td>
-      <td> &nbsp;</td>
-      <td><button type="button" title="Vind zaaktrefwoorden" onclick="getSuggestions('ensemble-brinkman-zaak','brinkman','zaak')">Suggesties zaaktrefwoorden</button>
-    </tr>
-    <tr align="center">
         <td> &nbsp;</td>
         <td> &nbsp;</td>
         <td> &nbsp;</td>
         <td><button type="button" title="Vind vormtrefwoorden" onclick="getSuggestions('ensemble-brinkman-vorm','brinkman','vorm')">Suggesties vormtrefwoorden</button>
+    </tr>
+    <tr align="center">
+      <td> &nbsp;</td>
+      <td> &nbsp;</td>
+      <td> &nbsp;</td>
+      <td><button type="button" title="Vind zaaktrefwoorden" onclick="getSuggestions('ensemble-brinkman-zaak','brinkman','zaak')">Suggesties zaaktrefwoorden</button>
     </tr>
   </tfoot>
 </table>
@@ -55,7 +54,7 @@
 <br style="clear:both" />
 
 <!-- Annif Suggestions - bottom area. -->
-<div id="subject_content" >
+<div class="bottomcontent" id="subject_content" >
   <div id="annif-out" style="float: left; width: 40%">
     <h2 id="suggestions" data-i18n="suggestions" >Trefwoordsuggesties</h2>
     <table class="fixed_header" id="annif-results-table" >
@@ -76,9 +75,9 @@
       <img id="annif-logo" src={{'/static/annif-RGB.svg'}} alt="annif-logo" width="130px">
       <span class="extra-info">
         Annif is de tool die suggesties doet voor trefwoorden. De modellen zijn getraind op basis van GGC-metadata van kinderboeken.<br>
-        Suggesties worden gegenereerd op basis van de publicatietitel en samenvatting (tab <a href="#" onclick="openTab(event, 'general')">Titelinformatie</a>).
+        Suggesties worden gegenereerd op basis van de publicatietitel en samenvatting (tab <a href="#" onclick="openTab(event, 'general-tab')">Titelinformatie</a>).
       </span>
     </div>
   </div>
 </div>
-<script type=text/javascript src="{{url_for('static', filename='js/subjects-block.js') }}"></script>
+<script type=text/javascript src="{{url_for('static', filename='js/subjects-tab.js') }}"></script>

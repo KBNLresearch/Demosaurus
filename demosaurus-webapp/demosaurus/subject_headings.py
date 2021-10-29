@@ -13,11 +13,11 @@ import requests
 
 bp = Blueprint('subject_headings', __name__)
 
-base_url = 'https://kbresearch.nl/annif/v1/'
+annif_url = 'https://kbresearch.nl/annif/v1/'
 
 @bp.route('/annif-projects/')
 def annif_projects():
-    response = requests.get(base_url+'projects')
+    response = requests.get(annif_url+'projects')
     if response.status_code == 200:
         return response.json()
     else:
@@ -33,7 +33,7 @@ def annif_suggestions():
     if project not in project_options:
         print("Annif was called with non-existing project parameter:", project)
 
-    url =  base_url + "projects/" + project + "/suggest"
+    url =  annif_url + "projects/" + project + "/suggest"
     response = requests.post(url, data = params)
     if response.status_code == 200:
         return response.json()

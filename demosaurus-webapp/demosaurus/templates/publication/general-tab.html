@@ -1,0 +1,58 @@
+<!--
+{# Display cover #}
+<div style="width:15%;float:left">
+    Cover-image
+    {#<img src={{'/static/'+cover['location']}} alt="Front cover" style="max-width:90%;max-height:230px;width:auto;height:auto;padding: 10px;">
+    todo: locate cover (publication.py, first create and fill table in db OR hotlink?)
+    todo: make into slideshow with other covers, maybe titlepage, option to enlarge image, etc.#}
+</div>
+-->
+
+<table id="publicationinfo" class="tbinfo">
+      <tbody>
+      <tr>
+        <td>Titel, subtitel</td>
+        <td id="publication_title" contenteditable="true">{{ publication['titelvermelding']}}</td>
+      </tr>
+      <tr>
+        <td>ISBN</td>
+        <td contenteditable="true">{{ publication['isbn']}}</td>
+      </tr>
+      <tr>
+        <td>Jaar van uitgave</td>
+        <td id="publicationYear" contenteditable="true"> {{ publication['jaar_van_uitgave']}}</td>
+      </tr>
+      <tr>
+        <td>Uitgever</td>
+        <td contenteditable="true">{{ publication['uitgever'] or "-"}}</td>
+      </tr>
+      <tr>
+        <td>Taal publicatie</td>
+        <td contenteditable="true">{{ publication['taal_publicatie']}}</td>
+      </tr>
+      <tr>
+        <td>Taal origineel</td>
+        <td contenteditable="true">{{ publication['taal_origineel']}}</td>
+      </tr>
+      <tr>
+        <td>Land van uitgave</td>
+        <td contenteditable="true">{{ publication['land_van_uitgave']}}</td>
+      </tr>
+       <tr>
+        <td valign="top">NUR-rubriek</td>
+        <td id="publication_NUR" contenteditable="true">
+            {{subjects[0]['NUR_rubriek'] or ""}}
+          </td>
+      </tr>
+      <tr>
+        <td valign="top">Samenvatting</td>
+        <td id="publication_summary" contenteditable="true">
+            {{publication['annotations'] or "Inhoudelijke omschrijving (bv. flaptekst)"}}
+          </td>
+      </tr>
+      </tbody>
+    </table>
+
+  <div class="bottomcontent" id="general_content" style="display: block;">
+    <!--p id="kmc_keywords"></p-->
+  </div>

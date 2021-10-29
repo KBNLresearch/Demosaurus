@@ -138,22 +138,22 @@ function export_keywords() {
 
   if (br_keywords.length === 0){
     //text += "<p>Let op: Geen Brinkman trefwoorden gekozen!</p>";
-    $('#subject_tab_flag').css("visibility","visible");
+    $('#subjects_tab_flag').css("visibility","visible");
     $('#export > #message').append('</br><i>&#8226; Let op: Geen Brinkman trefwoorden gekozen!</i></br>');
   } else if (br_keywords.length > 9) {
-    $('#subject_tab_flag').css("visibility","visible");
+    $('#subjects_tab_flag').css("visibility","visible");
     $('#export > #message').append('</br><i>&#8226; Let op: Teveel Brinkman trefwoorden gekozen, max 9!</i></br>');
   };
   if (cbk_keywords.length === 0){
     //text += "<p>Let op: Geen CBK trewoorden gekozen!</p>"
-    $('#subject_tab_flag').css("visibility","visible");
+    $('#subjects_tab_flag').css("visibility","visible");
     $('#export > #message').append('</br><i>&#8226; Let op: Geen CBK trefwoorden gekozen!</i></br>');
   } else if (cbk_keywords.length > 9) {
-    $('#subject_tab_flag').css("visibility","visible");
+    $('#subjects_tab_flag').css("visibility","visible");
     $('#export > #message').append('</br><i>&#8226; Let op: Teveel CBK trefwoorden gekozen, max 9!</i></br>');
   };
   if (br_keywords.length > 0 && cbk_keywords.length > 0 && br_keywords.length < 10 && cbk_keywords.length < 10) {
-    $('#subject_tab_flag').css("visibility","hidden"); 
+    $('#subjects_tab_flag').css("visibility","hidden");
   };
   return(text);
 };
