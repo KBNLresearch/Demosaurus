@@ -97,7 +97,7 @@ schemata = {
 		{'field': 'identifier', 'dtype': str, 'type': 'TEXT', 'constraints': 'NOT NULL PRIMARY KEY'},
 		{'field': 'term', 'dtype': str, 'type': 'TEXT', 'constraints': ''}],
 	'thesaurus_brinkmantrefwoorden': [
-		{'field': 'identifier', 'dtype': str, 'type': 'TEXT', 'constraints': 'NOT NULL'},
+		{'field': 'identifier', 'dtype': str, 'type': 'TEXT', 'constraints': 'PRIMARY KEY NOT NULL'},
 		{'field': 'term', 'dtype': str, 'type': 'TEXT', 'constraints': ''},
 		{'field': 'brinkman_kind_id', 'dtype': pd.Int64Dtype(), 'type': 'NUMERIC',
 		 'constraints': 'NOT NULL'}],

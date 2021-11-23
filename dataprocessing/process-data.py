@@ -3,6 +3,7 @@ import pandas as pd
 import read_pica
 import preprocessing
 import csv_db
+import views_and_indices
 import os
 import numpy as np
 
@@ -34,13 +35,6 @@ def update_publisher_table(publisher_map):
     #df.append()
     return df
 
-def create_indices():
-    True
-
-def create_views():
-    True
-
-
 def process_publication_info(set_name, dataset_id):
     # Ingest publication info and write to DB
     fname = 'data/NBD-pilotdata/picaplus_kb_ebooks_20210927.XML'
@@ -66,11 +60,18 @@ def process_thesauri():
         assert set(df.columns) == columns
 
 if __name__ == '__main__':
-    process_thesauri()
-    process_publication_info(set_name='NBD', dataset_id=1)
-    create_views()
-    create_indices()
+    # Assuming Thesauri are in place, check that they obey the DB scheme
+    #process_thesauri()
 
-    for table in csv_db.schemata.keys():
-        csv_db.fill_table(table,db='data/demosaurus_NBD.sqlite', overwrite=True, postfix = '_NBD')
+    # Ingest and preprocess publication information: store in CSV files
+    #process_publication_info(set_name='NBD', dataset_id=1)
+
+    # Obtain information from CSVs and write to database
+    #for table in csv_db.schemata.keys():
+    #    csv_db.fill_table(table,db='data/demosaurus_NBD.sqlite', overwrite=True, postfix = '_NBD')
+
+    # Build indices (+FTS5) and views for regular entries
+    views_and_indices.create_views(db='data/demosaurus_NBD.sqlite')
+    views_and_indices.create_indices(db='data/demosaurus_NBD.sqlite')
+
 
