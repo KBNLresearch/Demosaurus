@@ -37,7 +37,7 @@ def thesaureer_this(author_name, author_role, publication_title, publication_gen
         author_options = pd.read_sql_query("""
         WITH candidates AS (SELECT author_ppn FROM author_fts5 WHERE foaf_name MATCH :name)         
         SELECT author_NTA.* FROM candidates 
-        JOIN authorship_ggc_train t2 ON t2.author_ppn = candidates.author_ppn  -- only authors that we have training data for
+        JOIN publication_contributors_train_NBD t2 ON t2.author_ppn = candidates.author_ppn  -- only authors that we have training data for
         JOIN author_NTA ON candidates.author_ppn = author_NTA.author_ppn 
         GROUP BY author_NTA.author_ppn;
         """, params={'name':'\"'+familyname+'\"'}, con = db)
@@ -112,11 +112,11 @@ def obtain_similarity_data(author_ppn, features):
         query += 'SELECT '
         for j, feature_j in enumerate(features):
             if i == j:
-                query += feature_j + ','
+                query += 'term_identifier AS ' + feature_j + ','
             else:
                 query += 'NULL AS ' + feature_j + ','
         query += 'nPublications as knownPublications '
-        query += 'FROM ' + 'author_' + feature_i + 's '
+        query += 'FROM ' + 'author_' + feature_i + '_NBD '
         query += 'WHERE author_ppn = :author_ppn'
     data = pd.read_sql_query(query, params={'author_ppn':author_ppn}, con = get_db())
     #except e:

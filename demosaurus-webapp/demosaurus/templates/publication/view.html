@@ -26,15 +26,15 @@
     var contributors = [];
     {% for contributor in contributors %}
     contributors.push({
-        name: "{{contributor['title'] if contributor['title']}}{{contributor['name']}}",
+        name: "{{contributor['title'] if contributor['title']}}{{' '.join([contributor['firstname'] or '',contributor['prefix'] or '',contributor['familyname'] or ''])}}",
         role: "{{contributor['role']  if contributor['role']}}"
     });
     {%endfor%}
 
     var maxIndex = 0;
 
-    var genres = {'CBK_genre':[], 'NUR_rubriek':[], 'NUGI_genre':[], 'brinkman':[]};
-    var subjects = {'CBK_thema':[], 'brinkman':[]};
+    var genres = {'CBK_genre':[], 'NUR_rubriek':[], 'NUGI_genre':[], 'brinkman_vorm':[]};
+    var subjects = {'CBK_thema':[], 'brinkman_zaak':[]};
     {% for subject in subjects %}
       {% if subject['CBK_genre'] %}
         genres['CBK_genre'].push({
@@ -50,14 +50,14 @@
         });
       {% endif %}
       {% if subject['brinkman_kind'] == 'vorm' %}
-          genres['brinkman'].push({
+          genres['brinkman_vorm'].push({
             rank: "{{subject['rank']}}",
             identifier: "{{subject['brinkman_id']}}",
             term: "{{subject['brinkman']}}"
           });
       {% endif %}
       {% if subject['brinkman_kind'] == 'zaak' %}
-          subjects['brinkman'].push({
+          subjects['brinkman_zaak'].push({
             rank: "{{subject['rank']}}",
             identifier: "{{subject['brinkman_id']}}",
             term: "{{subject['brinkman']}}"

@@ -30,12 +30,16 @@ def authorpage(id):
     ).fetchone()  
 
     # Fetch all publications that this author has contributed to
-    publications = pd.read_sql_query('SELECT publication_basicinfo.publication_ppn, role, kmc, titelvermelding, verantwoordelijkheidsvermelding,' 
-    ' \"taal_publicatie\", \"taal_origineel\", \"land_van_uitgave\", isbn, isbn_2, \"jaar_van_uitgave\", \"uitgever\", uitgever_2,'
-    ' authorship_ggc.author_ppn    '
-    ' FROM authorship_ggc LEFT JOIN publication_basicinfo'
-    ' ON authorship_ggc.publication_ppn = publication_basicinfo.publication_ppn'
-    ' WHERE authorship_ggc.author_ppn =? ', params = [id], con = db)
+
+    QUERY = """
+    SELECT t2.publication_ppn, t1.role, t1.rank, titelvermelding, verantwoordelijkheidsvermelding,
+    "taal_publicatie", "taal_origineel", "land_van_uitgave", isbn, "jaar_van_uitgave", uitgever, t1.author_ppn    
+     FROM publication_contributors_train_NBD t1 
+	 LEFT JOIN publication_basicinfo t2 ON t1.publication_ppn = t2.publication_ppn
+     WHERE t1.author_ppn = ?
+    """
+
+    publications = pd.read_sql_query(QUERY, params = [id], con = db)
 
     publications = publications.loc[publications.titelvermelding != title]
 
