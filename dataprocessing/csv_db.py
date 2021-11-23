@@ -115,7 +115,7 @@ def import_csv(table_name, check_schema=True, postfix=''):
 		dtypes = {d['field']:d['dtype'] for d in schemata[table_name]}
 	else:
 		dtypes = {}
-	df = pd.read_csv(table_loc, sep=';', dtype = dtypes)
+	df = pd.read_csv(table_loc, sep=';', dtype = dtypes, na_values = ['None'])
 	return df
 
 def export_csv(table_name, df, check_schema=True, postfix=''):
