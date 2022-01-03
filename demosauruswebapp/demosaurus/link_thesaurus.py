@@ -1,7 +1,8 @@
 from flask import (
     Blueprint, flash, g, redirect, render_template, get_template_attribute, request, url_for, jsonify
 )
-from demosaurus.db import get_db
+#from ....dataprocessing import # dataprocessin .read_rdf import
+from demosauruswebapp.demosaurus.db import get_db
 import pandas as pd
 from nltk.metrics import distance as nl_distance
 import re
@@ -10,8 +11,19 @@ from scipy.spatial import distance as spatial_distance
 from scipy import stats
 import json
 import time
+import unidecode
+import string
 
 bp = Blueprint('link_thesaurus', __name__)
+
+punctuation_remover = str.maketrans(string.punctuation, ' '*len(string.punctuation)) #map punctuation to space
+def normalize_name(name):
+    name = name.split('(')[0]  # get only first bit (no life years, comments etc.)
+    name = unidecode.unidecode(name)  # unicode normalization
+    name = name.lower()  # lowercase
+    name = name.translate(punctuation_remover)  # replace dots, apostrophes, etc. with whitespace
+    name = ' '.join(name.split())  # single space separation
+    return name
 
 @bp.route('/thesaureer/')
 def thesaureer():
@@ -28,27 +40,27 @@ def thesaureer():
 
 def thesaureer_this(author_name, author_role, publication_title, publication_genres, publication_year):
         db = get_db()
-        nameparts = author_name.split('@')
-        familyname = nameparts[-1].strip('"')
-        firstname = '' if len(nameparts)<2 else nameparts[0]
-        if len(nameparts)>2: print('More than two nameparts for', author_name, )
 
+        searchkey = '@' in author_name
+        if searchkey:
+            candidates = "WITH candidates AS (SELECT author_ppn FROM author_fts5 WHERE searchkey MATCH :searchkey)\n"
+            matcher = normalize_name(author_name.split('@')[-1].strip('"'))
+        else:
+            candidates = "WITH candidates AS (SELECT author_ppn FROM author_fts5 WHERE normalized_name MATCH :searchkey)\n"
+            matcher = normalize_name(author_name)
         start = time.time()
-        author_options = pd.read_sql_query("""
-        WITH candidates AS (SELECT author_ppn FROM author_fts5 WHERE foaf_name MATCH :name)         
-        SELECT author_NTA.* FROM candidates 
+        author_options = pd.read_sql_query(candidates + """SELECT author_NTA.* FROM candidates 
         JOIN publication_contributors_train_NBD t2 ON t2.author_ppn = candidates.author_ppn  -- only authors that we have training data for
         JOIN author_NTA ON candidates.author_ppn = author_NTA.author_ppn 
         GROUP BY author_NTA.author_ppn;
-        """, params={'name':'\"'+familyname+'\"'}, con = db)
+        """, params={'searchkey':'\"'+matcher+'\"'}, con = db)
         print('Obtain candidates - time elapsed:', time.time()-start)
-
         # Add scores to the candidates
         if len(author_options)>0:
             start = time.time()
             author_options=pd.concat((author_options, author_options.apply(
-                lambda row: score_names(row, firstname, familyname), axis=1)), axis=1)
-            print('Obtain candidates - time elapsed:', time.time() - start)
+                lambda row: score_names(row, author_name), axis=1)), axis=1)
+            print('Score names - time elapsed:', time.time() - start)
             author_options=pd.concat((author_options, author_options.apply(
                 lambda row: score_class_based(row['author_ppn'], publication_genres, 'genre'), axis=1)), axis=1)
             #author_options = pd.concat((author_options, author_options.apply(
@@ -78,8 +90,15 @@ def normalized_levenshtein(s1,s2):
     return  (l - nl_distance.edit_distance(s1, s2)) / l         
     
 
-def score_names(authorshipItem, given_name, family_name):
+def score_names(authorshipItem, author_name):
     # family name should be rather similar: check levenshtein distance and normalize by length
+    if '@' in author_name:
+        nameparts = author_name.split('@')
+    else:
+        nameparts = author_name.split()
+    family_name = nameparts[-1]
+    given_name = ' '.join(nameparts[:-1])
+
     familyNameScore =  normalized_levenshtein(authorshipItem['foaf_familyname'],family_name)
 
     confidence = 1

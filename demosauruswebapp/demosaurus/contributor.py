@@ -6,7 +6,7 @@ from werkzeug.exceptions import abort
 import pandas as pd
 import numpy as np
 
-from demosaurus.db import get_db
+from demosauruswebapp.demosaurus.db import get_db
 
 bp = Blueprint('contributor', __name__)
 

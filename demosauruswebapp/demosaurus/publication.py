@@ -4,7 +4,7 @@ from flask import (
 from werkzeug.exceptions import abort
 
 
-from demosaurus.db import get_db
+from demosauruswebapp.demosaurus.db import get_db
 
 
 bp = Blueprint('publication', __name__)

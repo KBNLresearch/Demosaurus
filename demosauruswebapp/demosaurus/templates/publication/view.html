@@ -26,7 +26,7 @@
     var contributors = [];
     {% for contributor in contributors %}
     contributors.push({
-        name: "{{contributor['title'] if contributor['title']}}{{' '.join([contributor['firstname'] or '',contributor['prefix'] or '',contributor['familyname'] or ''])}}",
+        name: "{{contributor['title'] if contributor['title']}}{{' '.join([contributor['firstname'] or '',contributor['prefix'] or '','@' + contributor['familyname'] or ''])}}",
         role: "{{contributor['role']  if contributor['role']}}"
     });
     {%endfor%}
