@@ -51,6 +51,12 @@ schemata = {
 		{'field': 'editorial_nl', 'dtype': str, 'type': 'TEXT', 'constraints': ''},
 		{'field': 'skopenote_nl', 'dtype': str, 'type': 'TEXT', 'constraints': ''},
 		{'field': 'related_entry_ppn', 'dtype': str, 'type': 'TEXT', 'constraints': ''}],
+	'author_name_options': [
+		{'field': 'author_ppn', 'dtype': str, 'type': 'TEXT', 'constraints': 'NOT NULL'},
+		{'field': 'searchkey', 'dtype': str, 'type': 'TEXT', 'constraints': ''},
+		{'field': 'name', 'dtype': str, 'type': 'TEXT', 'constraints': ''},
+		{'field': 'name_normalized', 'dtype': str, 'type': 'TEXT', 'constraints': ''},
+		{'field': 'familyname', 'dtype': str, 'type': 'TEXT', 'constraints': ''}],
 	'author_isni': [
 		{'field': 'author_ppn', 'dtype': str, 'type': 'TEXT', 'constraints': 'NOT NULL'},
 		{'field': 'identifier', 'dtype': str, 'type': 'TEXT', 'constraints': ''}],
@@ -118,7 +124,7 @@ def import_csv(table_name, check_schema=True, postfix=''):
 	df = pd.read_csv(table_loc, sep=';', dtype = dtypes, na_values = ['None'])
 	return df
 
-def export_csv(table_name, df, check_schema=True, postfix=''):
+def export_csv(table_name, df, check_schema=True, postfix='', append = False):
 	"""Export dataframe <df> to a csv file in ../data/clean_csv/<table_name>.csv """
 	#if len(df)>0:
 	table_loc = os.path.join('data/clean_csv',table_name+postfix+'.csv')
@@ -130,6 +136,13 @@ def export_csv(table_name, df, check_schema=True, postfix=''):
 			print('Cannot export according to schema', table_name)
 			print('Schema:',dtypes)
 			print('DF:', df.dtypes)
+
+	if append:
+		try:
+			existing = import_csv(table_name,True,postfix)
+			df = existing.append(df)
+		except:
+			print('Cannot append to', table_name,'creating new file')
 	df.to_csv(table_loc, sep=';', index = False)
 
 def create_table(table_name, schema, db = 'data/demosaurus.sqlite'):

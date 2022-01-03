@@ -50,9 +50,16 @@ to_obtain = [
          'term_identifier': lambda record: int(record.find('./p045O/fa').text),
      }
      },
-    {'table': 'publication_NUR_rubriek',
+    {'table': 'publication_NUR_rubriek', # repeatable in theory, but not in practice in picaplus file that we're handling
      'columns': {
          'term_identifier': lambda record: int(record.find('./p045B/fa').text),
+     }
+     },
+    {'table': 'publication_Unesco_code',
+     'xpath': lambda record: record.findall('./p045M'),
+     'columns': {
+         'term': lambda x: x.find('fa').text,
+         'rank': lambda x: int(x.attrib['nr'])
      }
      },
     {'table': 'publication_contributors',

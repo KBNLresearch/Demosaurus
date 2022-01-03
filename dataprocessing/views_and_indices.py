@@ -30,8 +30,8 @@ def set_fts5(db='../data/demosaurus.sqlite'):
 	with sqlite3.connect(db) as con:
 		# Create virtual author table for high-performance text search (obtain candidates)
 		con.execute("DROP TABLE IF EXISTS `author_fts5`;")
-		con.execute("CREATE VIRTUAL TABLE author_fts5 USING FTS5(foaf_name, skos_preflabel);")
-		con.execute("INSERT INTO author_fts5 SELECT foaf_name, skos_preflabel FROM author_NTA ;")
+		con.execute("CREATE VIRTUAL TABLE author_fts5 USING FTS5(author_ppn, searchkey, name, name_normalized, familyname);")
+		con.execute("INSERT INTO author_fts5 SELECT author_ppn, searchkey, name, name_normalized, familyname FROM author_name_options ;")
 	return
 
 def author_view_for_feature(feature_name, specifications=[], suffix='', dataset = ''):
