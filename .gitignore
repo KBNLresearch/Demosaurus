@@ -1,8 +1,9 @@
 demosaurus-webapp/demosaurus/static/covers/*
 data/
 Surfdrive/
-demosaurus-webapp/config.txt
+demosauruswebapp/config.txt
 ignore-files/
+dataprocessing/Nizarsrc/
 
 
 # Byte-compiled / optimized / DLL files
