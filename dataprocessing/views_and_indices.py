@@ -34,25 +34,31 @@ def set_fts5(db='../data/demosaurus.sqlite'):
 		con.execute("INSERT INTO author_fts5 SELECT author_ppn, searchkey, name, name_normalized, familyname FROM author_name_options ;")
 	return
 
-def author_view_for_feature(feature_name, specifications=[], suffix='', dataset = ''):
+def author_view_for_feature(feature_name, specifications=[], suffix='', dataset = '', from_basic_info = False):
 	"""Create statement for database view for feature_name (e.g. 'CBK_genre')
 	   As a relation between author (author_ppn), feature_id and count(publications)
 	   NB: only for training split of dataset
 	"""
 	view_name = 'author_' + feature_name + suffix + '_'+dataset
-	table_name = 'publication_' + feature_name
+	if from_basic_info:
+		table_name = 'publication_basicinfo'
+		term_identifier = feature_name
+	else:
+		table_name = 'publication_' + feature_name
+		term_identifier = 'term_identifier'
 
-	statement = f"CREATE VIEW {view_name} AS ".format(view_name=view_name)
-	statement += "\nSELECT author_ppn, term_identifier, COUNT(t1.publication_ppn) AS nPublications "
-	statement += "\nFROM publication_contributors_train_{dataset} t1".format(dataset=dataset)
-	statement += "\nJOIN {table_name} t2 ON t2.publication_ppn = t1.publication_ppn".format(table_name=table_name)
+
+	statement = f"\nCREATE VIEW {view_name} AS "
+	statement += f"\nSELECT author_ppn, {term_identifier} AS term_identifier, COUNT(t1.publication_ppn) AS nPublications "
+	statement += f"\nFROM publication_contributors_train_{dataset} t1"
+	statement += f"\nJOIN {table_name} t2 ON t2.publication_ppn = t1.publication_ppn"
 	for table, _, _ in specifications:
-		statement += "\nJOIN {table} ON {table}.identifier = t2.term_identifier".format(table=table)
+		statement += f"\nJOIN {table} ON {table}.identifier = t2.term_identifier"
 	statement += "\nWHERE author_ppn IS NOT NULL"
-	statement += "\nAND t2.term_identifier IS NOT NULL"
+	statement += f"\nAND t2.{term_identifier} IS NOT NULL"
 	for table, column, value in specifications:
-		statement += "\nAND {table}.{column}={value}".format(table=table, column=column, value=value)
-	statement += "\nGROUP BY author_ppn, term_identifier;"
+		statement += f"\nAND {table}.{column}={value}"
+	statement += f"\nGROUP BY author_ppn, {term_identifier};"
 	return (view_name, statement)
 
 def author_views(dataset):
@@ -65,6 +71,10 @@ def author_views(dataset):
 	statements[view_name] = statement
 	view_name, statement = author_view_for_feature('brinkman', specifications=[('thesaurus_brinkmantrefwoorden', 'brinkman_kind_id', 1)],
 							suffix='_zaak', dataset=dataset)
+	statements[view_name] = statement
+	view_name, statement = author_view_for_feature('jaar_van_uitgave', dataset=dataset, from_basic_info=True)
+	statements[view_name] = statement
+	view_name, statement = author_view_for_feature('contributors', dataset=dataset, from_basic_info=True)
 	statements[view_name] = statement
 	return statements
 
