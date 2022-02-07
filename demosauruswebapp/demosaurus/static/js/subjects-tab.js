@@ -4,21 +4,23 @@ $(document).ready(function() {
   // Do not pre-fill the subject terms
   }
   else{
-      console.log(genres);
+      console.log('genres', genres);
 
-      genreCategories = ['brinkman', 'CBK_genre'];
+      genreCategories = ['brinkman_vorm', 'CBK_genre'];
       for (var category of genreCategories){
-        listOfsubjects = genres[category];
-        for (var subject of listOfsubjects){
+        listOfGenres = genres[category];
+        table_name = category.includes('brinkman')? 'brinkman':category
+        for (var subject of listOfGenres){
             subjectString = subject['identifier']+' - '+subject['term'];
-            addSubjectRow(category, subject['term'], subject['identifier']);
+            addSubjectRow(table_name, 'vorm', subject['term'], subject['identifier']);
         }
       }
-      subjectCategories = ['brinkman'];
+      subjectCategories = ['brinkman_zaak'];
       for (var category of subjectCategories){
-        listOfsubjects = subjects[category];
-        for (var subject of listOfsubjects){
-            addSubjectRow(category, subject['term'], subject['identifier']);
+        listOfSubjects = subjects[category];
+        table_name = category.includes('brinkman')? 'brinkman':category
+        for (var subject of listOfSubjects){
+            addSubjectRow(table_name, 'kind', subject['term'], subject['identifier']);
         }
       }
     }
