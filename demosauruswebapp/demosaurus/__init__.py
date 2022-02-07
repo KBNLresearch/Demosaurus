@@ -3,9 +3,12 @@ import os
 from flask import Flask, render_template, request, redirect, send_from_directory
 from flask_jsglue import JSGlue
 
-def create_app(test_config=None, SECRET_KEY='dev'):
+def create_app(test_config=None, SECRET_KEY='dev', instance_path = ''):
     # create and configure the app
-    app = Flask(__name__, instance_relative_config=True)
+    if not instance_path:
+        app = Flask(__name__, instance_relative_config=True)
+    else:
+        app = Flask(__name__, instance_path=instance_path)
     app.config.from_mapping(
         SECRET_KEY=SECRET_KEY,
         DATABASE=os.path.join(app.instance_path, 'demosaurus.sqlite'),
