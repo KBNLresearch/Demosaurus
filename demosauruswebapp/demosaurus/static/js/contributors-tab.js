@@ -130,14 +130,19 @@ function search_for_candidates(index){
           return (row.birthyear|| '') +'-'+(row.deathyear|| '');
         }},
         { "data" : "score", render: function ( data, type, row ) {
-          if (isNaN(row.score)) {
+          try {
+            return row.score.toFixed(2);
+          }
+          catch (TypeError) {
             return row.score
           }
-          else
-            $('td', row).css('color', getColorForPercentage(row.score));
-            return row.score.toFixed(2);
         }, className: "match_cell"}
-      ]
+      ],
+       "rowCallback": function( row, data, index ) {
+         if (! isNaN(data.score)) {
+            $('td.match_cell', row).css('background-color', getColorForPercentage(data.score));
+         }
+        }
     });
   }
 
