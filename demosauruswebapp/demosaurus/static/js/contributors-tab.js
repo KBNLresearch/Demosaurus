@@ -111,14 +111,12 @@ function search_for_candidates(index){
         { "data" : "author_ppn", className: "pick-author"
         },
         { "data" : "foaf_name"
-        //, render: function( data, type, row ){
-        //  try {var role = $('#role_'+index).val().match(/\[(.*?)\]/)[1];}
-        //  catch(e) {var role = null; }
-        //  var context = {'Title':$('#publication_title').textContent, 'Role':role};
-        //  return $('<a class="action"  title="Details" href="#" onClick="open_popup(\''+Flask.url_for('contributor.authorpage', context)+'\')"; return false;>').text(row.foaf_name)
-          // For some reason, the above does not work: it cannot find the proper endpoint for contributor.authorpage
-          // Also, how does the author_ppn get passed again??
-        //}
+          , render: function( data, type, row ){
+            try {var role = $('#role_'+index).val().match(/\[(.*?)\]/)[1];}
+              catch(e) {var role = null; }
+              var context = {'id':row.author_ppn, 'Title':$('#publication_title').textContent, 'Role':role};
+              return '<a class="action"  title="Details" href="#" onClick="open_popup(\''+Flask.url_for('contributor.authorpage', context)+'\')"; return false;>'+row.foaf_name+'</a>';
+        }
         },
         { "data" : "isni", render: function( data, type, row ){
           return row.isni?'X':'-';
@@ -160,35 +158,6 @@ $('#candidate_list').on('click', 'td.pick-author', function () {
    choose_ppn($(this).text())
     } );
 
-
-
-function thesaureer_response(response, contributor_row) {
-  // Determine context for display on contributor page
-  try {var role = $('#role_'+contributor_row).val().match(/\[(.*?)\]/)[1];}
-  catch(e) {var role = null; }
-  var context = {'Title':$('#publication_title').val(), 'Role':role};
-
-  for(var i = 0; i<response.length; i++){
-    //add_to_candidate_list(response[i], context);
-    console.log('add_to_candidate_list now')
-    console.log(response[i])
-    var years = [response[i].birthyear,'-',response[i].deathyear].join('');
-    context['id']=response[i].author_ppn;
-    color = getColorForPercentage(response[i].score);
-
-    $("#candidate_list > tbody").append($('<tr onclick="choose_ppn(\''+response[i].author_ppn+'\')"; return false;>')
-    .append($('<td>').append('<input onclick="delete_row(this);" type="button" value="&#xf2ed;" class="fas fa-trash-alt" title="Verwijder naam" padding="0px">'))
-    .append($('<td class="ppn_cell" >').text(response[i].author_ppn))
-    .append($('<td class="name_cell">')
-    .append($('<a class="action"  title="Details" href="#" onClick="open_popup(\''+Flask.url_for('contributor.authorpage', context)+'\')"; return false;>')
-    .text(response[i].foaf_name)))
-    .append($('<td>').html((response[i].isni?'&#10003;':'')))
-    .append($('<td class="name_cell" title="'+candidate_note(response[i])+'">').text(candidate_note(response[i])).tooltip())
-    .append($('<td class="years_cell">')
-    .text(years))
-    .append($('<td class="match_cell" data-rij="' + i + '" id="thesMatchTt" style="background-color:'+color+'">').text(Math.round(100*response[i].score)))
-    )
-  };
   // Hover div on Match with sub-scores.
   $('.match_cell').hover(
   // ipv hover, kolommen wel/niet tonen? https://datatables.net/examples/api/show_hide.html
