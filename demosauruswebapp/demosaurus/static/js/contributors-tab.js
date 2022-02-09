@@ -62,15 +62,6 @@ function deactivate_rows() {
   $(".role").css("backgroundColor","");    
 }
 
-  // Hover over Match column shows scores.
-  $(function() {
-      $('#authorMatchTt').tooltip({ content: $('#authorMatchHover').html() });
-  });
-
-  $(function() {
-      $('#thesMatchTt').tooltip({ content: $('#thesMatchHover').html() });
-  });
-
 function candidate_note(candidaterow){
   return ''
     +(candidaterow.skopenote_nl || '')+' '
@@ -108,7 +99,7 @@ function search_for_candidates(index){
       },
       columns: [
         { "data": null, className: "dt-center editor-delete", defaultContent: '<i class="fa fa-trash"/>', orderable: false},
-        { "data" : "author_ppn", className: "pick-author"
+        { "data" : "author_ppn", className: "pick-author highlight", tooltip: "<span class='name_column_tip'>Kies auteur</span>"
         },
         { "data" : "foaf_name"
           , render: function( data, type, row ){
@@ -146,7 +137,6 @@ function search_for_candidates(index){
   }
 
 $('#candidate_list').on('click', 'td.editor-delete', function () {
-   console.log('Delete',this)
         candidates
           .row( $(this).parents('tr') )
           .remove()
@@ -154,54 +144,9 @@ $('#candidate_list').on('click', 'td.editor-delete', function () {
     } );
 
 $('#candidate_list').on('click', 'td.pick-author', function () {
-   console.log('Pick',this)
    choose_ppn($(this).text())
     } );
 
-  // Hover div on Match with sub-scores.
-  $('.match_cell').hover(
-  // ipv hover, kolommen wel/niet tonen? https://datatables.net/examples/api/show_hide.html
-  function() {
-    console.log('hover over match')
-    var tooltipValues = [];
-    //$('#tttb2').text(Math.round(response[$(this).data("rij")]["role_score"]*100) + '%');
-    //$('#tttb3').text(Math.round(response[$(this).data("rij")]["role_confidence"]*100) + '%');
-
-    $('#tttb5').text(Math.round($(this).data["genre_score"]*100) + '%');
-    $('#tttb6').text(Math.round($(this).data["genre_confidence"]*100) + '%');
-
-    $('#tttb14').text(Math.round($(this).data["name_score"]*100) + '%');
-    $('#tttb15').text(Math.round($(this).data["name_confidence"]*100) + '%');
-
-    $('#tttb8').text(Math.round($(this).data["jvu_score"]*100) + '%');
-    $('#tttb9').text(Math.round($(this).data["jvu_confidence"]*100) + '%');
-
-    var tooltip = $("<div class='tooltip'>" + $('#thesMatchHover').html() + "</div>")
-      .css({
-        'color': '#363838',
-        'position': 'absolute',
-        'zIndex': '99999',
-        'width': '200px',
-        'right':'150px',
-        'height': '150px',
-        'background-color': 'rgba(34, 204, 240, 0)',
-      });
-    $(this).append(tooltip);
-  },
-  function() {
-    $('.tooltip').remove();
-    }
-  );
-  $('#candidate_list').DataTable({ordering: false});
-
-  $('#candidate_list').on('click', '.fas.fa-trash-alt', function(){
-    var cl = $('#candidate_list').DataTable();
-    cl
-      .row($(this).parents('tr'))
-      .remove()
-      .draw();
-  });
-};
 
 function choose_ppn(ppn) {
   console.log('Choose', ppn);

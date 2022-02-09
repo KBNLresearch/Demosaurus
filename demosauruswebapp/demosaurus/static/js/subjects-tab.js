@@ -119,8 +119,8 @@ function displayResults(resultList, category, subcategory) {
       term = value.label;
       color=getColorForPercentage(value.score);
       $('#annif-results-table > tbody').append(
-        $('<tr onclick="addSubjectRow(\''+category+'\',\''+subcategory+'\',\''+ term+'\',\''+ identifier+'\')" title="Selecteer term">')
-        .append($('<td >')
+        $('<tr>')
+        .append($('<td class="highlight" onclick="addSubjectRow(\''+category+'\',\''+subcategory+'\',\''+ term+'\',\''+ identifier+'\')" title="Selecteer term">')
                  .text(term)
                 )
         .append($('<td class="match_cell" style="background-color:'+color+'">').text(Math.round(value.score * 1000)/10))

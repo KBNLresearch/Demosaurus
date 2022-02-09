@@ -80,9 +80,10 @@ textarea {
 
 .zebra tr:nth-child(odd){background: hsla(46, 78%, 90%, 1);}
 .zebra tr:nth-child(even){background: hsla(46, 78%, 80%, 1);}
-.zebra tr:hover {
-  background: hsla(46, 78%, 70%, 1);
-}
+/*.zebra tr:hover {  background: hsla(46, 78%, 70%, 1);}
+*/
+
+.highlight:hover {background: hsla(46, 78%, 70%, 1);}
 
 /* Table with extra info author and publication on 'authorpage.html' and 'view.html' */
 .tbinfo td:first-child { font-weight: bold; white-space: nowrap; padding-right: 20px; width: 1em; }
