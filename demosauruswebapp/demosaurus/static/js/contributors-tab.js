@@ -108,7 +108,8 @@ function search_for_candidates(index){
       },
       columns: [
         { "data": null, className: "dt-center editor-delete", defaultContent: '<i class="fa fa-trash"/>', orderable: false},
-        { "data" : "author_ppn" },
+        { "data" : "author_ppn", className: "pick-author"
+        },
         { "data" : "foaf_name"
         //, render: function( data, type, row ){
         //  try {var role = $('#role_'+index).val().match(/\[(.*?)\]/)[1];}
@@ -153,6 +154,13 @@ $('#candidate_list').on('click', 'td.editor-delete', function () {
           .remove()
           .draw();
     } );
+
+$('#candidate_list').on('click', 'td.pick-author', function () {
+   console.log('Pick',this)
+   choose_ppn($(this).text())
+    } );
+
+
 
 function thesaureer_response(response, contributor_row) {
   // Determine context for display on contributor page
@@ -224,7 +232,6 @@ function thesaureer_response(response, contributor_row) {
       .remove()
       .draw();
   });
-
 };
 
 function choose_ppn(ppn) {
