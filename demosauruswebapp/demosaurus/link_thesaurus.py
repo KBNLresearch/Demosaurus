@@ -40,7 +40,7 @@ def thesaureer():
 def wrap_publication_info(request_args):
     features_to_obtain = { # scores that will be reported on in the end, plus which columns to use to compute them
         'nominal': {},#{'role':['role']},
-        'ordinal': {},#'year':['jaar_van_uitgave']},
+        'ordinal': {'year':['jaar_van_uitgave']},
         'textual': {}}
     publication_genres = json.loads(request_args.get('publication_genres', '', type=str))
     features_to_obtain['nominal']['genre'] = [genre for genre, identifiers in publication_genres.items() if len(identifiers)>0]
@@ -67,84 +67,90 @@ def mask(a):
     return np.ma.MaskedArray(a, mask=np.isnan(a))
 
 def obtain_and_score_candidates(author_name, wrapped_publication, features_to_obtain):
-    features = [f
+    candidates, similarity_data = obtain_candidates(author_name,
+        features=[f # flattened list for obtaining: interact with database just once
                 for f_kind, f_dict in features_to_obtain.items()
                 for f_name, f_list in f_dict.items()
-                for f in f_list] # flattened list for obtaining: interact with database just once
-
-    candidates, similarity_data = obtain_candidates(author_name, features=features)
+                for f in f_list])
     if len(candidates) == 0:
         return candidates
-
-    for f_kind, f_dict in features_to_obtain.items():
-        if len(f_dict) == 0:
-            continue
-        feature_list = [f for f_list in f_dict.values() for f in f_list]
-        # flattened list for obtaining partial scores: same for all nominal features/all ordinal features/etc
-        if f_kind == 'nominal': score_function = score_nominal
-        elif f_kind == 'ordinal': score_function = score_ordinal
-        else: score_function = None # todo
-        partial_scores = score_function(similarity_data, wrapped_publication, feature_list)
-
-        for feature_name, feature_list in f_dict.items():
-            # combine partial scores into one single score for presentation
-            score_items = [feature + '_score' for feature in feature_list]
-            weight_items = [feature + '_confidence' for feature in feature_list]
-            score_confidence = partial_scores.apply(
-                lambda row: np.average(row.loc[score_items], weights=row.loc[weight_items], returned=True), result_type='expand', axis=1)
-            candidates = candidates.merge(score_confidence, left_on='author_ppn',right_index=True).rename(
-                {0:feature_name+'_score', 1:feature_name + '_confidence'}, axis = 1)
-    feature_list = ['genre']
-    score_items = [feature + '_score' for feature in feature_list]
-    weight_items = [feature + '_confidence' for feature in feature_list]
-    candidates['score'] = candidates.apply(
-        lambda row: np.average(row.loc[score_items], weights=row.loc[weight_items]), axis=1)
-    candidates['support'] = candidates.apply(
-        lambda row: np.sum(row.loc[weight_items]), axis=1)
+    else:
+        scores = score_candidates(similarity_data,wrapped_publication,features_to_obtain)
+        candidates  = candidates.merge(scores,  left_on='author_ppn',  right_index=True)
     return candidates.sort_values(ascending=False, by=['score','support'])
 
 
-def score_nominal(similarity_data, this_publication, features):
+
+def score_candidates(similarity_data, wrapped_publication, features_to_obtain):
+    all_scores = pd.DataFrame(index=similarity_data.author_ppn.unique())
+    for f_kind, f_dict in features_to_obtain.items():
+        if len(f_dict) == 0:
+            continue
+        for feature_name, feature_list in f_dict.items():
+            partial_scores = {}
+            for feature in feature_list:
+                feature_data = \
+                    similarity_data[['author_ppn', feature, 'knownPublications']] \
+                        .dropna(subset=[feature]) \
+                        .merge(
+                        wrapped_publication[[feature, 'this_publication']] \
+                            .dropna(subset=[feature]),
+                        how='outer').fillna(0)
+                partial_scores[feature + '_score'], partial_scores[feature + '_confidence'] = score_functions[f_kind](
+                    feature_data,feature)
+
+            # combine partial scores into one single score for presentation
+            score_items = [feature + '_score' for feature in feature_list]
+            weight_items = [feature + '_confidence' for feature in feature_list]
+            score_confidence = pd.DataFrame(partial_scores).apply(
+                lambda row: np.average(row.loc[score_items], weights=row.loc[weight_items], returned=True), result_type='expand', axis=1)
+            # insert combined scores into candidates dataframe
+            all_scores = all_scores.merge(score_confidence,left_index=True, right_index=True).rename(
+                {0:feature_name+'_score', 1:feature_name + '_confidence'}, axis = 1)
+    # combine scores per feature group into a single overall score for ordering candidates
+    feature_list = ['genre','year']
+    score_items = [feature + '_score' for feature in feature_list]
+    weight_items = [feature + '_confidence' for feature in feature_list]
+    all_scores['score'] = all_scores.apply(
+        lambda row: np.average(row.loc[score_items], weights=row.loc[weight_items]), axis=1)
+    all_scores['support'] = all_scores.apply(
+        lambda row: np.sum(row.loc[weight_items]), axis=1)
+    return all_scores
+
+
+def score_nominal(feature_data, feature_column):
     """
         Determine score (0-1) and confidence (0-1) for an author given the publication and their known publications
-        Based on information in fields corresponding to <features>
-        this_publication:   the information of the publication to be compared to
-                            a pandas DataFrame with in every row:
-                             - one non-NaN identifier
-                             - the corresponding count (1)
-        similarity_data:    the information about authors to be compared to
-                            a pandas DataFrame with in every row:
-                             - the pica identifier (PPN) for an author
-                             - one non-NaN identifier
-                             - the corresponding count for that author
+        grouped:   a pandas DataFrameGroupBy with every group corresponding to an author with columns:
+                    rows correspond to feature occurrences, e.g. a specific subject term
+                    columns:
+                    - knownPublications (int): how many publications by that author are known to have the feature occurrence
+                    - this_publication (int 1/0): whether the publication under review has that feature occurrence
         """
-    scores = pd.DataFrame(index=similarity_data.author_ppn.unique())
-    for feature in features:
-        feature_data = \
-            similarity_data[['author_ppn', feature, 'knownPublications']] \
-                .dropna(subset=[feature]) \
-            .merge(
-                this_publication[[feature, 'this_publication']] \
-                    .dropna(subset=[feature]),
-                how='outer').fillna(0)
-        grouped = feature_data.groupby('author_ppn')
-        scores[feature+'_score'] = grouped.apply(lambda author:
+    grouped = feature_data.groupby('author_ppn')
+    score = grouped.apply(lambda author:
                 1 - spatial_distance.cosine(author.knownPublications,
                                             author.this_publication))
-        known = grouped['knownPublications'].sum()
-        scores[feature + '_confidence'] = known / (known + 20)
-            # need approx. 20 datapoints to make a somewhat reliable estimate (50% sure)
-            # Temporary fix to get some estimate on reliability
-        #scores[feature + '_confidence'] = scores[feature + '_confidence'].fillna(0)
-    return scores
+    known = grouped['knownPublications'].sum()
+    confidence = known / (known + 20)
+        # need approx. 20 datapoints to make a somewhat reliable estimate (50% sure)
+        # Temporary fix to get some estimate on reliability
+    return score, confidence
 
-def score_ordinal(similarity_data, this_publication, features):
-    scores = pd.DataFrame(index=similarity_data.author_ppn.unique())
-    for feature in features:
-        continue
-        # do stuff
-    return scores
+def score_ordinal(feature_data,feature_column):
+    this_value = feature_data.loc[lambda x: x.this_publication==1, feature_column].iloc[0]
+    grouped = feature_data.groupby('author_ppn')
+    # fit a normal distribution (described by my,sigma) for every author
+    mu_sigma = grouped.apply(lambda author:
+                             stats.norm.fit(np.repeat(author[feature_column], author.knownPublications)))
+    # sigma should be at least 5: publications are still likely (70%) 5 years from any known publication
+    # normalize by top of the distribution: we want a score of 1 for the mean
+    score = mu_sigma.apply(lambda row: stats.norm.pdf(this_value, max(5,row[0]), row[1])/stats.norm.pdf(row[0], row[0], row[1]))
+    known = grouped['knownPublications'].sum()
+    confidence = known / (known + 20)
+    return score, confidence
 
+score_functions = {'nominal':  score_nominal, 'ordinal': score_ordinal}
 
 def candidates_with_features_query(candidates_query):
     return "WITH candidates AS (" + candidates_query + """)
@@ -182,29 +188,6 @@ def obtain_candidates(author_name, features):
     similarity_data = pd.read_sql_query(q2, params=params, con=get_db())
     print('Obtain candidates - time elapsed:', time.time() - start)
     return candidates, similarity_data
-
-def score_year(author_ppn, publication_year):
-    try:
-        year = int (publication_year['jaar_van_uitgave'][0])
-        known_info = obtain_similarity_data(author_ppn, publication_year)
-    except:
-        known_info = pd.DataFrame([])
-
-    if len(known_info) == 0:
-        # no information available to make a sane comparison
-        score = 0
-        confidence = 0
-    else:
-        # fit a normal distribution to the data points
-        mu, sigma = stats.norm.fit(np.repeat(known_info.jaar_van_uitgave, known_info.knownPublications))
-        sigma = max(sigma, 5) # sigma should be at least 5: publications are still likely (70%) 5 years from any known publication
-        top = stats.norm.pdf(mu, mu, sigma) # determine top
-        score = stats.norm.pdf(year, mu, sigma)/top # normalize by top: we want a score of 1 for the mean
-        # estimate confidence:
-        known = known_info.knownPublications.sum()
-        confidence= known/(known+20) # need approx. 20 datapoints to make a somewhat reliable estimate (50% sure)
-
-    return pd.Series([score, confidence], index=['jvu_score', 'jvu_confidence'])
 
 def score_names(authorshipItem, author_name):
     return pd.Series([0, 0], index=['name_score', 'name_confidence'])
