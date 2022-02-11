@@ -20,9 +20,6 @@ function open_popup (url, width=700, height=400) {
 
 function openTab(evt, tabName){
     // Declare all variables
-
-  console.log('Open tab', tabName)
-
   var i, tabcontent, tablinks;
 
   // Get all elements with class="tabcontent" and hide them
@@ -31,15 +28,8 @@ function openTab(evt, tabName){
     tabcontent[i].style.display = "none";
   }
   document.getElementById(tabName).style.display = "block";
-  
-//  // When switching tabs, also show the corresponding results (2nd half of page).
-//  // FIX: doesn't show back after hiding, .style.display = "block"; ?
-//  bottomcontent = document.getElementsByClassName("bottomcontent");
-//  for (i = 0; i < bottomcontent.length; i++) {
-//    bottomcontent[i].style.display = "none";
-//  }
 
-  // Get all elements with class="tablinks" and remove the class "active"
+   // Get all elements with class="tablinks" and remove the class "active"
   tablinks = document.getElementsByClassName("tablinks");
   for (i = 0; i < tablinks.length; i++) {
     tablinks[i].className = tablinks[i].className.replace(" active", "");
@@ -76,7 +66,6 @@ var getColorForPercentage = function(this_perc, saturation=1.0, low=0.5) {
     };
     return 'rgba(' + [color.r, color.g, color.b, saturation].join(',') + ')';
   };
-  
 
   // DataTabel.js init interactive tables.
   $(document).ready( function () {
@@ -85,6 +74,4 @@ var getColorForPercentage = function(this_perc, saturation=1.0, low=0.5) {
       "pageLength":20,
       "searching": true
     } );
-
-
   });
