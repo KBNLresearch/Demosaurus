@@ -120,18 +120,31 @@ function search_for_candidates(index){
           return (row.birthyear|| '') +'-'+(row.deathyear|| '');
         }},
         { "data" : "score", render: function ( data, type, row ) {
-          try {
-            return row.score.toFixed(2);
-          }
-          catch (TypeError) {
-            return row.score
-          }
-        }, className: "match_cell"}
+          var score_show = row.score===null?row.score:Math.round(100*row.score)+'%';
+          var score_hover = '<div title="Alle subscores"</div>'
+          return type === 'display'? score_hover + score_show : score_show;
+//
+          //return score_show;
+        }, className: "match_cell"},
       ],
        "rowCallback": function( row, data, index ) {
          if (! isNaN(data.score)) {
             $('td.match_cell', row).css('background-color', getColorForPercentage(data.score));
          }
+         var score_hover = '<div><table><thead><tr><th/><th>Score</th><th>Confidence</th></tr></thead><tbody>'
+         var scores_to_show = [['Genre',data.genre_score,data.genre_confidence], ['Rol',data.role_score,data.role_confidence],['Jaar',data.year_score,data.year_confidence]];
+
+         for (var i=0; i < scores_to_show.length; i++) {
+           console.log(scores_to_show[i])
+           scorename = scores_to_show[i][0]
+           subscore = scores_to_show[i][1]
+           scorestring = subscore===null?subscore:Math.round(100*subscore)+'%'
+           subconfidence = scores_to_show[i][2]
+           confidencestring = subconfidence===null?subconfidence:Math.round(100*subconfidence)+'%'
+           score_hover += '<tr><td>'+scorename+'</td><td>'+scorestring+'</td><td>'+confidencestring+'</td></tr>'
+         }
+         score_hover += '</tbody></table></div>'
+        $('td.match_cell', row).tooltip({content: score_hover})
         }
     });
   }
@@ -144,11 +157,5 @@ $('#candidate_list').on('click', 'td.editor-delete', function () {
     } );
 
 $('#candidate_list').on('click', 'td.pick-author', function () {
-   choose_ppn($(this).text())
+   $('#ppn_'+focus_index).val($(this).text());
     } );
-
-
-function choose_ppn(ppn) {
-  console.log('Choose', ppn);
-  $('#ppn_'+focus_index).val(ppn);
-}
