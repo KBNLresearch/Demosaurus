@@ -34,31 +34,29 @@ def set_fts5(db='../data/demosaurus.sqlite'):
 		con.execute("INSERT INTO author_fts5 SELECT author_ppn, searchkey, name, name_normalized, familyname FROM author_name_options ;")
 	return
 
-def author_view_for_feature(feature_name, specifications=[], suffix='', dataset = '', from_basic_info = False):
+def author_view_for_feature(feature_name, specifications=[], suffix='', dataset = '', table_name='', feature_column='term_identifier'):
 	"""Create statement for database view for feature_name (e.g. 'CBK_genre')
 	   As a relation between author (author_ppn), feature_id and count(publications)
 	   NB: only for training split of dataset
 	"""
 	view_name = 'author_' + feature_name + suffix + '_'+dataset
-	if from_basic_info:
-		table_name = 'publication_basicinfo'
-		term_identifier = feature_name
-	else:
+	if not table_name:
 		table_name = 'publication_' + feature_name
-		term_identifier = 'term_identifier'
+	if not feature_column:
+		feature_column = feature_name
 
 
 	statement = f"\nCREATE VIEW {view_name} AS "
-	statement += f"\nSELECT author_ppn, {term_identifier} AS term_identifier, COUNT(t1.publication_ppn) AS nPublications "
+	statement += f"\nSELECT t1.author_ppn, t2.{feature_column} AS term_identifier, COUNT(t1.publication_ppn) AS nPublications "
 	statement += f"\nFROM publication_contributors_train_{dataset} t1"
 	statement += f"\nJOIN {table_name} t2 ON t2.publication_ppn = t1.publication_ppn"
 	for table, _, _ in specifications:
 		statement += f"\nJOIN {table} ON {table}.identifier = t2.term_identifier"
-	statement += "\nWHERE author_ppn IS NOT NULL"
-	statement += f"\nAND t2.{term_identifier} IS NOT NULL"
+	statement += "\nWHERE t1.author_ppn IS NOT NULL"
+	statement += f"\nAND t2.{feature_column} IS NOT NULL"
 	for table, column, value in specifications:
 		statement += f"\nAND {table}.{column}={value}"
-	statement += f"\nGROUP BY author_ppn, {term_identifier};"
+	statement += f"\nGROUP BY t1.author_ppn, t2.{feature_column};"
 	return (view_name, statement)
 
 def author_views(dataset):
@@ -72,21 +70,22 @@ def author_views(dataset):
 	view_name, statement = author_view_for_feature('brinkman', specifications=[('thesaurus_brinkmantrefwoorden', 'brinkman_kind_id', 1)],
 							suffix='_zaak', dataset=dataset)
 	statements[view_name] = statement
-	view_name, statement = author_view_for_feature('jaar_van_uitgave', dataset=dataset, from_basic_info=True)
+	view_name, statement = author_view_for_feature('jaar_van_uitgave', dataset=dataset, table_name= 'publication_basic_info', feature_column=None)
 	statements[view_name] = statement
-	view_name, statement = author_view_for_feature('contributors', dataset=dataset, from_basic_info=True)
+	view_name, statement = author_view_for_feature('role', dataset=dataset, table_name= 'publication_contributors', feature_column='role')
 	statements[view_name] = statement
 	return statements
 
 def create_views(db = '../data/demosaurus.sqlite'):
-	statements = {}
-	statements.update(train_test_views(dataset='NBD'))
-	statements.update(author_views(dataset='NBD'))
+	statements = author_views(dataset='NBD')
+	#statements.update(train_test_views(dataset='NBD'))
+	#statements.update(author_views(dataset='NBD'))
 
 	with sqlite3.connect(db) as con:
 		c = con.cursor()
 		for view_name, statement in statements.items():
 			c.execute('DROP VIEW IF EXISTS %s;' % view_name)
+			print(view_name, statement)
 			c.execute(statement)
 
 def create_indices(db = '../data/demosaurus.sqlite'):
