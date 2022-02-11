@@ -39,7 +39,7 @@ def thesaureer():
 
 def wrap_publication_info(request_args):
     features_to_obtain = { # scores that will be reported on in the end, plus which columns to use to compute them
-        'nominal': {},#{'role':['role']},
+        'nominal': {'role':['role']},
         'ordinal': {'year':['jaar_van_uitgave']},
         'textual': {}}
     publication_genres = json.loads(request_args.get('publication_genres', '', type=str))
@@ -102,8 +102,9 @@ def score_candidates(similarity_data, wrapped_publication, features_to_obtain):
             # combine partial scores into one single score for presentation
             score_items = [feature + '_score' for feature in feature_list]
             weight_items = [feature + '_confidence' for feature in feature_list]
+
             score_confidence = pd.DataFrame(partial_scores).apply(
-                lambda row: np.average(row.loc[score_items], weights=row.loc[weight_items], returned=True), result_type='expand', axis=1)
+                lambda row: np.average(row.loc[score_items], weights=row.loc[weight_items], returned=True) if np.sum(row.loc[weight_items])>0 else (0,0), result_type='expand', axis=1)
             # insert combined scores into candidates dataframe
             all_scores = all_scores.merge(score_confidence,left_index=True, right_index=True).rename(
                 {0:feature_name+'_score', 1:feature_name + '_confidence'}, axis = 1)
