@@ -123,7 +123,7 @@ function search_for_candidates(index){
           return (row.birthyear|| '') +'-'+(row.deathyear|| '');
         }},
         { "data" : "score", render: function ( data, type, row ) {
-          var score_show = row.score===null?'':Math.round(100*row.score)+'%';
+          var score_show = (row.score===null || typeof(row.score)==='undefined')?'':Math.round(100*row.score)+'%';
           var score_hover = '<div title="Alle subscores"</div>' // I have no clue why deleting this bit renders the tooltip created in rowCallback useless..
           return type === 'display'? score_hover + score_show : score_show;
         }, className: "match_cell"},
@@ -141,7 +141,7 @@ function search_for_candidates(index){
            subscore = scores_to_show[i][1]
            scorestring = subscore===null?subscore:Math.round(100*subscore)+'%'
            subconfidence = scores_to_show[i][2]
-           confidencestring = subconfidence===null?'':'('+Math.round(100*subconfidence)+'% zeker)'
+           confidencestring = (subconfidence===null || typeof(subconfidence)==='undefined')?'':'('+Math.round(100*subconfidence)+'% zeker)'
            score_hover += '<tr><th>'+scorename+'</th><td style="text-align:right">'+scorestring+'</td><td style="text-align:right">'+confidencestring+'</td></tr>'
          }
          score_hover += '</tbody></table></div>'
