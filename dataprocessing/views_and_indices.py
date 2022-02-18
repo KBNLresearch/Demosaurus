@@ -34,52 +34,54 @@ def set_fts5(db='../data/demosaurus.sqlite'):
 		con.execute("INSERT INTO author_fts5 SELECT author_ppn, searchkey, name, name_normalized, familyname FROM author_name_options ;")
 	return
 
-def author_view_for_feature(feature_name, specifications=[], suffix='', dataset = '', table_name='', feature_column='term_identifier'):
-	"""Create statement for database view for feature_name (e.g. 'CBK_genre')
-	   As a relation between author (author_ppn), feature_id and count(publications)
-	   NB: only for training split of dataset
-	"""
-	view_name = 'author_' + feature_name + suffix + '_'+dataset
-	if not table_name:
-		table_name = 'publication_' + feature_name
-	if not feature_column:
-		feature_column = feature_name
+def author_aggregated_query():
+	feature_specs = {'CBK_genre':{},
+					 'NUGI_genre':{},
+					 'NUR_rubriek':{},
+					 'brinkman':{'suffix':'_zaak',
+								 'specifications':[('thesaurus_brinkmantrefwoorden', 'brinkman_kind_id', 1)]},
+					 'brinkman': {'suffix': '_vorm',
+								  'specifications': [('thesaurus_brinkmantrefwoorden', 'brinkman_kind_id', 0)]},
+					 'jaar_van_uitgave': {'table_name':'publication_basicinfo', 'feature_column': 'jaar_van_uitgave'},
+					 'role':{'table_name':'publication_contributors', 'feature_column':'role'}
+					 }
+	query = f"""WITH publication_subset AS(
+			SELECT t0.publication_ppn, t0.author_ppn, dataset_id
+			FROM publication_contributors t0
+			JOIN publication_datasplits	t1 ON t1.publication_ppn = t0.publication_ppn
+			JOIN datasplits	ON 	datasplits.datasplit_id = t1.datasplit_id 
+								AND datasplit = 'train'
+			WHERE t0.author_ppn	IS NOT NULL)"""
+	query = f"""WITH publication_subset AS(
+			SELECT t0.publication_ppn, t0.author_ppn
+			FROM publication_contributors_train_NBD t0
+			WHERE t0.author_ppn	IS NOT NULL)"""
+	for i, (feature_name, specs) in enumerate(feature_specs.items()):
+		if i>0: query += "\nUNION"
+		table_name = specs['table_name'] if 'table_name' in specs else 'publication_'+feature_name
+		feature_column = specs['feature_column'] if 'feature_column' in specs else 'term_identifier'
+		suffix = specs['suffix'] if 'suffix' in specs else ''
+		query += f"""
+SELECT 
+	--t1.dataset_id,
+	t1.author_ppn, 
+	t2.{feature_column} AS term, 						
+	'{feature_name}{suffix}' AS term_description, 
+	COUNT(t1.publication_ppn) AS knownPublications
+FROM publication_subset t1
+JOIN {table_name} t2 
+	ON t2.publication_ppn = t1.publication_ppn 
+	AND t2.{feature_column} IS NOT NULL"""
+		if 'specifications' in specs:
+			for table, column, value in specs['specifications']:
+				query += f"\nJOIN {table} ON {table}.identifier = t2.term_identifier AND {table}.{column}={value}"
+		query += f"\nGROUP BY t1.author_ppn, t2.{feature_column}"
+	return query
 
-
-	statement = f"\nCREATE VIEW {view_name} AS "
-	statement += f"\nSELECT t1.author_ppn, t2.{feature_column} AS term_identifier, COUNT(t1.publication_ppn) AS nPublications "
-	statement += f"\nFROM publication_contributors_train_{dataset} t1"
-	statement += f"\nJOIN {table_name} t2 ON t2.publication_ppn = t1.publication_ppn"
-	for table, _, _ in specifications:
-		statement += f"\nJOIN {table} ON {table}.identifier = t2.term_identifier"
-	statement += "\nWHERE t1.author_ppn IS NOT NULL"
-	statement += f"\nAND t2.{feature_column} IS NOT NULL"
-	for table, column, value in specifications:
-		statement += f"\nAND {table}.{column}={value}"
-	statement += f"\nGROUP BY t1.author_ppn, t2.{feature_column};"
-	return (view_name, statement)
-
-def author_views(dataset):
-	statements = {}
-	for feature in ['CBK_genre','NUGI_genre','NUR_rubriek']:
-		view_name, statement = author_view_for_feature(feature, dataset=dataset)
-		statements[view_name] = statement
-	view_name, statement = author_view_for_feature('brinkman', specifications=[('thesaurus_brinkmantrefwoorden', 'brinkman_kind_id', 0)],
-							suffix='_vorm', dataset=dataset)
-	statements[view_name] = statement
-	view_name, statement = author_view_for_feature('brinkman', specifications=[('thesaurus_brinkmantrefwoorden', 'brinkman_kind_id', 1)],
-							suffix='_zaak', dataset=dataset)
-	statements[view_name] = statement
-	view_name, statement = author_view_for_feature('jaar_van_uitgave', dataset=dataset, table_name= 'publication_basic_info', feature_column=None)
-	statements[view_name] = statement
-	view_name, statement = author_view_for_feature('role', dataset=dataset, table_name= 'publication_contributors', feature_column='role')
-	statements[view_name] = statement
-	return statements
 
 def create_views(db = '../data/demosaurus.sqlite'):
-	statements = author_views(dataset='NBD')
+	statements = {'author_aggregated':f'CREATE VIEW author_aggregated AS {author_aggregated_query()}'}
 	#statements.update(train_test_views(dataset='NBD'))
-	#statements.update(author_views(dataset='NBD'))
 
 	with sqlite3.connect(db) as con:
 		c = con.cursor()
