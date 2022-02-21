@@ -38,20 +38,13 @@ def author_aggregated_query():
 	feature_specs = {'CBK_genre':{},
 					 'NUGI_genre':{},
 					 'NUR_rubriek':{},
-					 'brinkman':{'suffix':'_zaak',
+					 'brinkman_zaak':{'table_name':'publication_brinkman',
 								 'specifications':[('thesaurus_brinkmantrefwoorden', 'brinkman_kind_id', 1)]},
-					 'brinkman': {'suffix': '_vorm',
+					 'brinkman_vorm': {'table_name':'publication_brinkman',
 								  'specifications': [('thesaurus_brinkmantrefwoorden', 'brinkman_kind_id', 0)]},
 					 'jaar_van_uitgave': {'table_name':'publication_basicinfo', 'feature_column': 'jaar_van_uitgave'},
 					 'role':{'table_name':'publication_contributors', 'feature_column':'role'}
 					 }
-	query = f"""WITH publication_subset AS(
-			SELECT t0.publication_ppn, t0.author_ppn, dataset_id
-			FROM publication_contributors t0
-			JOIN publication_datasplits	t1 ON t1.publication_ppn = t0.publication_ppn
-			JOIN datasplits	ON 	datasplits.datasplit_id = t1.datasplit_id 
-								AND datasplit = 'train'
-			WHERE t0.author_ppn	IS NOT NULL)"""
 	query = f"""WITH publication_subset AS(
 			SELECT t0.publication_ppn, t0.author_ppn
 			FROM publication_contributors_train_NBD t0
@@ -63,7 +56,6 @@ def author_aggregated_query():
 		suffix = specs['suffix'] if 'suffix' in specs else ''
 		query += f"""
 SELECT 
-	--t1.dataset_id,
 	t1.author_ppn, 
 	t2.{feature_column} AS term, 						
 	'{feature_name}{suffix}' AS term_description, 
