@@ -2,7 +2,7 @@ import rdflib
 import os
 import pandas as pd
 import csv_db
-from demosauruswebapp.demosaurus.link_thesaurus import normalize_name
+from demosauruswebapp.link_thesaurus import normalize_name
 
 
 def obtain_primary_name(graph):
