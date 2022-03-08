@@ -1,10 +1,8 @@
 from flask import (
     Blueprint, flash, g, redirect, render_template, get_template_attribute, request, url_for, jsonify
 )
-from demosauruswebapp.demosaurus.db import get_db
+from demosauruswebapp.db import get_db
 import pandas as pd
-from nltk.metrics import distance as nl_distance
-import re
 import numpy as np
 from scipy.spatial import distance as spatial_distance
 from scipy import stats

@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, render_template, request, redirect, send_from_directory
+from flask import Flask, render_template, send_from_directory
 from flask_jsglue import JSGlue
 
 def create_app(test_config=None, SECRET_KEY='dev', instance_path = ''):
