@@ -1,6 +1,6 @@
 function export_info() {
   console.log('Export button')
-  deactivate_rows();
+  //deactivate_rows();
   $("#export > #message").empty();
 
 //        $('#thesaureer_title').text('KMCS:');
@@ -9,10 +9,7 @@ function export_info() {
     subjects = export_keywords();
 
     $('#export_content').html(authors+subjects);
-
-
   }
-
 
 function export_authors(){
   var allnames = true;

@@ -4,7 +4,8 @@ import read_pica
 import preprocessing
 import read_rdf
 import csv_db
-import views_and_indices
+import views
+import indices
 import os
 import numpy as np
 
@@ -40,6 +41,7 @@ def create_datasplits(set_name, dataset_id, heldout_file=''):
 def apply_preprocessing(dfs, postfix=''):
     # dfs['publication_basicinfo'] = preprocessing.normalize_publishers(dfs['publication_basicinfo'], postfix)
     dfs['publication_CBK_genre'] = preprocessing.CBK_genres_to_identifiers(dfs['publication_CBK_genre'])
+    dfs['publication_contributors'] = preprocessing.normalize_author_names(dfs['publication_contributors'] )
     return dfs
 
 
@@ -93,10 +95,9 @@ if __name__ == '__main__':
     #                  heldout_file = 'data/NBD-pilotdata/KB_validatieset_def.csv')
 
     # Obtain information from CSVs and write to database
-    # for table in csv_db.schemata.keys():
-    #    if table != 'author_name_options': continue
-    #    csv_db.fill_table(table,db='data/demosaurus_NBD.sqlite', overwrite=True, postfix = '_NBD')
+    for table in csv_db.schemata.keys():
+        csv_db.fill_table(table,db='data/demosaurus_NBD.sqlite', overwrite=True, postfix = '_NBD')
 
     # Build indices (+FTS5) and views for regular entries
-    # views_and_indices.create_views(db='data/demosaurus_NBD.sqlite')
-    # views_and_indices.create_indices(db='data/demosaurus_NBD.sqlite')
+    # views.create_views(db='data/demosaurus_NBD.sqlite')
+    # indices.create_indices(db='data/demosaurus_NBD.sqlite')

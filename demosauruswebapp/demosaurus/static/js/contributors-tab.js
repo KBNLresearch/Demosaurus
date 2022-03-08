@@ -1,8 +1,10 @@
+var candidates;
 var focus_index;
 var main_author = true;
 
-$(document).ready(function() {
 
+$(document).ready(function() {
+  $("#candidate_list").hide();
   //if (pilotMode) {
   if (false){
   console.log('in Pilot mode: create first empty row')
@@ -18,6 +20,7 @@ $(document).ready(function() {
       }
   }
   top_main_author();
+
 });
 
 function add_contributor_row(name="", role="") {
@@ -29,7 +32,7 @@ function add_contributor_row(name="", role="") {
     .append($('<td class="name_cell">').append('<input type="text" class="role" id="role_' + maxIndex + '" value="'+ (role? '['+role+']' :'' )+ '">')) // pre-fill the role
     //.append($('<td class="name_cell">').append('<input type="text" class="role" id="role_' + maxIndex + '" value="">')) // do not pre-fill the role
     .append($('<td class="name_cell">').append('<input type="text" class="ppn" id="ppn_' + maxIndex + '">'))
-    .append($('<td>').append('<input onclick="thesaureer('+maxIndex+');" type="button" value="&#xf002" class="fas fa-search" title="Thesaureer naam" id="thesaureerButton_'+maxIndex+'">'))
+    .append($('<td>').append('<input onclick="search_for_candidates('+maxIndex+');" type="button" value="&#xf002" class="fas fa-search" title="Thesaureer naam" id="thesaureerButton_'+maxIndex+'">'))
     .append($('<td class="check_main_author">').append('<input  type="checkbox" value="Primair" checked id="main_'+maxIndex+'">').append('<span>Hoofdauteur</span>'))
     )
   $('input[id="role_' + maxIndex + '"]').autocomplete({
@@ -49,63 +52,16 @@ function top_main_author(){
 function activate_row(index) {
   deactivate_rows();
   focus_index = index;
-
   $('#ppn_'+index).css("background-color","#ddd");
   $('#row_'+index).css("background-color","#ccc");
-
 }
 
 function deactivate_rows() {
   focus_index = -1;
-
   $("#contributortable > tbody > tr").css("backgroundColor","");
   $(".aut_name").css("backgroundColor","");
   $(".ppn").css("backgroundColor","");
   $(".role").css("backgroundColor","");    
-}
-  // Hover over Match column shows scores.
-  $(function() {
-      $('#authorMatchTt').tooltip({ content: $('#authorMatchHover').html() });
-  });
-
-  $(function() {
-      $('#thesMatchTt').tooltip({ content: $('#thesMatchHover').html() });
-  });
-
-function thesaureer(index){
-  console.log(genres)
-
-  $("#candidate_list > tbody").empty()
-  activate_row(index);
-  $("body").css("cursor", "progress");
-  try {var role = $('#role_'+index).val().match(/\[(.*?)\]/)[1];}
-  catch(e) {var role = null; }
-
-  var contributor_name =  $("#aut_name_" + index).val();
-  var data = {
-           'contributor_name' : contributor_name,
-           'contributor_role' : role,
-           'publication_title': $('#publication_title').text(),
-           'publication_genres': JSON.stringify(genres),
-           'publication_year': $('#publicationYear').text()
-         };
-
-  console.log('Thesaureer');
-  console.log(data);
-
-  $.ajax({
-    url: '/thesaureer',
-    data: data,
-    dataType: 'json',
-    context:this,
-    success: function(response){
-      $('#thesaureer_title').text('NTA-records voor '+contributor_name);
-      thesaureer_response(response,index);
-    },
-    error: function(error) {
-      console.log(error);
-    }
-  });
 }
 
 function candidate_note(candidaterow){
@@ -115,132 +71,92 @@ function candidate_note(candidaterow){
     +(candidaterow.editorial_nl || '')+' '
 }
 
+function search_for_candidates(index){
+  $("#candidate_list").show();
+  if ( $.fn.dataTable.isDataTable('#candidate_list') ) {
+      $('#candidate_list').DataTable().destroy();
+    }
+  activate_row(index);
+  try {var role = $('#role_'+index).val().match(/\[(.*?)\]/)[1];}
+  catch(e) {var role = null; }
 
-  function thesaureer_response(response, contributor_row) {
-        // console.log(response);
-        // console.log(contributor_row);
-        $("body").css("cursor", "default");
+  var contributor_name =  $("#aut_name_" + index).val();
+  var data = {
+           'contributor_name' : contributor_name,
+           'contributor_role' : role,
+           'publication_title': $('#publication_title').text(),
+           'publication_genres': JSON.stringify(genres),
+           'publication_year': $('#publicationYear').text(),
+           'extended_search': false
+         };
 
-        if (response.length<1) {
-          $('#placeholder').text('Geen records gevonden');
-          //$("#candidate_list > thead").empty()
-          if ( $.fn.dataTable.isDataTable('#candidate_list') ) {
-            $('#candidate_list').DataTable().destroy();
-            $('#candidate_list tr').remove();
-            $('#candidate_list th').remove();
-          }
+  console.log('Thesaureer');
 
+  console.log(data);
+    candidates = $("#candidate_list").DataTable( {
+      ajax: {
+        "url": '/thesaureer',
+        "data": data,
+        "dataType": 'json',
+        "dataSrc": ''
+      },
+      columns: [
+        { "data": null, className: "dt-center editor-delete", defaultContent: '<i class="fa fa-trash"/>', orderable: false},
+        { "data" : "author_ppn", className: "pick-author highlight", tooltip: "<span class='name_column_tip'>Kies auteur</span>"
+        },
+        { "data" : "foaf_name"
+          , render: function( data, type, row ){
+            try {var role = $('#role_'+index).val().match(/\[(.*?)\]/)[1];}
+              catch(e) {var role = null; }
+              var context = {'id':row.author_ppn, 'Title':$('#publication_title').textContent, 'Role':role};
+              return '<a class="action"  title="Details" href="#" onClick="open_popup(\''+Flask.url_for('contributor.authorpage', context)+'\')"; return false;>'+row.foaf_name+'</a>';
         }
-        else {
+        },
+        { "data" : "isni", render: function( data, type, row ){
+          return row.isni?'X':'-';
+        }},
+        { "data" : "note", render: function( data, type, row ){
+          //$.fn.dataTable.render.ellipsis( 17, true )
+          return candidate_note(row);
+        }},
+        { "data" : "Leefjaren", render: function( data, type, row ){
+          return (row.birthyear|| '') +'-'+(row.deathyear|| '');
+        }},
+        { "data" : "score", render: function ( data, type, row ) {
+          var score_show = (row.score===null || typeof(row.score)==='undefined')?'':Math.round(100*row.score)+'%';
+          var score_hover = '<div title="Alle subscores"</div>' // I have no clue why deleting this bit renders the tooltip created in rowCallback useless..
+          return type === 'display'? score_hover + score_show : score_show;
+        }, className: "match_cell"},
+      ],
+       "rowCallback": function( row, data, index ) {
+         if (! isNaN(data.score)) {
+            $('td.match_cell', row).css('background-color', getColorForPercentage(data.score));
+         }
+         var score_hover = '<div><table><tbody>'
+         var scores_to_show = [['Genre',data.genre_score,data.genre_confidence], ['Rol',data.role_score,data.role_confidence],['Jaar',data.year_score,data.year_confidence]];
 
-          // Destroy datatable if exists, reset #candidate_list table.
-          if ( $.fn.dataTable.isDataTable('#candidate_list') ) {
-            $('#candidate_list').DataTable().destroy();
-            $('#candidate_list tr').remove();
-            $('#candidate_list th').remove();
-          }
-
-          $('#placeholder').empty()
-          if ($("#candidate_list > thead > tr").length<1){
-              $("#candidate_list > thead").append($('<tr>')
-                .append($('<th scope="col" padding="0px">').html(""))
-                .append($('<th scope="col" class="ppn_cell">').text('PPN'))
-                .append($('<th scope="col" class="name_cell">').text('Naam'))
-                .append($('<th scope="col">').text('ISNI'))
-                .append($('<th scope="col" class="name_cell">').text('Notitie'))
-                .append($('<th scope="col" class="years_cell">').text('Leefjaren'))
-                .append($('<th scope="col" class="match_cell">').text('Match'))
-              );
-            }
-
-          // Determine context for display on contributor page
-          try {var role = $('#role_'+contributor_row).val().match(/\[(.*?)\]/)[1];}
-          catch(e) {var role = null; }
-          var context = {'Title':$('#publication_title').val(), 'Role':role};
-
-          for(var i = 0; i<response.length; i++){
-            //add_to_candidate_list(response[i], context);
-            console.log('add_to_candidate_list now')
-            console.log(response[i])
-              var years = [response[i].birthyear,'-',response[i].deathyear].join('');
-              context['id']=response[i].author_ppn;
-              color = getColorForPercentage(response[i].score);
-
-              $("#candidate_list > tbody").append($('<tr onclick="choose_ppn(\''+response[i].author_ppn+'\')"; return false;>')
-                .append($('<td>').append('<input onclick="delete_row(this);" type="button" value="&#xf2ed;" class="fas fa-trash-alt" title="Verwijder naam" padding="0px">'))
-                .append($('<td class="ppn_cell" >').text(response[i].author_ppn))
-                .append($('<td class="name_cell">')
-                  .append($('<a class="action"  title="Details" href="#" onClick="open_popup(\''+Flask.url_for('contributor.authorpage', context)+'\')"; return false;>')
-                    .text(response[i].foaf_name)))
-                .append($('<td>').html((response[i].isni?'&#10003;':'')))
-                .append($('<td class="name_cell" title="'+candidate_note(response[i])+'">').text(candidate_note(response[i])).tooltip())
-                .append($('<td class="years_cell">')
-                  .text(years))
-                .append($('<td class="match_cell" data-rij="' + i + '" id="thesMatchTt" style="background-color:'+color+'">').text(Math.round(100*response[i].score)))
-                )
-
-
-                //        .append($('<td onclick="addSubjectRow(\''+category+'\',\''+ term+'\',\''+ identifier+'\')" title="Selecteer term">').text(term))
-
-            };
-          // Hover div on Match with sub-scores.
-          $('.match_cell').hover(
-          function() {
-
-
-
-            var tooltipValues = [];
-            //$('#tttb2').text(Math.round(response[$(this).data("rij")]["role_score"]*100) + '%');
-            //$('#tttb3').text(Math.round(response[$(this).data("rij")]["role_confidence"]*100) + '%');
-
-            $('#tttb5').text(Math.round(response[$(this).data("rij")]["genre_score"]*100) + '%');
-            $('#tttb6').text(Math.round(response[$(this).data("rij")]["genre_confidence"]*100) + '%');
-
-            $('#tttb14').text(Math.round(response[$(this).data("rij")]["name_score"]*100) + '%');
-            $('#tttb15').text(Math.round(response[$(this).data("rij")]["name_confidence"]*100) + '%');
-
-            $('#tttb8').text(Math.round(response[$(this).data("rij")]["jvu_score"]*100) + '%');
-            $('#tttb9').text(Math.round(response[$(this).data("rij")]["jvu_confidence"]*100) + '%');
-
-
-            var tooltip = $("<div class='tooltip'>" + $('#thesMatchHover').html() + "</div>")
-              .css({
-                'color': '#363838',
-                'position': 'absolute',
-                'zIndex': '99999',
-                'width': '200px',
-                'right':'150px',
-                'height': '150px',
-                'background-color': 'rgba(34, 204, 240, 0)',
-              });
-            $(this).append(tooltip);
-//            $(document).on('mousemove', function(e) {
-//              $('.tooltip').css({
-//                // pageX, pageY need to relocate (ie subtract 325 and 635) because DataTabels.js does somethin weird.
-//                left: e.pageX - 325,
-//                top: e.pageY - 475
-//              });
-//            });
-          },
-          function() {
-            $('.tooltip').remove();
-            }
-          );
-
-
-          $('#candidate_list').DataTable({ordering: false});
-
-          $('#candidate_list').on('click', '.fas.fa-trash-alt', function(){
-            var cl = $('#candidate_list').DataTable();
-            cl
-              .row($(this).parents('tr'))
-              .remove()
-              .draw();
-          });
+         for (var i=0; i < scores_to_show.length; i++) {
+           console.log(scores_to_show[i])
+           scorename = scores_to_show[i][0]
+           subscore = scores_to_show[i][1]
+           scorestring = subscore===null?subscore:Math.round(100*subscore)+'%'
+           subconfidence = scores_to_show[i][2]
+           confidencestring = (subconfidence===null || typeof(subconfidence)==='undefined')?'':'('+Math.round(100*subconfidence)+'% zeker)'
+           score_hover += '<tr><th>'+scorename+'</th><td style="text-align:right">'+scorestring+'</td><td style="text-align:right">'+confidencestring+'</td></tr>'
+         }
+         score_hover += '</tbody></table></div>'
+        $('td.match_cell', row).tooltip({content: score_hover})
         }
-    };
+    });
+  }
 
-function choose_ppn(ppn) {
-  console.log('Choose', ppn);
-  $('#ppn_'+focus_index).val(ppn);
-}
+$('#candidate_list').on('click', 'td.editor-delete', function () {
+        candidates
+          .row( $(this).parents('tr') )
+          .remove()
+          .draw();
+    } );
+
+$('#candidate_list').on('click', 'td.pick-author', function () {
+   $('#ppn_'+focus_index).val($(this).text());
+    } );

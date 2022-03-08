@@ -1,7 +1,6 @@
 from flask import (
     Blueprint, flash, g, redirect, render_template, get_template_attribute, request, url_for, jsonify
 )
-#from ....dataprocessing import # dataprocessin .read_rdf import
 from demosauruswebapp.demosaurus.db import get_db
 import pandas as pd
 from nltk.metrics import distance as nl_distance
@@ -25,216 +24,146 @@ def normalize_name(name):
     name = ' '.join(name.split())  # single space separation
     return name
 
+class NoCandidatesFoundException(Exception):
+    pass
+
 @bp.route('/thesaureer/')
 def thesaureer():
     author_name = request.args.get('contributor_name', '', type=str)
     if not author_name:
-        author_options = pd.DataFrame() # Without name, cannot select candidates
+        candidates = pd.DataFrame()  # Without name, cannot select candidates
     else:
-        author_role = request.args.get('contributor_role', '', type=str)
-        publication_title = request.args.get('publication_title', '', type=str)
-        publication_genres = json.loads(request.args.get('publication_genres', '', type=str))
-        publication_year = {'jaar_van_uitgave': [request.args.get('publication_year', '', type=str)]}
-        author_options = thesaureer_this(author_name, author_role, publication_title, publication_genres, publication_year)
-    return author_options.to_json(orient='records')
+        wrapped_publication = wrap_publication_info(request_args=request.args)
+        candidates = obtain_and_score_candidates(author_name, wrapped_publication)
+    return jsonify(json.loads(candidates.to_json(orient='records')))
 
-def thesaureer_this(author_name, author_role, publication_title, publication_genres, publication_year):
-        db = get_db()
-
-        searchkey = '@' in author_name
-        if searchkey:
-            candidates = "WITH candidates AS (SELECT author_ppn FROM author_fts5 WHERE searchkey MATCH :searchkey)\n"
-            matcher = normalize_name(author_name.split('@')[-1].strip('"'))
-        else:
-            candidates = "WITH candidates AS (SELECT author_ppn FROM author_fts5 WHERE normalized_name MATCH :searchkey)\n"
-            matcher = normalize_name(author_name)
-        start = time.time()
-        author_options = pd.read_sql_query(candidates + """SELECT author_NTA.* FROM candidates 
-        JOIN publication_contributors_train_NBD t2 ON t2.author_ppn = candidates.author_ppn  -- only authors that we have training data for
-        JOIN author_NTA ON candidates.author_ppn = author_NTA.author_ppn 
-        GROUP BY author_NTA.author_ppn;
-        """, params={'searchkey':'\"'+matcher+'\"'}, con = db)
-        print('Obtain candidates - time elapsed:', time.time()-start)
-        # Add scores to the candidates
-        if len(author_options)>0:
-            start = time.time()
-            author_options=pd.concat((author_options, author_options.apply(
-                lambda row: score_names(row, author_name), axis=1)), axis=1)
-            print('Score names - time elapsed:', time.time() - start)
-            author_options=pd.concat((author_options, author_options.apply(
-                lambda row: score_class_based(row['author_ppn'], publication_genres, 'genre'), axis=1)), axis=1)
-            #author_options = pd.concat((author_options, author_options.apply(
-#                lambda row: score_class_based(row['author_ppn'], publication_year, 'jvu'), axis=1)), axis=1)
-            author_options=pd.concat((author_options, author_options.apply(
-                lambda row: score_year(row['author_ppn'], publication_year), axis=1)), axis=1)
-            author_options = pd.concat((author_options, author_options.apply(
-                lambda row: score_style(None, None), axis=1)), axis=1)
-            author_options=pd.concat((author_options, author_options.apply(
-                lambda row: score_role(None,author_role), axis=1)), axis=1)
-
-            # Determine overall score for candidate: linear combination of scores, weighted by confidence
-            features = ['name','genre', 'jvu']
-            scores = [feature+'_score' for feature in features]
-            weights = [feature+'_confidence' for feature in features]
-            author_options['score']= author_options.apply(lambda row: np.average(row.loc[scores], weights=row.loc[weights]), axis=1)
-
-            # Sort candidates by score
-            author_options.sort_values(by='score', ascending=False, inplace=True)
-
-        return author_options
-
-
-def normalized_levenshtein(s1,s2):
-    # normalized Levenshtein distance: normalize by the max of the lengths
-    l = float(max(len(s1), len(s2))) # normalize by length, high score wins
-    return  (l - nl_distance.edit_distance(s1, s2)) / l         
-    
-
-def score_names(authorshipItem, author_name):
-    # family name should be rather similar: check levenshtein distance and normalize by length
-    if '@' in author_name:
-        nameparts = author_name.split('@')
-    else:
-        nameparts = author_name.split()
-    family_name = nameparts[-1]
-    given_name = ' '.join(nameparts[:-1])
-
-    familyNameScore =  normalized_levenshtein(authorshipItem['foaf_familyname'],family_name)
-
-    confidence = 1
-    firstNameScore = 1
-    try: # convert given name(s) to list
-        # an for author name, cn for candidate name
-        an,cn= [list(filter(None,re.split('\.|\s+', name))) for name in [authorshipItem['foaf_givenname'],given_name]]
-        firstNameScore *= 1 if len(an)==len(cn) else .8 # if number of given names differs, lower score
-    except: # no reliable first name(s)
-        an, cn = [[],[]]
-        firstNameScore=.5
-        confidence *= 0.5
-    
-    for i in range(min(len(an),len(cn))):
-        if len(an[i])==1 or len(cn[i])==1: # Just initials: compare first letter only                                        
-            firstNameScore *= 1 if an[i][0] == cn[i][0] else .5
-            confidence *= 0.8 # Gives less reliable score: confidence penalty 
-        else:
-            firstNameScore *= normalized_levenshtein(an[i],cn[i])
-    return pd.Series([.5*familyNameScore+.5*firstNameScore, confidence], index = ['name_score', 'name_confidence'])
-
-
-def obtain_similarity_data(author_ppn, features):
-    # obtain accumulated data for author
-    # from author views (see repo/data-processing/author_views.py)
-    #try:
-    query = ''
-    for i, feature_i in enumerate(features):
-        if i > 0: query += ' UNION '
-        query += 'SELECT '
-        for j, feature_j in enumerate(features):
-            if i == j:
-                query += 'term_identifier AS ' + feature_j + ','
-            else:
-                query += 'NULL AS ' + feature_j + ','
-        query += 'nPublications as knownPublications '
-        query += 'FROM ' + 'author_' + feature_i + '_NBD '
-        query += 'WHERE author_ppn = :author_ppn'
-    data = pd.read_sql_query(query, params={'author_ppn':author_ppn}, con = get_db())
-    #except e:
-    #    print('PROBLEM', e) 
-    #TODO: proper exception handling (return exception to caller!)
-    return data
-
-def score_class_based(author_ppn, publication_classes, name):
-    """
-    Determine score (0-1) and confidence (0-1) for an author given the publication and their known publications
-    Based on information in fields corresponding to items in publication_classes (e.g. genres, subjects, ...)
-    author_ppn: the pica identifier of the candidate author (string)
-    publication_classes: the information of the publication to be compared to
-                         a dictionary of lists: 
-                            keys are class names that correspond to database information (e.g. "CBK_genre")
-                            values are a list of identifiers that correspond to publication (e.g. ["330", "135", "322", "334"])
-    name: a string that indicates how to interpret the score (e.g. "genre")
-    """
-    if sum([len(v) for k,v in publication_classes.items()]) == 0:
-        # Nothing to base score on. Return zero or something else?
-        score = 0
-        confidence = 0 
-    else: 
-        # Obtain a list of known publication counts from the database
-        known_info = obtain_similarity_data(author_ppn, publication_classes.keys())
-        if len(known_info) == 0:
-            # no information available to make a sane comparison
-            score = 0
-            confidence = 0
-        else: 
-            # Add a column with the new publication to compare with
-            for c,l in publication_classes.items():
-                for v in l:
-                    if type(v)== dict:
-                        try: known_info.loc[known_info[c]==v['identifier'],'newPublication']=1
-                        except: print('Cannot add publication info to dataframe for comparison')
-                    else:
-                        try: known_info.loc[known_info[c]==v,'newPublication']=1
-                        except: print('Cannot add publication info to dataframe for comparison')
-            # score = 1- cosine distance between array of known publications and new publication
-            # intuition:
-            # if there are no overlapping genres, distance = 1 so score is 0
-            # if there is little overlap, the score is close to 0
-            # if the new publication is very similar to known publications, the score is close to 1       
-            known_info = known_info.fillna(0)
-
-            try:
-                score = 1 - spatial_distance.cosine(known_info.knownPublications, known_info.newPublication)
-                assert not np.isnan(score)
-                known = known_info.knownPublications.sum()
-                confidence= known/(known+20) # need approx. 20 datapoints to make a somewhat reliable estimate (50% sure)
-                # Temporary fix to get some estimate on reliability
-            except:
-                #print('class based score is undefined for', author_ppn, publication_classes)
-                score = 0
-                confidence = 0
-
-    return pd.Series([score, confidence], index = [name+'_score', name+'_confidence'])
-    
-def score_style(author_record, author_context):
-    #score=max(min(np.random.normal(0.5,0.1),1),0)
-    #confidence=max(min(np.random.normal(0.4, 0.1),0.9),0.1)
-    score = 0
-    confidence = 0 
-    return pd.Series([score, confidence], index = ['style_score', 'style_confidence'])
-
-
-def score_role(author_record, author_context):
-    if not author_context or not author_record :
-        score = 0
-        confidence = 0
-    else:
-        score = 0
-        confidence = 0 
-        # score=max(min(np.random.normal(0.7, 0.1),1),0)
-        # confidence=max(min(np.random.normal(0.4, 0.1),0.9),0.1)
-    return pd.Series([score, confidence], index = ['role_score', 'role_confidence'])
-
-def score_year(author_ppn, publication_year):
-
+def wrap_publication_info(request_args):
+    publication_genres = json.loads(request_args.get('publication_genres', '', type=str))
+    f_list = [(kind, item['identifier']) for kind, itemlist in publication_genres.items() for item in itemlist]
+    f_list.append(('role',request_args.get('contributor_role', '', type=str)))
     try:
-        year = int (publication_year['jaar_van_uitgave'][0])
-        known_info = obtain_similarity_data(author_ppn, publication_year)
-    except:
-        known_info = pd.DataFrame([])
+        f_list.append(('jaar_van_uitgave', request_args.get('publication_year', type=int)))
+    except ValueError: # year is an empty string or otherwise not convertible to int
+        pass # omit it in the list
+    wrapped_publication = pd.DataFrame.from_records(f_list, columns=['term_description', 'term'])
+    wrapped_publication['this_publication'] = 1
+    return wrapped_publication
 
-    if len(known_info) == 0:
-        # no information available to make a sane comparison
+def mask(a):
+    return np.ma.MaskedArray(a, mask=np.isnan(a))
+
+
+FEATURE_KINDS = {}
+FEATURE_KINDS.update({x:'nominal' for x in ['CBK_genre','NUGI_genre','NUR_rubriek',
+                                         'brinkman_vorm','brinkman_zaak', 'role']})
+FEATURE_KINDS.update({x:'ordinal' for x in ['jaar_van_uitgave']})
+
+FEATURE_GROUPS = {}
+FEATURE_GROUPS.update({x:'genre' for x in ['CBK_genre','NUGI_genre','NUR_rubriek',
+                                         'brinkman_vorm']})
+FEATURE_GROUPS.update({x:'subject' for x in ['brinkman_zaak']})
+FEATURE_GROUPS.update({x:'role' for x in ['role']})
+FEATURE_GROUPS.update({x:'year' for x in ['jaar_van_uitgave']})
+
+def score_feature(group):
+    """
+    Returns a tuple (score,confidence) holding score and confidence for a given feature.
+
+    Arguments:
+    group -- a Pandas GroupBy element that corresponds to an author
+             and a specific feature (e.g. Brinkman_vorm) and has columns
+             'term' with the feature value (e.g. '075629402')
+             'knownPublications' the number of known publications with that feature value
+             'this_publication' whether this publication has this feature value (0/1)
+    """
+    feature_name = group.term_description.iloc[0]
+    known = group.knownPublications.sum()
+    if known == 0 or group.this_publication.sum() == 0:
         score = 0
         confidence = 0
     else:
-        # fit a normal distribution to the data points
-        mu, sigma = stats.norm.fit(np.repeat(known_info.jaar_van_uitgave, known_info.knownPublications))
-        sigma = max(sigma, 5) # sigma should be at least 5: publications are still likely (70%) 5 years from any known publication
-        top = stats.norm.pdf(mu, mu, sigma) # determine top
-        score = stats.norm.pdf(year, mu, sigma)/top # normalize by top: we want a score of 1 for the mean
-        # estimate confidence:
-        known = known_info.knownPublications.sum()
-        confidence= known/(known+20) # need approx. 20 datapoints to make a somewhat reliable estimate (50% sure)
+        if FEATURE_KINDS[feature_name] == 'nominal':
+            score = 1 - spatial_distance.cosine(group.knownPublications,
+                                                group.this_publication)
+        elif FEATURE_KINDS[feature_name] == 'ordinal':
+            years = pd.to_numeric(group.term)
+            this_value = years.loc[group.this_publication == 1].iloc[0]
+            mu, sigma = stats.norm.fit(
+                np.repeat(years, group.knownPublications))  # normal distrubtion fitted for author
+            sigma = max(5,
+                        sigma)  # sigma should be at least 5: publications are still likely (70%) 5 years from any known publication
+            top = stats.norm.pdf(mu, mu,
+                                 sigma)  # normalize by top of the distribution: we want a score of 1 for the mean
+            score = stats.norm.pdf(this_value, mu, sigma) / top
+        else:
+            score = -1
+        confidence = known / (known + 20)
+        # need approx. 20 datapoints to make a somewhat reliable estimate (50% sure)
+        # Temporary fix to get some estimate on reliability
+    return pd.Series({'score': score, 'confidence': confidence, 'term_category': FEATURE_GROUPS[feature_name]})
 
-    return pd.Series([score, confidence], index=['jvu_score', 'jvu_confidence'])
+def obtain_and_score_candidates(author_name, wrapped_publication):
+    candidates, similarity_data = obtain_candidates(author_name)
+    if len(candidates) == 0 or len(similarity_data) == 0:
+        return candidates
+    else:
+        scores = score_candidates(similarity_data,wrapped_publication)
+        candidates  = candidates.merge(scores,  left_on='author_ppn', right_index=True, how='left') # how='left' for all NTA entries (not just those with scores)
+    return candidates.sort_values(ascending=False, by=['score','support'])
 
+
+def score_candidates(similarity_data, wrapped_publication):
+    scores = similarity_data.groupby('author_ppn') \
+        .apply(lambda author: \
+            pd.merge(wrapped_publication, author, how='outer') \
+                .fillna(0).groupby(['term_description'])\
+                .apply(score_feature) \
+                .groupby(['term_category'])
+                    .apply(lambda x:
+                        pd.Series([np.average(x.score, weights=x.confidence),
+                                   x.confidence.mean()],
+                                index=['score', 'confidence']))
+               ).unstack() # last groupby (term_categories) to column-index
+    scores.columns = [i[1] + '_' + i[0] for i in scores.columns.to_flat_index()] #flatten column index
+
+    feature_list = ['genre','year', 'role']
+    score_items = [feature + '_score' for feature in feature_list]
+    weight_items = [feature + '_confidence' for feature in feature_list]
+    # compute overall score
+    scores['score'] = scores.apply(
+        lambda row: np.average(row.loc[score_items], weights=row.loc[weight_items]), axis=1)
+    scores['support'] = scores.apply(
+        lambda row: np.mean(row.loc[weight_items]), axis=1)
+    return scores
+
+
+def candidates_with_features_query(candidates_query):
+    return "WITH candidates AS (" + candidates_query + """)
+            SELECT author_NTA.*, t4.identifier AS isni FROM candidates 
+            JOIN author_NTA ON candidates.author_ppn = author_NTA.author_ppn
+            LEFT JOIN author_isni t4 ON candidates.author_ppn = t4.author_ppn 
+            GROUP BY author_NTA.author_ppn;"""
+
+def aggregated_data_query(candidates_query):
+    query = f"WITH candidates AS ({candidates_query})\n"
+    query += "SELECT t1.* FROM author_aggregated t1 JOIN candidates ON t1.author_ppn = candidates.author_ppn\n"
+    return query
+
+def candidate_query(author_name, train_only=False):
+    # TODO: implement extended search (with specifications) - only last name, spelling variations, etc.
+    q = "SELECT DISTINCT t1.author_ppn FROM author_fts5 t1"
+    if train_only:
+        q += " JOIN publication_contributors_train_NBD t2 ON t2.author_ppn = t1.author_ppn "
+    q += " WHERE t1.name_normalized MATCH :searchkey"
+    params = {'searchkey': '\"' + normalize_name(author_name)+ '\"'}
+    return q, params
+
+def obtain_candidates(author_name):
+    candidates_query, params = candidate_query(author_name)
+    q1 = candidates_with_features_query(candidates_query=candidates_query)
+    q2 = aggregated_data_query(candidates_query=candidates_query)
+    start = time.time()
+    candidates = pd.read_sql_query(q1, params=params, con=get_db())
+    similarity_data = pd.read_sql_query(q2, params=params, con=get_db())
+    print('Obtain candidates - time elapsed:', time.time() - start)
+    return candidates, similarity_data

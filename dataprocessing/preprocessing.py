@@ -6,6 +6,7 @@ import nltk
 from collections import Counter
 import pickle
 import csv_db
+from demosauruswebapp.demosaurus.link_thesaurus import normalize_name
 
 """For text processing, obtain stop word list from file and initialize tokenizer"""
 with open('dataprocessing/stopwordsDutch.txt','r') as f:
@@ -39,6 +40,10 @@ def CBK_genres_to_identifiers(CBK_genres):
     else:
         CBK_genres.rename(columns={'term':'term_identifier'})
     return CBK_genres[['publication_ppn','term_identifier','rank']]
+
+def normalize_author_names(publication_contributors):
+    publication_contributors['name_normalized'] = publication_contributors.apply(lambda row: normalize_name(' '.join([i for i in [row.firstname, row.prefix, row.familyname] if type(i)==str])), axis = 1)
+    return publication_contributors
 
 def normalize_publishers(basicinfo, postfix):
     # map publishers to canonical form
