@@ -1,11 +1,13 @@
-import demosauruswebapp.demosaurus as demosaurus
-from demosauruswebapp.demosaurus import link_thesaurus
+from unittest import TestCase
+
+import demosauruswebapp
+from demosauruswebapp import link_thesaurus
 import pandas as pd
 from werkzeug.datastructures import MultiDict
 
-instance_path = '/home/sara/Metadata/Thesaureren/Demosaurus/demosauruswebapp/instance'
+instance_path = '/home/sara/Metadata/Thesaureren/Demosaurus/instance'
 # absolute path to dir where the instance (database, among other things) lives that you want to test against
-app = demosaurus.create_app(instance_path=instance_path)
+app = demosauruswebapp.create_app(instance_path=instance_path)
 
 
 def test_candidates_with_features_query():
@@ -61,7 +63,7 @@ def test_wrap_publication_info():
         wrapped_publication)  # every row should have a count of one
     for i in wrapped_publication.index:
         assert wrapped_publication.loc[[i]].isna().sum().sum() == (
-                    len(wrapped_publication.columns) - 2)  # two columns (the relevant value and the counter) should be NaN
+                len(wrapped_publication.columns) - 2)  # two columns (the relevant value and the counter) should be NaN
     assert "075629410" in wrapped_publication['brinkman_vorm'].values
     assert "302" in wrapped_publication['NUR_rubriek'].values
 
@@ -84,6 +86,7 @@ def test_obtain_and_score_candidates():
          ('publication_year', ' 2014'), ('extended_search', 'false'), ('_', '1643874874535')])
     wrapped_publication, features_to_obtain = link_thesaurus.wrap_publication_info(request_args)
     with app.app_context() as context:
-        scored_candidates = link_thesaurus.obtain_and_score_candidates(author_name, wrapped_publication, features_to_obtain)
+        scored_candidates = link_thesaurus.obtain_and_score_candidates(author_name, wrapped_publication,
+                                                                       features_to_obtain)
     assert type(scored_candidates) == pd.DataFrame
 

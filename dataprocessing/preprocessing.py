@@ -6,7 +6,7 @@ import nltk
 from collections import Counter
 import pickle
 import csv_db
-from demosauruswebapp.demosaurus.link_thesaurus import normalize_name
+from demosauruswebapp.link_thesaurus import normalize_name
 
 """For text processing, obtain stop word list from file and initialize tokenizer"""
 with open('dataprocessing/stopwordsDutch.txt','r') as f:
