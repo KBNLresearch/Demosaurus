@@ -9,7 +9,7 @@ joblib==0.17.0
 MarkupSafe
 nltk
 numpy
-pandas
+pandas>=1.2
 scipy
 python-dateutil==2.8.1
 pytz==2020.4
