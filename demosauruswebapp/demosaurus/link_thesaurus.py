@@ -154,7 +154,7 @@ def candidate_query(author_name, train_only=False):
     q = "SELECT DISTINCT t1.author_ppn FROM author_fts5 t1"
     if train_only:
         q += " JOIN publication_contributors_train_NBD t2 ON t2.author_ppn = t1.author_ppn "
-    q += " WHERE name_normalized MATCH :searchkey"
+    q += " WHERE t1.name_normalized MATCH :searchkey"
     params = {'searchkey': '\"' + normalize_name(author_name)+ '\"'}
     return q, params
 
