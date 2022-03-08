@@ -87,6 +87,7 @@ schemata = {
 		{'field': 'firstname', 'dtype': str, 'type': 'TEXT', 'constraints': ''},
 		{'field': 'prefix', 'dtype': str, 'type': 'TEXT', 'constraints': ''},
 		{'field': 'familyname', 'dtype': str, 'type': 'TEXT', 'constraints': ''},
+		{'field': 'name_normalized', 'dtype': str, 'type': 'TEXT', 'constraints': ''},
 		{'field': 'role', 'dtype': str, 'type': 'TEXT', 'constraints': ''},
 		{'field': 'author_ppn', 'dtype': str, 'type': 'TEXT', 'constraints': ''}],
 	'publication_datasplits': [
