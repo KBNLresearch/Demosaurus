@@ -17,7 +17,7 @@ def view(id):
         ' WITH annotations AS ('
         '     SELECT publication_ppn, group_concat(annotation) AS annotations from publication_annotations'
         '     WHERE publication_annotations.publication_ppn = ?'
-        '     AND kind in ("samenvatting_inhoudsopgave", "analytisch_volw", "analytisch_jeugd")'
+        '     AND kind in ("annotatie_samenvatting_inhoudsopgave", "annotatie_analytisch_volw", "annotatie_analytisch_jeugd")'
         '     GROUP BY publication_ppn)'
         ' SELECT *'
         ' FROM publication_basicinfo'
