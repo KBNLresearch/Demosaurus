@@ -97,3 +97,28 @@ def overview():
         ' LIMIT 50 '
     ).fetchall()
     return render_template('index.html', publications=publications)
+
+
+@bp.route('/test')
+def test():
+    db = get_db()
+    # Select a random subset of publications from the test set to serve as examples
+    publication = db.execute(
+        ' SELECT publication_basicinfo.publication_ppn, titelvermelding, verantwoordelijkheidsvermelding'
+        ' FROM publication_basicinfo'
+        ' JOIN publication_datasplits t2 ON t2.publication_ppn = publication_basicinfo.publication_ppn'
+        ' WHERE t2.dataset_id=1 and t2.datasplit_id = 1'
+        ' ORDER BY random() '
+        ' LIMIT 50 '
+    ).fetchone()
+    if publication == None:
+        return('Database has no publications')
+    author = db.execute(
+        ' SELECT author_NTA.author_ppn, author_NTA.foaf_name, '
+        ' author_VIAF.identifier AS viaf_id, author_ISNI.identifier AS isni_id '
+        ' FROM author_NTA '
+        ' JOIN author_VIAF ON author_VIAF.author_ppn = author_NTA.author_ppn '
+        ' JOIN author_ISNI ON author_ISNI.author_ppn = author_NTA.author_ppn '
+        ' WHERE author_NTA.author_ppn = "068842368" '
+    ).fetchone()
+    return(jsonify(dict(author)))
