@@ -1,6 +1,6 @@
 Flask>=2
 Flask-JSGlue
-numpy>=1.22
+numpy>=1.21
 pandas>=1.2
 scipy>=1.7.1
 unidecode

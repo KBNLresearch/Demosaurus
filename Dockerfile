@@ -1,13 +1,13 @@
 FROM python:3.7.12-slim as base
 MAINTAINER Sara Veldhoen <sara.veldhoen@kb.nl>
 
-RUN pip install --upgrade pip
 COPY requirements.txt /
 RUN apt-get update && \
     apt-get install -y \
         build-essential \
         make \
-        gcc \
+        gcc 
+RUN pip install --upgrade pip \
     && pip install -r requirements.txt \
     && apt-get remove -y --purge make gcc build-essential \
     && apt-get autoremove -y \
@@ -19,8 +19,6 @@ RUN groupadd -g 999 user && \
 
 RUN mkdir /usr/app && chown user:user /usr/app
 WORKDIR /usr/app
-
-
 
 COPY --chown=user:user demosauruswebapp demosauruswebapp/
 
